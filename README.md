@@ -1,2 +1,1 @@
-# virtual-view-brain
-Mini-brain for virtual view projects
+# virtual-view-brain 🧠
