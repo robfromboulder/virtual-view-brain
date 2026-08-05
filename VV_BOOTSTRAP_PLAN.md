@@ -1,6 +1,6 @@
 # Virtual View Brain: Bootstrap Plan
 
-> V1, 2026-07-31.
+> V6, 2026-08-02.
 
 The plan for seeding this brain: what it holds, where each piece of existing knowledge lands, and the order to do it in. This is a planning document, not a canonical one — retire it to `archive/` once the seed is filled.
 
@@ -15,7 +15,7 @@ Five units, because five distinct problems compose:
 | Unit | Problem it owns |
 |---|---|
 | **Hub** | Why virtual views need a pattern, a store and a mapper at all, and how the three fit together. |
-| **Manifesto** | Getting the virtual view pattern understood and applied. Its output is prose, not code. |
+| **Manifesto** | Getting the virtual view pattern understood and applied. Its output is prose — read by people and by agents — not code. |
 | **ViewMapper** | Understanding sprawling view hierarchies on Trino — and how its two modules compose to do that. |
 | **— Agent** | Analyzing Trino schemas and view dependency graphs at scale. |
 | **— MCP server** | Making that analysis usable conversationally, which is where session context, subprocess lifecycle and diagram rendering live. |
@@ -80,7 +80,9 @@ Registry to write into `CLAUDE.md`:
 | mcp `CLAUDE.md` — what the conversational surface has to be | `VMR_MCP_APPROACH.md` | Why the server is thin and stateless-ish, and what that costs |
 | viewzoo `CLAUDE.md` — architecture and key patterns | `VZOO_APPROACH.md` + `VZOO_FINDINGS.md` | Provider pattern rationale, synchronized access, caching strategy |
 | viewzoo — per-Trino-version branch strategy | `VZOO_FINDINGS.md` | Why branches per version rather than one trunk |
-| All three READMEs, plus how the projects reference each other | `VV_SCOPE.md`, `VV_APPROACH.md` | Why the three exist as one system and how they compose |
+| All three READMEs | `VV_SCOPE.md` | The one problem underneath all three — see §6 |
+| How the projects reference and depend on each other | `VV_APPROACH.md` | Why the three exist as one system and how they compose |
+| viewmapper `ARCHITECTURE.md` — build scripts, config examples, project structure, run instructions | `../viewmapper/CLAUDE.md` (created by the hook) | Not brain content: the operational half lands in the repo entrypoint the hook creates — see §6 |
 
 ### Stays in the project repos
 
@@ -93,12 +95,14 @@ READMEs (user-facing, unchanged), every `CONTRIBUTING.md`, both `TESTING.md` fil
 | manifesto `CLAUDE.md` | Success criteria, target audience, project overview | A pointer to the brain for strategic context |
 | manifesto `TODOS.md` (48 lines) | Nothing yet — mark items as imported, remove once work items exist | — |
 | manifesto `CHANGES.md` | Nothing; it is the public changelog and should diverge from the brain's log | — |
-| viewmapper `ARCHITECTURE.md` (875 lines) | Most of it. Rationale, rejected alternatives, prompt strategy, versioning and positioning all move; the rest (tech stack, project structure, code samples, build scripts, config examples, algorithm walk-throughs) is re-derivable from source and the submodule runbooks | Full file copied to `archive/` as source material. Decide whether the repo keeps a short stub — see §6 |
+| viewmapper `ARCHITECTURE.md` (875 lines) | All of it. Rationale, rejected alternatives, prompt strategy, versioning and positioning move into the brain; the runbook and operational half moves into the new root `CLAUDE.md`; the rest (tech stack, code samples, algorithm walk-throughs) is re-derivable from source and the submodule runbooks and is simply dropped | Nothing — the file goes away. Full copy lands in `archive/` as source material first |
 | agent `CLAUDE.md` | Design decisions, known limitations | A pointer to the brain |
 | mcp `CLAUDE.md` | Design decisions | A pointer to the brain |
 | viewzoo `CLAUDE.md` (92 lines) | The rationale under key patterns; the pattern names stay | A pointer to the brain |
 
-Note that `../viewmapper` has no `CLAUDE.md` at all. Its hook creates one.
+Deleting `ARCHITECTURE.md` breaks `../viewmapper/CONTRIBUTING.md`, whose feature and documentation workflows instruct a contributor to have Claude read and then update that file. Those steps have to be repointed in the same pass — at the brain for design decisions, at the new root `CLAUDE.md` for everything operational.
+
+Note that `../viewmapper` has no `CLAUDE.md` at all. Its hook creates one, and that file absorbs `ARCHITECTURE.md`'s operational half — build, config, run and submodule orientation — alongside the hook section. This is the only repo where trimming produces a new file rather than a shorter one, and it has to happen in the same pass that deletes `ARCHITECTURE.md`.
 
 ---
 
@@ -110,17 +114,17 @@ Work items live in the `working/` of the unit that owns them, named `<TOKEN>_<WO
 
 | # | Title | Owner | Work item |
 |---|---|---|---|
-| 1 | Branch and update for Trino 479 | `viewmapper/` | `VMR_TRINO_479_UPGRADE` — also carries the JDK 25 move |
+| 1 | Branch and update for Trino 479 | `viewmapper/` | triage — the update half already shipped, see below |
 | 2 | Test/document examples with user authentication enabled | `viewmapper/` | `VMR_AUTH_TESTING` |
 | 3 | Is `exclude_columns` supported? | agent | triage — answer likely becomes a findings entry |
-| 4 | Add security guide | `viewmapper/` | `VMR_SECURITY_GUIDE` — pairs with ViewZoo #11, see §6 |
+| 4 | Add security guide | `viewmapper/` | deferred — no work item at seed, see §6 |
 | 5 | Notebooks or other interactive renderings? | agent | triage — park as an open question in `VMR_AGENT_SCOPE.md` |
 | 6 | Identify isolated views (no base or dependents) | agent | `VMR_AGENT_ISOLATED_VIEWS` |
 | 7 | Better hinting that mermaid diagrams are files | mcp | triage — Claude Desktop behaviour, may not be actionable |
 | 8 | Improve error handling if agent can't connect | mcp | `VMR_MCP_CONNECTION_ERRORS` |
 | 9 | Prompts against test datasets aren't working | — | closed |
 
-Five actionable, three to triage. The three that span both modules (#1, #2, #4) sit in `viewmapper/working/`; the module-specific ones sit in their own module's.
+Three actionable, four to triage, one deferred. #2 spans both modules and sits in `viewmapper/working/`; the module-specific ones sit in their own module's.
 
 ### ViewZoo — 6 open, 7 closed
 
@@ -128,48 +132,50 @@ Five actionable, three to triage. The three that span both modules (#1, #2, #4) 
 |---|---|---|
 | 9 | Test cases should include renaming views | `VZOO_RENAME_TESTS` |
 | 10 | Improvements for multi-tenancy | `VZOO_MULTI_TENANCY` — hardcoded table name, multi-instance docs, perf testing |
-| 11 | Add security guide | `VZOO_SECURITY_GUIDE` — see §6 |
+| 11 | Add security guide | deferred — no work item at seed, see §6 |
 | 12 | Offer versioned binaries | `VZOO_VERSIONED_BINARIES` |
 | 13 | Configurable VIEW security mode | `VZOO_SECURITY_MODE` — community request; design discussion first |
 | 14 | Configurable caching | `VZOO_CONFIGURABLE_CACHE` — community request; design discussion first |
 
-All six sit in `viewzoo/working/`. Issues #13 and #14 carry use-case context from their requesters that exists nowhere but the GitHub thread — capture it when the work item opens.
+Five sit in `viewzoo/working/`; #11 is deferred. Issues #13 and #14 carry use-case context from their requesters that exists nowhere but the GitHub thread — capture it when the work item opens.
 
-Closed ViewZoo #8 was the Trino 479 branch, so ViewZoo is already on 479 while ViewMapper #1 is still open. The two projects are at different Trino versions right now, and work items should say which version they target.
+Both code projects are on Trino 479 and JDK 25 today, so ViewMapper #1 needs triage rather than a work item: the update it asks for is committed on `main`, and the branch it asks for is what ViewZoo does and ViewMapper deliberately does not. Either the issue closes or it is really a request to change ViewMapper's release strategy, which is a different piece of work. Work items should still name the Trino version they target, since nothing keeps the two projects in step.
 
 ### Manifesto — no issues
 
-Work comes from `TODOS.md` instead: roughly twenty items ranging from one-line questions to multi-paragraph proposals. Group into three to five thematic items rather than twenty micro-items, with each item's task list carrying the individual TODOs.
+Work comes from `TODOS.md` instead: roughly twenty items ranging from one-line questions to multi-paragraph proposals. These become **one** work item — `VVM_TODOS_TRIAGE` in `manifesto/working/` — whose plan sorts the twenty into three to five themes and whose task list carries the individual TODOs under those themes. One item rather than three to five keeps the grouping revisable while it is still a guess; if a theme grows enough to run across sessions on its own, it splits out then.
 
 ---
 
 ## 5. Seeding sequence
 
-1. **Create the tree and seed all 27 files.** Skeletons with version headers; hub `archive/` and `working/` only.
-2. **Write `CLAUDE.md`** from the component entrypoint template: hub index, doctype grammar, the registry in §2, and the conventions.
-3. **Copy source material to `archive/`** — viewmapper `ARCHITECTURE.md` above all, since most of it is about to be absorbed.
-4. **Replace `README.md`.** It currently holds the original prompt for this repo; it should say what the brain is and how to load it.
-5. **Fill `VV_SCOPE.md`, then `VV_APPROACH.md`.** Parents settle before children, and problems before designs.
-6. **Fill each component's SCOPE, then its APPROACH** — `viewmapper/` before `agent/` and `mcp/`.
-7. **Seed the FINDINGS documents** from the design decisions in §3.
+1. **Create the tree and seed all 27 files.** Skeletons with version headers; hub `archive/` and `working/` only. ✅
+2. **Write `CLAUDE.md`** from the component entrypoint template: hub index, doctype grammar, the registry in §2, and the conventions. ✅
+3. **Copy source material to `archive/`** — viewmapper `ARCHITECTURE.md` above all, since most of it is about to be absorbed. ✅
+4. **Replace `README.md`.** It currently holds the original prompt for this repo; it should say what the brain is and how to load it. ✅
+5. **Fill `VV_SCOPE.md`, then `VV_APPROACH.md`.** Parents settle before children, and problems before designs. `VV_SCOPE.md` stays short by design — see §6. ✅
+6. **Fill each component's SCOPE, then its APPROACH** — `viewmapper/` before `agent/` and `mcp/`. ✅
+7. **Seed the FINDINGS documents** from the design decisions in §3. *Partial* — `VMR_AGENT_FINDINGS.md` and `VMR_MCP_FINDINGS.md` were filled ahead of step 11, since deleting `ARCHITECTURE.md` and the modules' design-decision sections would otherwise have destroyed the rejected paths and non-obvious limitations they held. `VV`, `VVM`, `VMR` and `VZOO` are still empty.
 8. **Seed `VVM_LOG.md`** with the historical-context entry drawn from `CHANGES.md`.
 9. **Fact-check every falsifiable claim against the code.** Scopes distilled from project docs drift in predictable ways — they overstate uniformity, mislabel by name, and lag the code. Correct what the code contradicts and bump versions.
-10. **Add the hook to five repos** — `virtual-view-manifesto`, `viewmapper` (creating its `CLAUDE.md`), `viewmapper-agent`, `viewmapper-mcp-server`, `viewzoo` — each naming its own component.
-11. **Trim the project repos** per §3, leaving pointers.
+10. **Add the hook to three repos** — `virtual-view-manifesto`, `viewmapper` (creating its `CLAUDE.md`, which also absorbs `ARCHITECTURE.md`'s operational half), and `viewzoo` — each naming its own component. `viewmapper-agent` and `viewmapper-mcp-server` are directories inside the `viewmapper` repo, not repos of their own, so they take a component anchor pointing at the root file rather than a second copy of the hook. ✅
+11. **Trim the project repos** per §3, leaving pointers, and delete `ARCHITECTURE.md` once step 10 has landed its operational half. ✅
 12. **Verify the round trip** from each repo: load the brain, confirm the registry routes correctly, and confirm a session lands in the right unit without reading the others.
 
 Steps 1–4 are one session's work. Steps 5–9 are the substance and will take several. Work-item import comes after, once the shape has been used in anger.
 
+Remaining: the rest of step 7, then steps 8, 9 and 12.
+
 ---
 
-## 6. Decisions still open
+## 6. Decisions settled
 
-**Does `VV_SCOPE.md` say anything the component scopes don't?** Its APPROACH clearly does — how a manifesto, a store and a mapper compose is real un-derivable knowledge. The SCOPE is the doubtful half. Write it and see; if it turns out to be a summary of the other four, cut it back to a short problem statement and let the APPROACH carry the weight.
+**`VV_SCOPE.md` is a problem statement, not a summary.** It names the one problem that ties the three projects together — the theme underneath a manifesto, a mapper and a store — and stops there. It does not restate what the four component scopes say, and it is expected to be the shortest scope in the brain. If drafting it produces something that reads as a table of contents for the others, that is the signal it has drifted, and the fix is to cut rather than to reorganize. `VV_APPROACH.md` carries the weight: how the three compose is where the un-derivable knowledge lives.
 
-**One security guide or two?** ViewMapper #4 and ViewZoo #11 are the same request against different projects. Two separate work items keep each in its owning unit; a single `VV_SECURITY_GUIDES` item at the hub coordinates delivery but puts implementation work above the units that will do it. Prefer two unless they genuinely ship together.
+**Security guides are deferred.** ViewMapper #4 and ViewZoo #11 get no work items at seed. They stay open issues in their repos and enter the brain only when one of them is actually picked up — at which point the one-or-two question answers itself from whoever is doing the work. Seeding a work item for something nobody is about to start would put an empty shell in `working/` and make the brain's in-flight area look busier than the work is.
 
-**Does `ARCHITECTURE.md` leave a stub behind?** The full file is archived either way. The question is whether `../viewmapper` keeps a short landing page pointing at the submodule runbooks and the brain, or whether the new root `CLAUDE.md` created by the hook covers that need on its own. The second is tidier if the hook's file ends up carrying an overview anyway.
+**`ARCHITECTURE.md` leaves nothing behind.** The full file is archived in the brain as source material, its knowledge is absorbed into `VMR_*` and `VMR_AGENT_*` documents, and its runbook and operational content is absorbed into the new root `CLAUDE.md` that the hook creates in `../viewmapper`. Then the file is deleted. No stub: a landing page pointing at the submodule runbooks and the brain is exactly what the root `CLAUDE.md` already is, and two files doing that job would drift apart. This makes step 10 a prerequisite for step 11 in `../viewmapper` specifically.
 
-**How agentic does the manifesto become?** The intent is to grow a cookbook from the same material — knowledge applied through an interface rather than absorbed by a reader. That cookbook is a deliverable of the manifesto repository, not a brain document; the brain holds why it says what it says. Settling this changes what `VVM_SCOPE.md` claims, so decide before filling it.
+**The manifesto is agentic as a goal, not as a claim.** What is true today: the manifesto is a document you can hand to Claude and ask questions about, and that already works — `VVM_SCOPE.md` should say so plainly rather than describing the book as if reading it end-to-end were the only path in. What is not true today: there are no defined agentic workflows over the manifesto, no cookbook, and no interface. ViewMapper is the agentic project of the three; ViewZoo is not fully agentic and probably never will be. So `VVM_SCOPE.md` states the current reality and names the cookbook as a direction under consideration — not as a commitment, and not as something the brain is already organized around. Revisit when a cookbook actually starts.
 
-**How granular are the manifesto work items?** Three to five thematic groups is the working assumption. The grouping is easier to judge once `VVM_APPROACH.md` states the editorial strategy, so import after that, not before.
+**The manifesto's TODOs become one work item.** `VVM_TODOS_TRIAGE` in `manifesto/working/`, with the three-to-five thematic grouping living in its plan and the individual TODOs as tasks underneath. Import after `VVM_APPROACH.md` states the editorial strategy, since the strategy is what makes one grouping better than another.
