@@ -1,6 +1,6 @@
 # Virtual View: Mini-Brain Files
 
-> V2, 2026-08-02.
+> V3, 2026-08-08.
 
 This brain holds the un-derivable knowledge of the virtual view ecosystem: the manifesto that defines the pattern, the mapper that makes view hierarchies legible, and the store that holds views. The hub's namespace token is `VV`. Each component declares its own in the registry below.
 
@@ -55,7 +55,7 @@ A component may carry more; anything beyond these four is named in its **Also ho
 
 Match a question's terms against **Routes on** to choose a component *before* reading anything. A question about how components fit together, or one no component's terms claim, is hub-level — start at the hub documents. Sub-components are indented under their parent. The Agent and MCP server have no repository of their own: their cells point into the ViewMapper repo, which is where a hook merged into `../viewmapper/CLAUDE.md` covers all three ViewMapper units.
 
-`archive/` holds source material and retired docs — not in-tree version snapshots; ignore unless asked. `working/` holds experiments and in-flight work-item docs; when a work item concludes, fold them into the canonical docs and **move** (not delete) them to the owning unit's `archive/`. Every unit owns its own pair, created when it first needs them; the hub's sit at the repo root.
+`archive/` holds source material and retired docs — not in-tree version snapshots; ignore unless asked. `working/` holds experiments and in-flight work-item docs; when a work item concludes, fold them into the canonical docs and **move** (not delete) them to the owning unit's `archive/`. Every unit owns its own pair — the hub's sit at the repo root from seeding; a component creates its own when it first needs them. Seed-time source material all lands in the hub's `archive/`, whichever component it describes.
 
 ---
 
@@ -83,6 +83,10 @@ Match a question's terms against **Routes on** to choose a component *before* re
 
 **Placement.** A fact about two units belongs to their nearest common ancestor. Sibling references are forbidden — a sibling is neither upstream nor downstream — so knowledge spanning two components lives in the unit above them and never in either one. Name the units a fact concerns and walk up to where they meet: the ancestor fixes which unit holds it, and the fact's own nature fixes which document, composition that was designed going to APPROACH and interaction that implementation revealed going to FINDINGS.
 
+**A parent names what a child elaborates, and stops.** A parent whose problem decomposes has to state the parts in order to state its own problem at all, so some restatement is inherent and is not duplication. What is duplication is the parent continuing past naming a part into explaining it — describing *why* a child's problem is hard, or how it is solved, in the parent's own words. The line is that a reader of the parent should learn that the part exists and where it fits; a reader who wants to know what makes it hard goes to the child. When the same explanation would be at home in either document, it belongs in the child.
+
+**An open question belongs to exactly one unit: the one whose work would resolve it.** The same question standing in a parent and a child means neither owns it, and both copies will drift as the answer develops. Ask which unit's session would close the question, and put it there.
+
 **Log routing** is the same rule applied to lineage. A session logs to the nearest common ancestor of the units its work concerned — not every unit it read: one that worked inside a single unit logs there, one whose work crossed units logs above them, however far apart in the tree they sit.
 
 **Declared reference exemptions.** Orthogonality is the default and it is strict: a knowledge file names *no* sibling and stands on its own. A cross-file reference exists only where an exemption is declared, and an exemption may only point *upstream* — toward the problem a file serves — never *downstream* toward how it was built. A downstream reference is never exemptable; that invariant is what stops content bleed-through. Stated per doctype, so this table stays the same size at any component count or depth:
@@ -94,7 +98,7 @@ Match a question's terms against **Routes on** to choose a component *before* re
 | `<TOKEN>_FINDINGS.md` | *none* | Implementation decisions downstream of the approach, with nothing upstream to cite. |
 | Any document | its own sub-components **by name**, never their files | Naming a part of your own subject is not a downstream reference; reaching into that part's documents is. |
 
-Two classes stand outside the table. **Logs** record what a session touched, filenames included, so naming another unit's documents is their job. **Maintenance and procedure documents** name the knowledge files they operate on, which is inherent to being a procedure.
+A permitted reference still follows the Cross-references rule above — cited by name, never by section number. Two classes stand outside the table. **Logs** record what a session touched, filenames included, so naming another unit's documents is their job. **Maintenance and procedure documents** name the knowledge files they operate on, which is inherent to being a procedure.
 
 **No harness memory.** Don't use the persistent memory feature. All persistent project information belongs in the markdown files in this directory.
 
