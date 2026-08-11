@@ -42,3 +42,23 @@ Rob's session, with Claude as co-author. It opened on his feedback against the f
 - Authoring the scopes from the project repositories' own documentation reproduced the shape of that documentation. Every scope came out as a status report, and the error was uniform enough to rule out carelessness in any one document.
 - The assumption that ViewMapper's users work in a chat client was written into its scope as a fact about the world. It is a consequence of the delivery decision recorded two documents away, and it read as description rather than as design because of where it landed. Removed; the module whose problem genuinely is the destination keeps it.
 - An unfounded causal claim survived into the hub scope: a source recorded that a team maintains their own view-storage module and wanted to migrate off it, and the distillation asserted why they had built it. Sources record what was done far more often than why.
+
+---
+
+# Add work setup and closeout procedures, retire bootstrap plan (2026-08-10)
+
+**Session ID**: `98b66627-3479-4d82-9fc0-3261108d235f`
+
+Rob's session, with Claude as co-author. Added `VV_WORK_SETUP.md` and `VV_WORK_CLOSEOUT.md` to the hub — the brain's first work-item machinery — adapted from the mini-brain toolkit's templates. Retired `VV_BOOTSTRAP_PLAN.md` to `archive/` and updated the hub index.
+
+## Turn-by-turn
+
+- Rob asked whether the work setup and closeout procedures should live at the leaves (one per component) or at the hub. Claude read the toolkit's `MBT_COMPONENTS.md`, which states that maintenance and procedure documents live at the hub — one of each serves every unit and none is namespaced to a component. The working docs those procedures scaffold land in whichever unit owns the work item. Rob confirmed.
+- Claude read both toolkit templates (`WORK_SETUP.md`, `WORK_CLOSEOUT.md`) and all six base work templates (`PLAN.md`, `FINDINGS.md`, `LOG.md`, `BURNDOWN.md`, `CLAUDE.md`, `TESTING.md`), then drafted both procedures with the `VV` prefix and the six templates inlined into WORK_SETUP so the brain stands alone without the toolkit.
+- The owning-unit derivation in the intake step was adapted for a component brain: it points at the registry's Routes on column and walks up to the nearest common ancestor. The toolkit has an open work item to strengthen this step further; the current version was used as-is.
+- Rob noted the bootstrap plan was fully complete and asked to retire it. Moved to `archive/` and its row removed from the hub documents table.
+- `CLAUDE.md` bumped to V4: two rows added for the new procedures, one row removed for the retired plan.
+
+## Decisions
+
+- **One procedure set at the hub, not per-leaf** — the toolkit is explicit that maintenance documents serve the whole brain; per-component copies would duplicate the placement logic and need syncing (Rob confirmed Claude's reading of the toolkit).

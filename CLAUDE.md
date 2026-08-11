@@ -1,6 +1,6 @@
 # Virtual View: Mini-Brain Files
 
-> V3, 2026-08-08.
+> V4, 2026-08-10.
 
 This brain holds the un-derivable knowledge of the virtual view ecosystem: the manifesto that defines the pattern, the mapper that makes view hierarchies legible, and the store that holds views. The hub's namespace token is `VV`. Each component declares its own in the registry below.
 
@@ -19,7 +19,8 @@ All paths are relative to this repo root (`CLAUDE.md`'s directory). Before readi
 | Findings that cross components (invisible from code) | `VV_FINDINGS.md` |
 | Session log for hub work and sessions that crossed components | `VV_LOG.md` (read from last `---`; large) |
 | Session log update format and rules | `VV_SESSION_CLOSEOUT.md` (read when asked to update a session log) |
-| Seeding plan — what fills each document and in what order | `VV_BOOTSTRAP_PLAN.md` (temporary; retires to `archive/` once the seed is filled) |
+| Work-item setup procedure | `VV_WORK_SETUP.md` (read when starting a new work item) |
+| Work-item closeout procedure | `VV_WORK_CLOSEOUT.md` (read when a work item concludes) |
 
 These are the current hub documents. Components' documents are **resolved** from the grammar and registry below rather than listed — a document not derivable that way does not exist.
 
@@ -65,7 +66,9 @@ Match a question's terms against **Routes on** to choose a component *before* re
 
 **Token ownership.** A document belongs to the unit whose declared token its name begins with in full, longest match winning. Tokens may nest as prefixes, so a shorter token matching proves nothing — a document whose name begins with a child's token is misplaced if it sits in the parent's directory. Ownership constrains naming in return: never name a document so that another unit's token is a longer prefix of its name than the owning unit's — a parent's work-item slug that continues into a child's token hands the item's files to that child.
 
-**Working and archive.** A unit's `working/` inherits that unit's token, so in-flight documents stay as parseable as canonical ones. A unit's `archive/` does not: retired files keep the basename they were retired under and need not be markdown. LOG files are append-only — never archived.
+**Working and archive.** A unit's `working/` inherits that unit's token, so in-flight documents stay as parseable as canonical ones. A unit's `archive/` does not: retired files keep the basename they were retired under and need not be markdown.
+
+**Append-only logs.** LOG files are never archived and never edited after the fact. Append-only governs an entry's content, not its position: once written, an entry is never revised, split, or merged. New entries go at the end. The one exception is folding another log into this one, which places that log's entries whole and in date order among the existing ones, so the last separator still holds the most recently written entry.
 
 **Maintenance documents live at the hub.** Session closeout — and work setup, work closeout and the dream cycle when the brain grows them — govern the whole brain, so one of each serves every unit and none is namespaced to a component. The in-flight documents those procedures scaffold land in the `working/` of whichever unit owns the work.
 
