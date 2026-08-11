@@ -1,6 +1,6 @@
 # ViewMapper Agent: Implementation Findings
 
-> V2, 2026-08-02.
+> V3, 2026-08-10.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -19,6 +19,14 @@ Identifiers that arrive unquoted are normalized to lowercase before anything dow
 ## The schema argument is split on its first period, not its last
 
 A schema argument may be `catalog.schema` or a bare schema name depending on whether the connection URL bound a catalog. The split takes the first period, which means a catalog containing a period would be parsed wrongly and a schema containing one is handled correctly. This asymmetry is deliberate and worth knowing before anyone "fixes" the split direction.
+
+## The default model is a Sonnet because Haiku would not reliably call tools
+
+Haiku was tried and did not consistently invoke the tools it was given. For this module that is not a quality gradient but a total failure: every useful answer depends on the model choosing to call something, so a model that declines to call anything returns confident prose about a schema it never read. Anyone changing the default, or pointing the model override at something cheaper, has to verify tool invocation specifically — the prose looks equally plausible either way, which is what makes the failure easy to miss.
+
+## The costs that justify recomputing everything were measured at 154 views
+
+Nothing is cached between invocations, and the measurements behind that are: parsing 154 view definitions under 500ms, building the full graph under 100ms, betweenness centrality over 154 nodes under 200ms, and subgraph extraction under 10ms. That is also the largest schema these were taken on, so they establish that the work is effectively free at that size and say nothing about the thousands-of-views case. Centrality is the term that grows fastest and is therefore the one to re-measure first when a larger schema becomes available.
 
 ## Cycles are tolerated, not endorsed
 

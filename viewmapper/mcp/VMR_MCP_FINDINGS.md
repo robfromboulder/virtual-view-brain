@@ -1,6 +1,6 @@
 # ViewMapper MCP Server: Implementation Findings
 
-> V2, 2026-08-02.
+> V3, 2026-08-10.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -16,4 +16,4 @@ The module requires a Python version well ahead of what most environments defaul
 
 ## Startup cost was measured, not estimated
 
-Launching the analysis subprocess costs several seconds before any work begins, which is a meaningful share of a fast question and a rounding error on a slow one. That measurement is what makes the fresh-process-per-question choice defensible rather than merely convenient, and it is the number to re-take before anyone argues for keeping a process warm.
+Launching the analysis subprocess costs three to five seconds before any work begins. Measured end to end, a simple question returns in five to ten seconds and a complex one on the largest available dataset in twenty to forty, so that startup is a large share of a fast answer and a rounding error on a slow one. Those figures are what make the fresh-process-per-question choice defensible rather than merely convenient, and they are the numbers to re-take before anyone argues for keeping a process warm.

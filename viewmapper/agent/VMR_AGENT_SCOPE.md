@@ -1,6 +1,6 @@
 # ViewMapper Agent: Scoping Statement
 
-> V5, 2026-08-02.
+> V6, 2026-08-10.
 
 This document defines the problem that the agent addresses, separately from design decisions and implementation details, as an objective and unbiased resource. It states the analytical half of the problem ViewMapper's scoping statement defines.
 
@@ -74,3 +74,4 @@ The person asking usually cannot name a catalog or schema when they start, so an
 - Whether betweenness centrality is the right notion of "worth starting from" for view hierarchies specifically, or a reasonable default borrowed from general graph analysis.
 - Whether cycles should be reported as findings rather than merely tolerated, given that they usually indicate a design problem in the hierarchy.
 - Whether an interactive rendering — a notebook, or something else a reader can manipulate — would serve exploration better than a static picture.
+- Whether one schema is the right unit of analysis. A view may read from another catalog, and analysis scoped to a single catalog and schema shows that reference as a name with nothing behind it, on connections that reach every catalog the server exposes. Nothing establishes how often hierarchies cross that boundary, or what a reader loses when they do.
