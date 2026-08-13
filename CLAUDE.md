@@ -1,6 +1,6 @@
 # Virtual View: Mini-Brain Files
 
-> V4, 2026-08-10.
+> V5, 2026-08-10.
 
 This brain holds the un-derivable knowledge of the virtual view ecosystem: the manifesto that defines the pattern, the mapper that makes view hierarchies legible, and the store that holds views. The hub's namespace token is `VV`. Each component declares its own in the registry below.
 
@@ -57,6 +57,8 @@ A component may carry more; anything beyond these four is named in its **Also ho
 Match a question's terms against **Routes on** to choose a component *before* reading anything. A question about how components fit together, or one no component's terms claim, is hub-level — start at the hub documents. Sub-components are indented under their parent. The Agent and MCP server have no repository of their own: their cells point into the ViewMapper repo, which is where a hook merged into `../viewmapper/CLAUDE.md` covers all three ViewMapper units.
 
 `archive/` holds source material and retired docs — not in-tree version snapshots; ignore unless asked. `working/` holds experiments and in-flight work-item docs; when a work item concludes, fold them into the canonical docs and **move** (not delete) them to the owning unit's `archive/`. Every unit owns its own pair — the hub's sit at the repo root from seeding; a component creates its own when it first needs them. Seed-time source material all lands in the hub's `archive/`, whichever component it describes.
+
+**Open work items.** To list them, find `*_CLAUDE.md` files across every unit's `working/` — the blockquote header at the top of each (format defined in `VV_WORK_SETUP.md`) carries the item's one-line objective, branch join-key, and blocked-by. Report each item's owning component (resolved from which unit's `working/` it sits in, matched against the component registry). Derive status from the project repo named in the registry: does the branch exist, is there a PR, is it merged. A merged PR whose runbook is still in `working/` means closeout is pending.
 
 ---
 

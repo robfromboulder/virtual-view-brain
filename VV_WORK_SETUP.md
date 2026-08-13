@@ -1,25 +1,25 @@
 # Virtual View: Work Setup
 
-> V1, 2026-08-10.
+> V2, 2026-08-10.
 
 Procedure for scaffolding a new work item's working docs from an intake conversation. The bookend to `VV_WORK_CLOSEOUT.md`: setup creates the `working/` docs at branch start, closeout folds them into the canonical mini-brain when the work concludes. Read `CLAUDE.md` first for file conventions — they govern every file this procedure touches.
 
 Run this when starting a new work item — **code-changing work that gets its own branch and PR**: a feature, a bug fix, or a hardening effort — or when formalizing a partial one that already lives in `working/` (e.g. a PLAN+FINDINGS pair that needs the rest of its scaffolding). The output is the `working/<TOKEN>_<WORK>_*.md` documents that track a work item until it concludes. `<TOKEN>` throughout is the owning unit's namespace token — resolved from the component registry in `CLAUDE.md`. Setup is **additive and idempotent**: it creates only the docs that are missing and never overwrites existing work, so it is safe to re-run as a work item grows.
 
-The scope is deliberately narrow and practical: **assume a work item has a branch and a PR until proven otherwise.** It is often not knowable at inception whether an idea is a shallow doc/config tweak or something deeper, so default to the full scaffold rather than guessing small — an oversized scaffold is cheap, and under-scaffolding something that turns out deep is not. If the work later concludes without a code change, closeout still folds in whatever knowledge the docs hold (see `VV_WORK_CLOSEOUT.md`); the burndown does not apply. A pure question that produces no artifact worth keeping needs no work item at all: answer it, and if the answer is worth recording, add a session-log entry.
+The scope is deliberately narrow and practical: **assume a work item has a branch and a PR until proven otherwise.** It is often not knowable at inception whether an idea is a shallow doc/config tweak or something deeper, so default to the full scaffold rather than guessing small — an oversized scaffold is cheap, and under-scaffolding something that turns out deep is not. If the work later concludes without a merge, closeout still folds in whatever knowledge the docs hold (see `VV_WORK_CLOSEOUT.md`) rather than being forced through the burndown. A pure question that produces no artifact worth keeping needs no work item at all: answer it, and if the answer is worth recording, add a session-log entry.
 
 The working docs and their roles:
 
 | Doc | Role | Seeded at setup from the chat? |
 |---|---|---|
-| `<TOKEN>_<WORK>_PLAN.md` | The spec: objective, what changes, testing approach, scope boundary, open issues | Yes — written from the intake conversation |
+| `<TOKEN>_<WORK>_PLAN.md` | The spec: objective, what changes, testing approach, scope boundary, open issues. A frozen input to code generation — often archived as soon as its code is generated | Yes — written from the intake conversation |
 | `<TOKEN>_<WORK>_FINDINGS.md` | The decision record: problem, preferred approach, tradeoffs, alternatives | Yes — written from the intake conversation |
 | `<TOKEN>_<WORK>_LOG.md` | Append-only session log; one entry per implementation session | No — header only; the first session appends the first entry |
 | `<TOKEN>_<WORK>_BURNDOWN.md` | Finishing checklist: everything between working code and a merged PR | No — template checklist |
-| `<TOKEN>_<WORK>_CLAUDE.md` | Runbook for automated tests — declares the item's branch (the session-routing join key), defers to the platform runbook, then adds work-specific steps | No — template with a placeholder step |
+| `<TOKEN>_<WORK>_CLAUDE.md` | Carries the work-item **header** (objective · branch join-key · blocked-by) and the runbook for automated tests; defers to the platform runbook, then adds work-specific steps | Header yes (from the chat); test steps left as scaffold |
 | `<TOKEN>_<WORK>_TESTING.md` | Manual test plan: steps to verify the work item by hand; folds into the canonical testing doc at closeout | No — template scaffold |
 
-PLAN and BURNDOWN are two halves of the same work: the plan gets the code written, the burndown gets it merged.
+The work item's **header** rides the top of the `<TOKEN>_<WORK>_CLAUDE.md` runbook — the blockquote right after its H1 — not the PLAN. The PLAN is a frozen input to code generation, often archived as soon as its code ships (code drift never flows back into the plan), whereas the runbook persists for the item's whole open life. The header's first line is the one-sentence objective; after a blank `>` line, the metadata line carries **Branch** (the work branch, which doubles as the item's join key into the project repo — name the intended branch even before it exists) and **Blocked-by** (the `<WORK>` slug of a work item this one waits on, or `—`). **There is no Status field** — status is derived live from the project repo's branch/PR state at listing time, never stored or hand-maintained. When the item concludes, its working docs move to `archive/` and it drops out of the open set.
 
 These are **working files**, so per `CLAUDE.md` they are *not* versioned (no `> V<N>` header), are *not* added to the read index, and are not read in future sessions unless explicitly asked.
 
@@ -162,23 +162,22 @@ The first entry, and every one after it, follows the entry format and content ru
 
 Everything between working code and a merged PR.
 
-## Routine
-
-* create branch `<work-branch>` off the default branch
-* commit changes on branch
-* create draft PR
-* review code changes
-* full rebuild and automated retest on PR code
-* review PR description against final code one last time
-* request feedback from reviewers
-* respond to review feedback
-* automated checks — see `<TOKEN>_<WORK>_CLAUDE.md`
-* manual checks — capture steps in `<TOKEN>_<WORK>_TESTING.md`
-* closeout notes — <deviations from the standard flow, and any canonical claim this work item reverses — see `VV_WORK_CLOSEOUT.md`>
-
-## Custom
-
-* <this item's own: docs, screenshots, ports, backports, follow-on items discovered during implementation>
+* PR wrangling
+  * create branch `<work-branch>` off the default branch
+  * commit changes on branch
+  * create draft PR
+  * review code changes
+  * full rebuild and automated retest on PR code
+  * review PR description against final code one last time
+  * request feedback from reviewers
+  * respond to review feedback
+* testing
+  * automated checks — see `<TOKEN>_<WORK>_CLAUDE.md`
+  * manual checks — capture steps in `<TOKEN>_<WORK>_TESTING.md`
+* docs
+  * take screenshots
+* mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
+* <this item's own: ports, backports, follow-on items discovered during implementation>
 ````
 
 ### CLAUDE (runbook) template
@@ -186,7 +185,9 @@ Everything between working code and a merged PR.
 ````markdown
 # <Work-Item Name>: Claude Runbook
 
-Instructions for branch: `<work-branch>`
+> <one-line objective — what this work item delivers, in a sentence.>
+>
+> **Branch:** `<work-branch>` · **Blocked-by:** —
 
 ## Running Tests
 

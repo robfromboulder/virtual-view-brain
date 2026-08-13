@@ -1,6 +1,6 @@
 # Virtual View: Work Closeout
 
-> V1, 2026-08-10.
+> V2, 2026-08-10.
 
 Procedure for folding a concluded work item's working docs into the canonical mini-brain. The bookend to `VV_WORK_SETUP.md`. Read `CLAUDE.md` first for file conventions — those govern every edit made during closeout.
 
@@ -30,7 +30,7 @@ One working file commonly fans out to several targets; do not assume one source 
 
 Walk that table against the **owning unit's** canonical docs, then place each piece of knowledge by its reach rather than by the work item's ownership. A finding about only the owning unit stays there. A finding that describes how two units relate belongs to their nearest common ancestor — the owner may not hold knowledge about a sibling, so an item owned by a child can and does push content up to its parent, and an item owned by a parent pushes a child-only finding down into that child. The work item's log entries are the exception: they are lineage, not knowledge to place by reach — every merged entry goes to the owning unit's canonical log, one destination for the whole item, matching where the item retires.
 
-The mirror of this: whoever writes a work item's own closeout notes (in its `<TOKEN>_<WORK>_BURNDOWN.md`) should *not* pre-enumerate this table — which files a work item touches is derived here, at closeout time. A work item's closeout notes record only what this walk won't surface: deviations from the standard flow, and non-derivable callouts — most importantly the specific existing claim a work item **reverses**.
+The mirror of this: whoever writes a work item's own closeout notes (at the **mini-brain closeout** item in its `<TOKEN>_<WORK>_BURNDOWN.md`) should *not* pre-enumerate this table — which files a work item touches is derived here, at closeout time. A work item's closeout notes record only what this walk won't surface: deviations from the standard flow, and non-derivable callouts — most importantly the specific existing claim a work item **reverses**.
 
 ---
 
