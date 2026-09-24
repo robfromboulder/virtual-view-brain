@@ -1,6 +1,6 @@
 # Virtual View: Scoping Statement
 
-> V5, 2026-08-02.
+> V6, 2026-09-23.
 
 This document defines the problem that the virtual view ecosystem addresses, separately from design decisions and implementation details, as an objective and unbiased resource.
 
@@ -21,18 +21,6 @@ Three obstacles therefore stand between a team and the pattern, and clearing one
 Trino supports the mechanics. `CREATE OR REPLACE VIEW` is what makes a layer swappable at runtime, and it works. What it does not do is check the replacement: Trino validates no column types when a view is replaced and offers no locking, so a definition can change under a hierarchy and the resulting breakage surfaces later, at query time. Queries already running keep the definition they were planned against.
 
 That behavior is a platform property rather than a standardized one. ANSI/ISO SQL assumes a view definition is frozen at creation and changed only during downtime, so the runtime replacement this pattern depends on varies between engines and is guaranteed by none of them.
-
-### What the literature provides
-
-Standard guidance treats views as decoration — hiding joins, computing columns, restricting access — and stops there. The architectural use has no canonical description, no named conventions, and no accounting of its failure modes. A practitioner evaluating it is comparing an undocumented pattern against ORMs, microservices and data access layers, all of which are thoroughly written up.
-
-### What a built hierarchy exposes
-
-Nothing that shows its shape. Dependencies exist only as table references inside SQL text; `SHOW CREATE VIEW` returns one definition at a time; and ERD tools trace foreign keys, which view-to-view dependencies do not have. Recovering the graph means reading every definition in the schema and reconstructing the edges by hand.
-
-### Where definitions can live
-
-Every view definition must be persisted by some connector, and the connectors that can hold them bring infrastructure with them: a Hive-compatible metastore, or object storage plus a table format. That is a deployment to secure, back up and upgrade in exchange for storing a modest amount of SQL text. The cost is most conspicuous exactly where the pattern is most useful — a view over static values has no data source to sit beside, and a team prototyping has not yet chosen a database at all.
 
 ### Evidence that the problem is real
 

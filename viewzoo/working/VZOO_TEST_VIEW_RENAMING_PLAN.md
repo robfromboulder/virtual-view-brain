@@ -8,7 +8,7 @@ Add `ALTER VIEW ... RENAME TO` test cases to ViewZoo's test suite, covering the 
 
 See `VZOO_TEST_VIEW_RENAMING_FINDINGS.md` in this directory for the decision record and alternatives considered.
 
-Key references in the owning unit:
+Key references in the owning lobe:
 - `VZOO_SCOPE.md` — problem space this fits into
 - `VZOO_FINDINGS.md` — relevant prior decisions
 - `VZOO_APPROACH.md` — design constraints

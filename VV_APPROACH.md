@@ -1,6 +1,6 @@
 # Virtual View: Technical Approach
 
-> V3, 2026-08-02.
+> V4, 2026-09-23.
 
 This document describes the proposed approach for addressing the problems defined in `VV_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -32,7 +32,7 @@ ViewMapper's examples use `viewzoo.*` schemas. That is convenient sample data, n
 
 **No coupling between the tools.** ViewMapper could read stored definitions directly from whatever holds them, and instead goes through Trino's metadata. Universality is worth more than the shortcut: a mapper that understood ViewZoo's storage would be a mapper that only works on hierarchies ViewZoo stores, which contradicts adopting either tool alone.
 
-**Different release strategies for the two code projects, deliberately.** ViewZoo compiles against the Trino SPI, which breaks between Trino versions, so it takes the Trino version as its own version number and keeps a branch per supported version — v470 through v479 today. ViewMapper connects over JDBC and carries no such constraint, so it moves `main` forward and tags releases with the Trino version plus a letter, as in `479a`. The projects are on the same Trino version today; nothing in the design requires them to stay in step, and work targeting either one names the Trino version it assumes.
+**Different release strategies for the two code projects, deliberately.** ViewZoo compiles against the Trino SPI, which breaks between Trino versions, so it takes the Trino version as its own version number and keeps a branch per supported version. ViewMapper connects over JDBC and carries no such constraint, so it moves `main` forward and tags releases with the Trino version plus a letter, as in `479a`. The projects are on the same Trino version today; nothing in the design requires them to stay in step, and work targeting either one names the Trino version it assumes.
 
 ---
 

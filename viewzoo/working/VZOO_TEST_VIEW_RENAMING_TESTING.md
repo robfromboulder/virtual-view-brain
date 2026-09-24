@@ -1,6 +1,6 @@
 # Test View Renaming: Manual Test Plan
 
-Checks run by hand for this work item (UI, API calls, data checks). At closeout these fold into the canonical testing doc.
+Checks run by hand for this work item (UI, API calls, data checks). At closeout these fold into the ViewZoo repo's `CLAUDE.md`.
 
 ## Setup
 

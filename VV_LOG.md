@@ -62,3 +62,38 @@ Rob's session, with Claude as co-author. Added `VV_WORK_SETUP.md` and `VV_WORK_C
 ## Decisions
 
 - **One procedure set at the hub, not per-leaf** — the toolkit is explicit that maintenance documents serve the whole brain; per-component copies would duplicate the placement logic and need syncing (Rob confirmed Claude's reading of the toolkit).
+
+---
+
+# Brain checked against the toolkit, and every finding worked through (2026-09-23)
+
+**Session ID**: `2194a995-5785-4dd5-937b-e439c296639b`
+
+Rob's session, with Claude as co-author. It ran the mini-brain toolkit's brain check (`MBT_CHECK_BRAIN.md`) against this brain, then walked through each recommendation in turn. The brain came out healthy — structure clean, scopes describing the world rather than project status, and nearly every falsifiable claim holding against the code — and the session fixed what the check did find: a mistaken work item deleted, the retired bootstrap plan's loose ends settled, two parent scopes trimmed back to naming their children, the brain's vocabulary moved to lobe and lobespace, the entrypoint tidied, and two small factual and pruning fixes.
+
+## Turn-by-turn
+
+- Claude read the check procedure with the toolkit's pattern and multi-lobe references, then the whole brain directly — small enough that delegating the reads would have cost more than it saved — and checked claims against the three project repos and their GitHub issues. The claims held: the manifesto's ten section files, the agent's six tools, the MCP server's sixty-second deadline and three-turn history, ViewZoo's `READ_COMMITTED` declaration and synchronized metadata, the licensing split, the Starburst disclaimer in every repo, neither tool linking back to the manifesto, `479a`-style release tags, and nothing exercising `exclude_columns`. The one drift was the hub approach describing ViewZoo's branches as a continuous v470–v479 range, when v471–v474 do not exist.
+- The check's sharpest finding was `VMR_TRINO_479`, which planned to branch ViewMapper per Trino version and share a branching schedule with ViewZoo — the reverse of the hub approach's deliberate release-strategy split, for an upgrade already on ViewMapper's `main` and tagged `v479a`, and without naming the decision it would reverse. Rob identified it as a mistake: he had found it uncommitted locally and taken it for something a previous session had neglected to commit. It was deleted rather than archived, since it never started. `VZOO_TEST_VIEW_RENAMING` arrived in the same commit and was kept once it was confirmed to match an open ViewZoo issue.
+- The retired bootstrap plan still ended with the rest of its findings step, the manifesto log seeding, the fact-check and the round-trip verification outstanding, while this log recorded it as fully complete. Rob settled each one.
+- Parent overreach was the main substance issue. The hub scope's state-of-the-problem section carried three subsections restating the manifesto's, ViewMapper's and ViewZoo's scopes nearly word for word, and ViewMapper's scope explained the SQL-parsing failure modes, the structural questions and the cold-start problem that the agent's scope owns. Each passage was checked against the child before it was cut; every one was already there, usually in more detail, so nothing needed adding below.
+- The vocabulary rename replaced "unit", "component", "token" and `<TOKEN>` with lobe and lobespace across `CLAUDE.md`, `README.md` and the three procedures. A plain word swap misread two sentences where "component" had meant a child, since the hub is itself a lobe, and those were fixed by hand. Ordinary uses ("unit vs. integration", "every token is load-bearing") were kept, and earlier log entries were left as written.
+- The entrypoint tidy removed commented index rows for procedures that were already live, activated the maintenance-doc boundaries rule for the procedures that exist, corrected the version exemption to the burndown checklists the brain actually uses, and narrowed routing terms that pulled questions to the wrong lobe: bare "agent" (the manifesto discusses agent readers), "release, versioning" (the strategy is a hub decision spanning both code projects), bare "JDBC" (claimed by both the agent and ViewZoo's storage) and bare "branch" (which matched work-item branches).
+- The last fixes dropped the branch range from the hub approach, and cut ViewZoo's architecture description to how its parts compose, removing framework wiring the code already shows.
+
+## Decisions
+
+- **Delete `VMR_TRINO_479` as a mistake** — it was committed by accident, duplicated shipped work, and contradicted the hub's release strategy (Rob).
+- **Keep `VZOO_TEST_VIEW_RENAMING`** — real work matching an open issue (Rob).
+- **Seeding the manifesto log from its changelog is deferred** to a later manifesto session (Rob).
+- **The bootstrap fact-check counts as done by this check** (Rob, on Claude's recommendation).
+- **Round-trip verification is dropped** — real sessions from the hooked repos exercise routing (Rob).
+- **The eight planned work items never created open when someone picks one up**; GitHub issues and the manifesto's TODO list stay the backlog, extending the earlier defer-rather-than-pre-seed decision (Rob, on Claude's recommendation).
+- **Work items' manual test checks and runbook steps fold into the owning project repo's `CLAUDE.md` at closeout**, never into the brain — they are operational and live beside the code (Rob).
+- **The open question on whether guidance suffices where the engine will not help stays at the hub** — if it does not, the remedy may be a tool, and which project provides it is a hub decision (Rob).
+- **Drop enumerated branch ranges rather than correct them** — git shows them, and a list goes stale with every Trino release (Claude).
+
+## Lessons
+
+- A work item that arrives without its intake conversation needs checking against the canonical decisions before it is trusted. This one read as routine and contradicted the hub approach.
+- The toolkit's vocabulary rename cannot be a pure word swap in a multi-lobe brain: "component" often meant *child*, and the hub is a lobe too.

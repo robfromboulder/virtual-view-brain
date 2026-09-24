@@ -10,9 +10,9 @@ This is not a "second brain" with the goal of capturing all virtual view knowled
 
 All knowledge is stored in Markdown files. Each file captures an orthogonal dimension of knowledge: its scope, technical approach, work in progress, session history, and so on.
 
-Knowledge is divided into components, because the three projects hold three different problems. Each component has its own directory and its own namespace token, and the hub at the repo root holds what spans them:
+Knowledge is divided into lobes, because the three projects hold three different problems. Each lobe has its own directory and its own lobespace, and the hub at the repo root holds what spans them:
 
-| Component | Directory | Token |
+| Lobe | Directory | Lobespace |
 |---|---|---|
 | Hub -- the ecosystem as a whole | `.` | `VV` |
 | Manifesto | `manifesto/` | `VVM` |
@@ -21,9 +21,9 @@ Knowledge is divided into components, because the three projects hold three diff
 | -- MCP server | `viewmapper/mcp/` | `VMR_MCP` |
 | ViewZoo | `viewzoo/` | `VZOO` |
 
-CLAUDE.md provides the read index, so that Claude can discover and apply knowledge that is relevant to the active chat session. It resolves a component's files from a doctype grammar and the registry above rather than listing every file.
+CLAUDE.md provides the read index, so that Claude can discover and apply knowledge that is relevant to the active chat session. It resolves a lobe's files from a doctype grammar and the registry above rather than listing every file.
 
-Namespace tokens let you load more than one mini-brain into the same coding session without filename collisions or confusion during updates.
+Lobespaces let you load more than one mini-brain into the same coding session without filename collisions or confusion during updates.
 
 ## Usage
 
