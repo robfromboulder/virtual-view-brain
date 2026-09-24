@@ -98,7 +98,7 @@ Key references in the owning lobe:
 
 ## Testing approach
 
-<automated: unit vs. integration, new test classes anticipated, what regression suite must stay green. Manual steps live in `<TOKEN>_<WORK>_TESTING.md`.>
+<automated: unit vs. integration, new test classes anticipated, what regression suite must stay green. Manual steps live in `<LOBESPACE>_<WORK>_TESTING.md`.>
 
 ## Implementation sequence
 
