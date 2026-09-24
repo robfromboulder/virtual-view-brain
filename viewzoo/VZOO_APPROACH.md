@@ -1,6 +1,6 @@
 # ViewZoo: Technical Approach
 
-> V3, 2026-08-02.
+> V4, 2026-09-23.
 
 This document describes the proposed approach for addressing the problems defined in `VZOO_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -16,11 +16,9 @@ The two environments are served by two storage backends rather than by one compr
 
 ## 2. Architecture
 
-The plugin registers a connector factory, which builds a connector through a Guice module that reads configuration and wires the pieces as singletons. The connector supplies a metadata component, and that component is where every view operation lands: create, replace, drop, list and get.
+Every view operation Trino issues — create, replace, drop, list and get — lands in the connector's metadata layer, which serves reads from an in-memory copy of every view.
 
-Underneath it sits one storage interface with two implementations, selected at startup by a provider that reads the configured storage type. The filesystem implementation writes one JSON file per view, named for its schema and view. The JDBC implementation writes rows into a table in PostgreSQL. Nothing above the interface knows which is in use.
-
-The metadata component holds every view in memory, loaded once at startup, and serves reads from there. Configuration is declared in typed classes using the Airlift framework, with credentials marked sensitive so they stay out of logs.
+Underneath it sits one storage interface with two implementations, selected at startup by configuration: one JSON file per view on the filesystem, or rows in a PostgreSQL table. Nothing above the interface knows which is in use.
 
 ---
 
