@@ -1,6 +1,6 @@
 # Virtual View: Work Closeout
 
-> V3, 2026-09-23.
+> V4, 2026-09-23.
 
 Procedure for folding a concluded work item's working docs into the canonical mini-brain. The bookend to `VV_WORK_SETUP.md`. Read `CLAUDE.md` first for file conventions — those govern every edit made during closeout.
 
@@ -24,7 +24,7 @@ Do not work from a hand-written task list alone — it is easy to name the obvio
 | `<LOBESPACE>_FINDINGS.md` | made a non-obvious decision worth preserving |
 | `<LOBESPACE>_SCOPE.md` | changed a factual or absence claim about the codebase (verify even if you think not) |
 | `<LOBESPACE>_APPROACH.md` | changed a design assumption or external dependency |
-| the owning project repo's `CLAUDE.md` | added a manual or automated check worth keeping — the work item's `<LOBESPACE>_<WORK>_TESTING.md` / `<LOBESPACE>_<WORK>_CLAUDE.md` fold into its test instructions, never into the brain |
+| each exercised lobe's project repo `CLAUDE.md` | added a manual or automated check worth keeping — each check in the work item's `<LOBESPACE>_<WORK>_TESTING.md` / `<LOBESPACE>_<WORK>_CLAUDE.md` folds into the test instructions of the project repo (per the lobe registry) of the lobe it exercises, never into the brain; an item spanning lobes splits its checks across their repos |
 
 One working file commonly fans out to several targets; do not assume one source maps to one target. Decide each finding's home by the **durability and reach of the decision, not the location of the code that implemented it**.
 
@@ -52,6 +52,8 @@ At closeout the reversal is backed by a shipped decision, so reconcile **authori
 
 Follow `CLAUDE.md` for every edit: classify editorial vs. substantive, bump the version header for substantive changes, and cite canonical filenames (never retired `archive/` copies) in any cross-reference. Anchor each merged finding to the **PR/commit that changed the behavior**, so its lineage points at a diff you can actually read.
 
+Commit each project repo whose `CLAUDE.md` gained checks in that repo, separately from the brain's commit, under the commit conventions in `CLAUDE.md`.
+
 ---
 
 ## 4. Retire the working files
@@ -71,4 +73,4 @@ Finish with these mechanical checks, to confirm the merge is clean:
 5. **`working/` is clean** — the merged work item's working files are gone from the owning lobe's `working/`.
 6. **No sideways references** — if a finding folded upward, confirm it landed in the ancestor and that neither sibling names the other.
 
-Report what was merged (by target file and old → new version), what was reconciled (what reversed and why), and the result of the structural check.
+Report what was merged (by target file and old → new version), which project repos were committed, what was reconciled (what reversed and why), and the result of the structural check.

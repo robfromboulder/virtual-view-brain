@@ -1,6 +1,6 @@
 # Virtual View: Work Setup
 
-> V3, 2026-09-23.
+> V4, 2026-09-23.
 
 Procedure for scaffolding a new work item's working docs from an intake conversation. The bookend to `VV_WORK_CLOSEOUT.md`: setup creates the `working/` docs at branch start, closeout folds them into the canonical mini-brain when the work concludes. Read `CLAUDE.md` first for file conventions — they govern every file this procedure touches.
 
@@ -17,7 +17,7 @@ The working docs and their roles:
 | `<LOBESPACE>_<WORK>_LOG.md` | Append-only session log; one entry per implementation session | No — header only; the first session appends the first entry |
 | `<LOBESPACE>_<WORK>_BURNDOWN.md` | Finishing checklist: everything between working code and a merged PR | No — template checklist |
 | `<LOBESPACE>_<WORK>_CLAUDE.md` | Carries the work-item **header** (objective · branch join-key · blocked-by) and the runbook for automated tests; defers to the platform runbook, then adds work-specific steps | Header yes (from the chat); test steps left as scaffold |
-| `<LOBESPACE>_<WORK>_TESTING.md` | Manual test plan: steps to verify the work item by hand; folds into the owning project repo's `CLAUDE.md` at closeout | No — template scaffold |
+| `<LOBESPACE>_<WORK>_TESTING.md` | Manual test plan: steps to verify the work item by hand; at closeout each step folds into the project repo `CLAUDE.md` of the lobe it exercises | No — template scaffold |
 
 The work item's **header** rides the top of the `<LOBESPACE>_<WORK>_CLAUDE.md` runbook — the blockquote right after its H1 — not the PLAN. The PLAN is a frozen input to code generation, often archived as soon as its code ships (code drift never flows back into the plan), whereas the runbook persists for the item's whole open life. The header's first line is the one-sentence objective; after a blank `>` line, the metadata line carries **Branch** (the work branch, which doubles as the item's join key into the project repo — name the intended branch even before it exists) and **Blocked-by** (the `<WORK>` slug of a work item this one waits on, or `—`). **There is no Status field** — status is derived live from the project repo's branch/PR state at listing time, never stored or hand-maintained. When the item concludes, its working docs move to `archive/` and it drops out of the open set.
 
@@ -207,7 +207,7 @@ Run the steps from the platform runbook first (if the brain has one), verifying 
 ````markdown
 # <Work-Item Name>: Manual Test Plan
 
-Checks run by hand for this work item (UI, API calls, data checks). At closeout these fold into the owning project repo's `CLAUDE.md`.
+Checks run by hand for this work item (UI, API calls, data checks). At closeout each check folds into the project repo `CLAUDE.md` of the lobe it exercises.
 
 ## Setup
 
