@@ -1,6 +1,6 @@
 # Virtual View: Mini-Brain Files
 
-> V6, 2026-09-23.
+> V7, 2026-09-27.
 
 This brain holds the un-derivable knowledge of the virtual view ecosystem: the manifesto that defines the pattern, the mapper that makes view hierarchies legible, and the store that holds views. The hub's lobespace is `VV`. Each lobe declares its own in the registry below.
 
@@ -17,6 +17,7 @@ All paths are relative to this repo root (`CLAUDE.md`'s directory). Before readi
 | Problem definition, the world it exists in, goals — the system as a whole | `VV_SCOPE.md` |
 | How the lobes compose, and the decisions spanning them | `VV_APPROACH.md` |
 | Findings that cross lobes (invisible from code) | `VV_FINDINGS.md` |
+| Visual design system: where it lives, the decisions behind it, how to use it | `VV_VISUAL_DESIGN.md` (read before making README images or published pages) |
 | Session log for hub work and sessions that crossed lobes | `VV_LOG.md` (read from last `---`; large) |
 | Session log update format and rules | `VV_SESSION_CLOSEOUT.md` (read when asked to update a session log) |
 | Work-item setup procedure | `VV_WORK_SETUP.md` (read when starting a new work item) |
