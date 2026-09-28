@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 404 238" width="404" height="238" role="img" aria-label="Card: The Virtual View Manifesto. Read the book: views as your application's data contract. 8 principles, CC0.">
+  <defs>
+    <pattern id="bp-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M20 0H0V20" fill="none" stroke="#f3f7fc" stroke-opacity=".045" stroke-width="1"/>
+    </pattern>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#f3f7fc" stroke-opacity=".45" stroke-width="1.2"/>
+    </pattern>
+    <filter id="wob" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/>
+    </filter>
+    <filter id="smudge"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="paper" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3"/>
+      <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0"/>
+    </filter>
+  </defs>
+  <rect x="1" y="1" width="378" height="212" rx="8" fill="#245f9f"/>
+  <rect x="1" y="1" width="378" height="212" rx="8" fill="url(#bp-grid)"/>
+  <ellipse cx="310" cy="104" rx="60" ry="44" fill="#fff" opacity=".05" filter="url(#smudge)"/>
+  <rect x="1" y="1" width="378" height="212" rx="8" fill="none" stroke="#f3f7fc" stroke-width="2"/>
+  <text x="22" y="36" font-family="Barlow Condensed" font-weight="600" font-size="11" letter-spacing="3" fill="#cddbec">READ THE BOOK</text>
+  <g filter="url(#wob)" fill="none" stroke="#f3f7fc" stroke-width="1.6" stroke-linejoin="round">
+    <rect x="262" y="118" width="94" height="24"/><rect x="274" y="96" width="70" height="22"/><rect x="286" y="78" width="46" height="18"/>
+    <path d="M262 124 c8 6 14 -2 22 4 c8 6 14 -2 22 4 c8 6 14 -2 22 4 c8 6 14 -2 28 2" stroke-width="1" stroke-opacity=".6"/>
+    <path d="M306 78 v-16 h6 v16"/>
+    <path d="M309 60 c-5 -6 -2 -12 0 -16 c2 4 5 10 0 16" stroke-width="1.2"/>
+    <path d="M254 148 h110" stroke-width="2.2"/>
+  </g>
+  <text x="22" y="96" font-family="Barlow Condensed" font-weight="700" font-size="40" letter-spacing="2" fill="#f3f7fc">MANIFESTO</text>
+  <text x="22" y="128" font-family="Patrick Hand SC" font-size="16" fill="#f3f7fc">VIEWS AS YOUR APPLICATION’S</text>
+  <text x="22" y="150" font-family="Patrick Hand SC" font-size="16" fill="#f3f7fc">DATA CONTRACT</text>
+  <line x1="1" y1="170" x2="379" y2="170" stroke="#f3f7fc"/>
+  <text x="22" y="196" font-family="Barlow Condensed" font-size="12" letter-spacing="2" fill="#cddbec">8 PRINCIPLES · CC0</text>
+  <text x="358" y="197" text-anchor="end" font-family="Caveat" font-weight="700" font-size="22" fill="#ffd447">open →</text>
+  <rect x="1" y="1" width="378" height="212" rx="8" filter="url(#paper)" opacity=".9" pointer-events="none"/>
+</svg>

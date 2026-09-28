@@ -1,40 +1,7 @@
-# virtual-view-brain 🧠
+<div align="center">
 
-This [mini-brain](https://github.com/robfromboulder/mini-brain-toolkit) allows all virtual view knowledge and history to be used from any Claude session, and provides standard workflows to maintain and improve this knowledge over time.
+<a href="#"><img src=".github/images/hero.svg" width="100%" alt="Virtual view mini-brain, a robfromboulder production: everything about virtual views that the code can't already tell you. A blueprint brain shows the lobespaces as lobes: VV at the front (the hub), VVM in the center (the manifesto), VZOO below (the zoo), and VMR at the back, divided into three sections: VMR on top, then VMR_AGENT (the mapper) and VMR_MCP (the MCP server). The checker circles the brainstem: 'driven by claude'. General notes, usage: 1, load the brain: 'claude'. 2, save updates at the end of a session: 'close out'. 3, start a work item: 'start a work item for …'. 4, list open work items: 'list open work items'. 5, fold a finished work item back in: 'close out &lt;item&gt;'. Title block: virtual-view-brain, hub + 5 lobes, sheet A-000, scale 1 : 1 lobe, rev V7, drawn R.D. · Boulder, checked by claude, 2026-09-27."></a><br>
+<a href="https://github.com/robfromboulder/virtual-view-manifesto"><img src=".github/images/card-manifesto.svg" align="top" width="33.33%" alt="Manifesto: read the book. Views as your application's data contract. 8 principles, CC0."></a><a href="https://github.com/robfromboulder/viewzoo"><img src=".github/images/card-viewzoo.svg" align="top" width="33.33%" alt="ViewZoo: store your views. Store Trino views without a Hive metastore. Trino 479, Apache 2."></a><a href="https://github.com/robfromboulder/viewmapper"><img src=".github/images/card-viewmapper.svg" align="top" width="33.33%" alt="ViewMapper: map your views. Discover and map Trino view hierarchies. Agent and MCP server, release 479a."></a><br>
+<a href="https://github.com/robfromboulder/mini-brain-toolkit"><img src=".github/images/tile-toolkit.svg" align="top" width="100%" alt="Powered by mini-brain-toolkit 🧠: capture what the code can't tell you."></a>
 
-It covers the three projects that define, implement and support the virtual view pattern on Trino: [virtual-view-manifesto](https://github.com/robfromboulder/virtual-view-manifesto), [viewmapper](https://github.com/robfromboulder/viewmapper) and [viewzoo](https://github.com/robfromboulder/viewzoo).
-
-This is not a "second brain" with the goal of capturing all virtual view knowledge -- this mini-brain only maintains information that cannot be derived from the codebases.
-
-## Knowledge files
-
-All knowledge is stored in Markdown files. Each file captures an orthogonal dimension of knowledge: its scope, technical approach, work in progress, session history, and so on.
-
-Knowledge is divided into lobes, because the three projects hold three different problems. Each lobe has its own directory and its own lobespace, and the hub at the repo root holds what spans them:
-
-| Lobe | Directory | Lobespace |
-|---|---|---|
-| Hub -- the ecosystem as a whole | `.` | `VV` |
-| Manifesto | `manifesto/` | `VVM` |
-| ViewMapper | `viewmapper/` | `VMR` |
-| -- Agent | `viewmapper/agent/` | `VMR_AGENT` |
-| -- MCP server | `viewmapper/mcp/` | `VMR_MCP` |
-| ViewZoo | `viewzoo/` | `VZOO` |
-
-CLAUDE.md provides the read index, so that Claude can discover and apply knowledge that is relevant to the active chat session. It resolves a lobe's files from a doctype grammar and the registry above rather than listing every file.
-
-Lobespaces let you load more than one mini-brain into the same coding session without filename collisions or confusion during updates.
-
-## Usage
-
-#### 1. Use virtual view knowledge from a sibling repo directory:
-
-> Read ../virtual-view-brain/CLAUDE for instructions
-
-From the ViewMapper submodules, which sit one level deeper:
-
-> Read ../../virtual-view-brain/CLAUDE for instructions
-
-#### 2. Save notes about this Claude session:
-
-> Read VV_SESSION_CLOSEOUT and append to the right log
+</div>
