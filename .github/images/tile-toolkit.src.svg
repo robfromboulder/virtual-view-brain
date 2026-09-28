@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 60" width="1200" height="60" role="img" aria-label="Powered by mini-brain-toolkit 🧠: capture what the code can't tell you">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 1212 83.4" width="1212" height="83.4" role="img" aria-label="Powered by mini-brain-toolkit 🧠: capture what the code can't tell you">
   <defs>
     <pattern id="bp-grid" width="20" height="20" patternUnits="userSpaceOnUse">
       <path d="M20 0H0V20" fill="none" stroke="#f3f7fc" stroke-opacity=".045" stroke-width="1"/>
@@ -13,6 +13,7 @@
       <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0"/>
     </filter>
   </defs>
+  <g transform="scale(0.99)">
   <rect x="1" y="1" width="1198" height="58" rx="8" fill="#245f9f"/>
   <rect x="1" y="1" width="1198" height="58" rx="8" fill="url(#bp-grid)"/>
   <ellipse cx="365" cy="30" rx="70" ry="22" fill="#fff" opacity=".05" filter="url(#smudge)"/>
@@ -143,4 +144,5 @@
   <text x="412" y="38" font-family="Patrick Hand SC" font-size="18" fill="#cddbec">CAPTURE WHAT THE CODE CAN’T TELL YOU</text>
   <text x="1172" y="40" text-anchor="end" font-family="Caveat" font-weight="700" font-size="24" fill="#ffd447">open →</text>
   <rect x="1" y="1" width="1198" height="58" rx="8" filter="url(#paper)" opacity=".9" pointer-events="none"/>
+  </g>
 </svg>
