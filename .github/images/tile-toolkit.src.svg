@@ -13,7 +13,7 @@
       <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0"/>
     </filter>
   </defs>
-  <rect x="1" y="1" width="1186" height="58" rx="8" fill="#245f9f"/>
+  <rect x="1" y="1" width="1186" height="58" rx="8" fill="#173f73"/>
   <rect x="1" y="1" width="1186" height="58" rx="8" fill="url(#bp-grid)"/>
   <ellipse cx="365" cy="30" rx="70" ry="22" fill="#fff" opacity=".05" filter="url(#smudge)"/>
   <rect x="1" y="1" width="1186" height="58" rx="8" fill="none" stroke="#f3f7fc" stroke-width="2"/>
@@ -140,7 +140,7 @@
 	c1.94,1.28,3.12,3.14,3.51,5.54c0.44,2.76-0.16,5.58-1.32,8.09c-0.58,1.26-1.29,2.48-2.12,3.6c-0.71,0.97-1.72,1.62-2.18,2.78
 	c-0.05,0.13-0.1,0.27-0.06,0.4C52.29,44.82,52.6,44.89,52.86,44.9z"/></svg>
   <text x="394" y="38" font-family="Barlow Condensed" font-weight="700" font-size="18" fill="#cddbec">·</text>
-  <text x="412" y="38" font-family="Patrick Hand SC" font-size="18" fill="#cddbec">CAPTURE WHAT THE CODE CAN’T TELL YOU</text>
+  <text x="412" y="37" font-family="Barlow Condensed" font-weight="600" font-size="13" letter-spacing="3" fill="#cddbec">CAPTURE WHAT THE CODE CAN’T TELL YOU</text>
   <text x="1160" y="40" text-anchor="end" font-family="Caveat" font-weight="700" font-size="24" fill="#ffd447">open →</text>
   <rect x="1" y="1" width="1186" height="58" rx="8" filter="url(#paper)" opacity=".9" pointer-events="none"/>
 </svg>

@@ -38,41 +38,43 @@
 
   <!-- left column -->
   <g transform="translate(0 40)">
-  <text x="56" y="72" font-family="Barlow Condensed" font-weight="600" font-size="15" letter-spacing="4" fill="#cddbec">A ROBFROMBOULDER PRODUCTION</text>
+  <text x="56" y="72" font-family="Barlow Condensed" font-weight="600" font-size="15" letter-spacing="4" fill="#cddbec">A ROBFROMBOULDER PROJECT</text>
   <text x="54" y="148" font-family="Barlow Condensed" font-weight="700" font-size="70" letter-spacing="3" fill="#f3f7fc">VIRTUAL VIEW</text>
   <text x="54" y="214" font-family="Barlow Condensed" font-weight="700" font-size="70" letter-spacing="3" fill="#f3f7fc">MINI-BRAIN</text>
-  <text x="56" y="288" font-family="Patrick Hand SC" font-size="20.5" fill="#f3f7fc">EVERYTHING ABOUT VIRTUAL VIEWS</text>
-  <text x="56" y="316" font-family="Patrick Hand SC" font-size="20.5" fill="#f3f7fc">THAT THE CODE CAN’T ALREADY TELL YOU.</text>
+  <text x="56" y="288" font-family="Patrick Hand SC" font-size="24" fill="#f3f7fc">EVERYTHING ABOUT VIRTUAL VIEWS</text>
+  <text x="56" y="322" font-family="Patrick Hand SC" font-size="24" fill="#f3f7fc">THAT THE CODE CAN’T ALREADY TELL YOU</text>
   </g>
 
   <g transform="translate(0 -28)">
   <!-- usage notes -->
   <g font-family="Barlow Condensed" font-weight="600" font-size="15" letter-spacing="4" fill="#cddbec">
-    <text x="56" y="460">GENERAL NOTES · USAGE</text>
+    <text x="56" y="460">GENERAL USAGE · RUN CLAUDE FIRST</text>
   </g>
   <g stroke="#f3f7fc" stroke-width="1" fill="none">
-    <line x1="56" y1="480" x2="690" y2="480" marker-start="url(#tick)" marker-end="url(#tick)"/>
-    <line x1="56" y1="472" x2="56" y2="488"/><line x1="690" y1="472" x2="690" y2="488"/>
+    <line x1="56" y1="480" x2="700" y2="480" marker-start="url(#tick)" marker-end="url(#tick)"/>
+    <line x1="56" y1="472" x2="56" y2="488"/><line x1="700" y1="472" x2="700" y2="488"/>
   </g>
   <g filter="url(#wob)" fill="none" stroke="#f3f7fc" stroke-width="1.4">
-    <circle cx="68" cy="510" r="12"/><circle cx="68" cy="574" r="12"/><circle cx="68" cy="638" r="12"/><circle cx="432" cy="510" r="12"/><circle cx="432" cy="574" r="12"/>
+    <circle cx="68" cy="510" r="12"/><circle cx="68" cy="574" r="12"/><circle cx="68" cy="638" r="12"/><circle cx="432" cy="510" r="12"/><circle cx="432" cy="574" r="12"/><circle cx="432" cy="638" r="12"/>
   </g>
   <g font-family="Barlow Condensed" font-weight="700" font-size="15" fill="#f3f7fc" text-anchor="middle">
-    <text x="68" y="515">1</text><text x="68" y="579">2</text><text x="68" y="643">3</text><text x="432" y="515">4</text><text x="432" y="579">5</text>
+    <text x="68" y="515">1</text><text x="68" y="579">2</text><text x="68" y="643">3</text><text x="432" y="515">4</text><text x="432" y="579">5</text><text x="432" y="643">6</text>
   </g>
   <g font-family="Patrick Hand SC" font-size="17" fill="#cddbec">
-    <text x="92" y="516">LOAD THE BRAIN</text>
-    <text x="92" y="580">SAVE UPDATES AT THE END OF A SESSION</text>
-    <text x="92" y="644">START A WORK ITEM</text>
-    <text x="456" y="516">LIST OPEN WORK ITEMS</text>
-    <text x="456" y="580">FOLD A FINISHED WORK ITEM BACK IN</text>
+    <text x="92" y="516">BRING YOUR QUESTIONS</text>
+    <text x="92" y="580">DO PLANNING OR MAINTENANCE</text>
+    <text x="92" y="644">SAVE WHAT WE LEARNED TO THE BRAIN</text>
+    <text x="456" y="516">SET UP DOCS FOR A NEW IDEA</text>
+    <text x="456" y="580">SHOW EACH IDEA’S CURRENT STATUS</text>
+    <text x="456" y="644">MERGE FINISHED IDEA TO THE BRAIN</text>
   </g>
   <g font-family="IBM Plex Mono" font-size="14" fill="#f3f7fc">
-    <text x="92" y="539">claude</text>
-    <text x="92" y="603">close out</text>
-    <text x="92" y="667">start a work item for …</text>
-    <text x="456" y="539">list open work items</text>
-    <text x="456" y="603">close out &lt;item&gt;</text>
+    <text x="92" y="539">“tell me how this works”</text>
+    <text x="92" y="603">“what should we do next?”</text>
+    <text x="92" y="667">“close out this session”</text>
+    <text x="456" y="539">“start a work item”</text>
+    <text x="456" y="603">“list work items”</text>
+    <text x="456" y="667">“close out this work item”</text>
   </g>
   </g>
 
@@ -129,23 +131,21 @@
   </g>
   <!-- checker -->
   <path d="M946 464 C932 472 918 464 910 450" fill="none" stroke="#ffd447" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-y)"/>
-  <text x="952" y="472" font-family="Caveat" font-weight="700" font-size="26" fill="#ffd447" stroke="#245f9f" stroke-width="6.5" stroke-linejoin="round" paint-order="stroke" transform="rotate(-5 952 472)">driven by claude</text>
+  <text x="952" y="472" font-family="Caveat" font-weight="700" font-size="26" fill="#ffd447" stroke="#245f9f" stroke-width="6.5" stroke-linejoin="round" paint-order="stroke" transform="rotate(-5 952 472)">agent instructions</text>
+  <text x="952" y="500" font-family="Caveat" font-weight="700" font-size="26" fill="#ffd447" stroke="#245f9f" stroke-width="6.5" stroke-linejoin="round" paint-order="stroke" transform="rotate(-5 952 472)">for knowledge</text>
 
-  <g transform="translate(0 200)">
+  <g transform="translate(1176 696) scale(1.25) translate(-1168 -496)">
   <!-- title block -->
   <g font-family="Barlow Condensed" fill="#f3f7fc">
     <rect x="828" y="410" width="340" height="86" fill="#1f5590" stroke="#f3f7fc" stroke-width="2"/>
     <line x1="828" y1="440" x2="1168" y2="440" stroke="#f3f7fc"/>
     <line x1="828" y1="468" x2="1168" y2="468" stroke="#f3f7fc" stroke-width=".8"/>
-    <line x1="940" y1="440" x2="940" y2="496" stroke="#f3f7fc" stroke-width=".8"/><line x1="1060" y1="440" x2="1060" y2="496" stroke="#f3f7fc" stroke-width=".8"/>
+    <line x1="924" y1="440" x2="924" y2="496" stroke="#f3f7fc" stroke-width=".8"/><line x1="1060" y1="440" x2="1060" y2="496" stroke="#f3f7fc" stroke-width=".8"/>
     <text x="840" y="432" font-weight="700" font-size="19" letter-spacing="3">VIRTUAL-VIEW-BRAIN</text>
-    <text x="1156" y="432" text-anchor="end" font-size="11" letter-spacing="2" fill="#cddbec">HUB + 5 LOBES</text>
-    <g font-size="10" letter-spacing="1.5" fill="#cddbec"><text x="836" y="452">SHEET</text><text x="948" y="452">SCALE</text><text x="1068" y="452">REV</text><text x="836" y="480">DRAWN</text><text x="948" y="480">CHECKED</text><text x="1068" y="480">DATE</text></g>
-    <g font-size="14" font-weight="600" letter-spacing="1"><text x="836" y="465">A-000</text><text x="948" y="465">1 : 1 LOBE</text><text x="1090" y="465">V7</text><text x="836" y="492">R.D. · BOULDER</text><text x="1068" y="492">2026-09-27</text></g>
-    <path d="M1070 465 l8 -12 l8 12 z" fill="none" stroke="#f3f7fc" stroke-width="1.2"/>
+    <g font-size="10" letter-spacing="1.5" fill="#cddbec"><text x="836" y="452">REVISION</text><text x="932" y="452">SCALE</text><text x="1068" y="452">LICENSE</text><text x="836" y="480">DATE</text><text x="932" y="480">ARCHITECT</text><text x="1068" y="480">TESTED WITH</text></g>
+    <g font-size="14" font-weight="600" letter-spacing="1"><text x="858" y="465">V7</text><text x="932" y="465">5 LOBES</text><text x="1068" y="465">APACHE 2</text><text x="836" y="492">2026-09-27</text><text x="932" y="492">ROBFROMBOULDER</text><text x="1068" y="492">CLAUDE</text></g>
+    <path d="M838 465 l8 -12 l8 12 z" fill="none" stroke="#f3f7fc" stroke-width="1.2"/>
   </g>
-  <path d="M950 486 l5 6 l10 -14" fill="none" stroke="#ffd447" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="970" y="494" font-family="Caveat" font-weight="700" font-size="21" fill="#ffd447">claude</text>
   </g>
   <rect width="1200" height="720" rx="10" filter="url(#paper)" opacity=".9" pointer-events="none"/>
 </svg>

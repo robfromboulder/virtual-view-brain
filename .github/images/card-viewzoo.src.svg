@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 404 238" width="404" height="238" role="img" aria-label="Card: ViewZoo. Store your views: a Trino connector that stores views without a Hive metastore. Trino 479, Apache 2.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 404 238" width="404" height="238" role="img" aria-label="Card: ViewZoo. Store your views: a Trino connector that stores virtual views without Hive or object store. For Trino, Apache 2.">
   <defs>
     <pattern id="bp-grid" width="20" height="20" patternUnits="userSpaceOnUse">
       <path d="M20 0H0V20" fill="none" stroke="#f3f7fc" stroke-opacity=".045" stroke-width="1"/>
@@ -21,17 +21,42 @@
   <ellipse cx="310" cy="104" rx="60" ry="44" fill="#fff" opacity=".05" filter="url(#smudge)"/>
   <rect x="1" y="1" width="378" height="212" rx="8" fill="none" stroke="#f3f7fc" stroke-width="2"/>
   <text x="22" y="36" font-family="Barlow Condensed" font-weight="600" font-size="11" letter-spacing="3" fill="#cddbec">STORE YOUR VIEWS</text>
+  <g transform="translate(-7 0)">
   <g filter="url(#wob)" fill="none" stroke="#f3f7fc" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round">
-    <path d="M256 104 V62 H300 V104 H286 M270 104 H256"/>
-    <path d="M314 104 V62 H358 V104 H344 M328 104 H314"/>
-    <rect x="268" y="120" width="78" height="28" stroke-width="1.2" stroke-dasharray="6 4"/>
-    <path d="M278 112 H336" stroke-width="1" stroke-dasharray="14 4 3 4" stroke-opacity=".7"/>
+    <rect x="256" y="54" width="58" height="50" rx="10" stroke-width="1.8" stroke-dasharray="9 4"/>
+    <rect x="320" y="54" width="52" height="50" rx="10" stroke-width="1.8" stroke-dasharray="9 4"/>
+  </g>
+  <path d="M256 108 v18 M314 108 v18 M256 120 H314  M260.4 122.3 L256.0 120.0 M260.4 117.7 L256.0 120.0 M309.6 117.7 L314.0 120.0 M309.6 122.3 L314.0 120.0 M252 54 h-14 M252 104 h-14 M244 54 V104  M241.7 58.4 L244.0 54.0 M246.3 58.4 L244.0 54.0 M246.3 99.6 L244.0 104.0 M241.7 99.6 L244.0 104.0" fill="none" stroke="#f3f7fc" stroke-opacity=".7" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#245f9f" stroke="#f3f7fc" stroke-linejoin="round" stroke-linecap="round">
+    <g transform="translate(273 98) scale(1.65)" stroke-width="0.79">
+      <path d="M-4.5 0 C-6 -5 -4.5 -13 0 -13 C4.5 -13 6 -5 4.5 0 Z"/>
+      <path d="M-2.6 -1 C-3.2 -5 -2.2 -8 0 -8 C2.2 -8 3.2 -5 2.6 -1" fill="none" stroke-opacity=".6"/>
+      <path d="M-5 -8 L-7.5 -3 M5 -8 L7.5 -3 M-2 0 h-3 M2 0 h3 M-1.6 -10 L0 -8.4 L1.6 -10" fill="none"/>
+      <circle cx="-1.6" cy="-11" r=".7" fill="#f3f7fc" stroke="none"/><circle cx="1.6" cy="-11" r=".7" fill="#f3f7fc" stroke="none"/>
+    </g>
+    <g transform="translate(297 98) scale(1.65)" stroke-width="0.79">
+      <path d="M-4.5 0 C-6 -5 -4.5 -13 0 -13 C4.5 -13 6 -5 4.5 0 Z"/>
+      <path d="M-2.6 -1 C-3.2 -5 -2.2 -8 0 -8 C2.2 -8 3.2 -5 2.6 -1" fill="none" stroke-opacity=".6"/>
+      <path d="M-5 -8 L-7.5 -3 M5 -8 L7.5 -3 M-2 0 h-3 M2 0 h3 M-1.6 -10 L0 -8.4 L1.6 -10" fill="none"/>
+      <circle cx="-1.6" cy="-11" r=".7" fill="#f3f7fc" stroke="none"/><circle cx="1.6" cy="-11" r=".7" fill="#f3f7fc" stroke="none"/>
+    </g>
+    <g transform="translate(347 98) scale(1.2)" stroke-width="1.08">
+      <rect x="-5" y="-6" width="3" height="6"/><rect x="-1" y="-6" width="3" height="6"/><rect x="5" y="-6" width="3" height="6"/><rect x="9" y="-6" width="3" height="6"/>
+      <ellipse cx="2" cy="-8" rx="9.5" ry="6"/>
+      <circle cx="-8" cy="-10" r="5"/>
+      <path d="M-12.5 -8 C-16 -4 -15 0 -11.5 0 L-10 -1.5 C-12 -3 -11.5 -5 -9 -6.5 Z"/>
+      <ellipse cx="-5" cy="-9.5" rx="3" ry="4"/>
+      <path d="M12 -10 C15 -9 15 -5 14 -3" fill="none"/>
+      <circle cx="-10.5" cy="-11.5" r=".7" fill="#f3f7fc" stroke="none"/>
+    </g>
+  </g>
+  <path d="M318 152 C340 155 356 140 347 110 M345.6 116.9 L347.0 110.0 M351.9 115.0 L347.0 110.0" fill="none" stroke="#ffd447" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
   <text x="22" y="96" font-family="Barlow Condensed" font-weight="700" font-size="40" letter-spacing="2" fill="#f3f7fc">VIEWZOO</text>
-  <text x="22" y="128" font-family="Patrick Hand SC" font-size="16" fill="#f3f7fc">STORE TRINO VIEWS WITHOUT</text>
-  <text x="22" y="150" font-family="Patrick Hand SC" font-size="16" fill="#f3f7fc">A HIVE METASTORE</text>
+  <text x="22" y="128" font-family="Patrick Hand SC" font-size="16" fill="#f3f7fc">STORE VIRTUAL VIEWS WITHOUT</text>
+  <text x="21.5" y="150" font-family="Patrick Hand SC" font-size="16" fill="#f3f7fc">HIVE OR OBJECT STORE</text>
   <line x1="1" y1="170" x2="379" y2="170" stroke="#f3f7fc"/>
-  <text x="22" y="196" font-family="Barlow Condensed" font-size="12" letter-spacing="2" fill="#cddbec">TRINO 479 · APACHE 2</text>
+  <text x="22" y="196" font-family="Barlow Condensed" font-size="12" letter-spacing="2" fill="#cddbec">FOR TRINO · APACHE 2</text>
   <text x="358" y="197" text-anchor="end" font-family="Caveat" font-weight="700" font-size="22" fill="#ffd447">open →</text>
   <rect x="1" y="1" width="378" height="212" rx="8" filter="url(#paper)" opacity=".9" pointer-events="none"/>
 </svg>
