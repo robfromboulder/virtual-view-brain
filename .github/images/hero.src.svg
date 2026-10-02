@@ -86,7 +86,7 @@
     <path d="M612 247 C588 212 594 158 633 128 C664 92 722 80 772 83 C812 63 882 72 918 93 C962 106 996 142 1003 188" stroke-width="0.77" stroke-opacity=".4" transform="translate(3 -2)"/>
     <path d="M906 298 C930 302 962 300 976 285 C990 310 962 340 925 336 C896 334 880 318 886 300" stroke-width="1.69"/>
     <path d="M898 312 C918 318 942 318 962 310 M902 324 C922 330 944 328 958 322" stroke-width="0.77" stroke-opacity=".6"/>
-    <path d="M858 294 C862 322 866 346 870 374 M896 302 C893 326 894 350 900 374" stroke-width="1.69"/>
+    <path d="M858 294 C862 322 866 346 870 374 M894 326 C894 342 896 360 900 374" stroke-width="1.69"/>
     <path d="M870 374 C880 378 890 378 900 374" stroke-width="1.08"/>
     <path d="M660 270 C720 238 800 226 938 232" stroke-width="1.54"/>
     <path d="M780 82 C768 122 796 160 782 230" stroke-width="1.54"/>
@@ -114,7 +114,7 @@
     <text x="790" y="292">THE ZOO</text>
   </g>
   <!-- checker circle -->
-  <ellipse cx="880" cy="340" rx="34" ry="46" fill="none" stroke="#ffd447" stroke-width="1.7" transform="rotate(-8 880 340)"/>
+  <ellipse cx="924" cy="336" rx="74" ry="56" fill="none" stroke="#ffd447" stroke-width="1.7" transform="rotate(-8 924 336)"/>
   </g>
   <!-- leaders -->
   <g stroke="#f3f7fc" stroke-width="1" fill="none">
@@ -130,9 +130,9 @@
     <text x="1068" y="314">THE MCP SERVER</text>
   </g>
   <!-- checker -->
-  <path d="M946 464 C932 472 918 464 910 450" fill="none" stroke="#ffd447" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-y)"/>
-  <text x="952" y="472" font-family="Caveat" font-weight="700" font-size="26" fill="#ffd447" stroke="#245f9f" stroke-width="6.5" stroke-linejoin="round" paint-order="stroke" transform="rotate(-5 952 472)">agent instructions</text>
-  <text x="952" y="500" font-family="Caveat" font-weight="700" font-size="26" fill="#ffd447" stroke="#245f9f" stroke-width="6.5" stroke-linejoin="round" paint-order="stroke" transform="rotate(-5 952 472)">for knowledge</text>
+  <path d="M942 496 C922 502 912 498 912 484 V438" fill="none" stroke="#ffd447" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-y)"/>
+  <text x="952" y="502" font-family="Caveat" font-weight="700" font-size="26" fill="#ffd447" stroke="#245f9f" stroke-width="6.5" stroke-linejoin="round" paint-order="stroke" transform="rotate(-5 952 502)">agentic instructions</text>
+  <text x="952" y="530" font-family="Caveat" font-weight="700" font-size="26" fill="#ffd447" stroke="#245f9f" stroke-width="6.5" stroke-linejoin="round" paint-order="stroke" transform="rotate(-5 952 502)">for knowledge</text>
 
   <g transform="translate(1176 696) scale(1.25) translate(-1168 -496)">
   <!-- title block -->
