@@ -97,3 +97,65 @@ Rob's session, with Claude as co-author. It ran the mini-brain toolkit's brain c
 
 - A work item that arrives without its intake conversation needs checking against the canonical decisions before it is trusted. This one read as routine and contradicted the hub approach.
 - The toolkit's vocabulary rename cannot be a pure word swap in a multi-lobe brain: "component" often meant *child*, and the hub is a lobe too.
+
+---
+
+# Manifesto comic shipped, and only the opening sheet is drawn (2026-10-12)
+
+**Session ID**: `409efda1-fdc5-4f1a-9935-363ff19c2e3b`
+
+Rob's session, with Claude as co-author. It set out to turn the multi-panel comic prototype into the real opening of the manifesto README, with a list of changes from Rob, and left the prototype untouched. After many rounds of review, the comic shipped with badges in manifesto v0.70, tagged and pushed. Along the way Rob decided that the opening sheet is the only drawn part of any README, and the visual design doc and the design system were brought into line with that.
+
+## Turn-by-turn
+
+- Claude read the visual design doc, the design system's README and the prototype, then built `m000-manifesto.src.svg` from the prototype's splash and phasing row. Rob's first list of changes:
+  - Drop the sheet-code line and the section line.
+  - Reword the subheadline to "use them as data contracts for apps and agents".
+  - Replace the principles, use cases and pitfalls counts and the CC0 note with the eight principles.
+  - Light the candle as on the brain README's manifesto tile.
+  - Make "query running from the application" the cake's only yellow text.
+  - Make the column-types note white, and mark the shaded part of each tier as test data.
+  - Retitle phase 2 as a zero-downtime migration with a "swap in new version" note.
+  - Retitle phase 3 as an Iceberg scale-out with a new storage tier under PostgreSQL.
+- No fonts were on disk for `text2path.py`. Claude downloaded them from google/fonts into the session scratchpad, instanced Caveat at 700, and checked each export by rendering it to PNG with `qlmanage`.
+- Rob iterated on the layout over many rounds:
+  - The splash lost its frame.
+  - The principles gained a dimension mark, labelled "8 organizing principles".
+  - The subheadlines were matched in size and color, and the left column was moved down.
+  - The test-data label went from a legend to an arrowed note pointing at the bottom tier.
+  - The versioned layer and base views each got a "replaceable layer" dimension mark.
+  - The yellow notes in all three phases moved to the left side, pointing at the layer that changed and away from the shaded test data.
+  - Phase 2 put `orders_v2` in the center slot, with `orders_v1` floating out.
+  - Panel 1 became "view hierarchy in service", with "stable views as data contract" pointing at `myapp.*`, since the splash already explains the candle.
+  - The Trino footer line went, and the tagline became "no one changed the app", with an arrow to panel 1.
+  - The title block became version, scale, revision date and license.
+  - The wording of several principles was changed.
+- Rob asked whether the manifesto's Mermaid diagrams should be redrawn as blueprint SVGs. Claude advised keeping Mermaid. Agents read Mermaid source as text, but the export outlines all lettering, so an SVG gives an agent only its alt text. Claude suggested themed Mermaid as the cheap path if polish matters later. Rob made this a standing decision, and observed that the viewzoo and viewmapper READMEs already conformed.
+- Claude updated the visual design doc, then, with Rob's approval, the design system:
+  - The ChapterSheet component and its two type styles were removed.
+  - The ComicPage card and preview now show the shipped comic.
+  - The ReadmeLayout and TitleBlock cards and previews now match the shipped READMEs and title blocks.
+  - The cast's cake and the title-block guidance were updated.
+  - Rob had the doc point only at the design system.
+- Adding badges exposed that the manifesto's README is generated from `sections/` by `build.sh`, as its `CLAUDE.md` says. Every edit made to `README.md` so far would have been lost at the next build. That included Rob's own removal of the Caution alert, made before the session. All of it moved into `sections/00-header.md`, and a rebuild produced the same README plus the badges.
+- Rob bumped the manifesto to 0.70 in the footer section, and the comic's title block followed. The manifesto was committed, tagged `v0.70` and pushed. The visual design doc was committed and pushed separately, after Claude read it back and fixed three wordings.
+
+## Decisions
+
+- **Only the opening sheet is drawn.** A hero opens each tool README and the comic opens the manifesto. Everything after it is portable markdown with `##` headings and Mermaid diagrams. The chapter sheets once proposed for section headings are retired (Rob, on Claude's recommendation about agent readability).
+- **The visual design doc points only at the design system.** The chapter-sheet, blueprints and comic-prototype pages show retired designs, so they are no longer linked. The shipped READMEs are the worked examples (Rob).
+- **A label centered in a cake tier may cross a major grid line** when moving it off would crowd the tier (Rob, prompted by the `postgresql.myapp.*` label).
+- **The comic's title block carries version, scale, revision date and license**, and the version and date follow the manifesto's footer. "Scale: enterprise" is a deliberate joke on a field that normally holds a ratio (Rob).
+- **The comic's checker notes sit on the left of each phase**, pointing at the part that changed and clear of the shaded test data (Rob).
+- **Manifesto 0.70 is tagged `v0.70`**, as a lightweight tag like earlier releases (Rob).
+
+## What didn't work
+
+- **Editing the generated README directly.** Claude never checked the manifesto repo's own instructions before editing `README.md`. The mistake surfaced only when badges were added, and it would have silently reverted Rob's Caution-alert removal too.
+- **Hand arithmetic for grid-line clearance.** Claude twice told Rob that the principles list could not move lower without a line hitting a major grid line, and both claims were wrong. A brute-force search over start positions and spacings found valid placements right away.
+
+## Lessons
+
+- Read a project repo's `CLAUDE.md` before editing anything in it. A generated file looks like source until its build runs.
+- Check grid-line clearance by computing it: cap height from the font, then every baseline checked against the 100px grid.
+- Three open questions came out of the work: whether PhasingSheet still earns its place as a standalone component, the shipped heroes' 10px title-block field names against the 12px minimum, and the stale HeroSheet, IndexSheet and PhasingSheet previews. They are recorded in the visual design doc.
