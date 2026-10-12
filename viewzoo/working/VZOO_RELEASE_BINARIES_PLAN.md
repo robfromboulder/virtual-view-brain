@@ -24,6 +24,7 @@ Key references in the owning lobe:
 |---|---|---|
 | `TestViewZooIntegration` | Runs in the workflow, starting Postgres and Trino with docker compose | Slow or flaky on hosted runners; may need longer timeouts |
 | Tags `467` and `470` | Bare-version tags with no release, pointing at commits that don't contain the workflow | They predate the naming rule and stay as plain tags; any release of those versions would be `467a` or `470a` |
+| GitHub default branch | Stays `v479` until `483a` is published, then switches to `v483` | `v479` is never changed, so it gets no release |
 | `VZOO_WHY_VIEWZOO` and `VZOO_SECURITY_GUIDE` work items | All three edit the README | Whichever merges later rebases its README edit |
 
 ## Testing approach

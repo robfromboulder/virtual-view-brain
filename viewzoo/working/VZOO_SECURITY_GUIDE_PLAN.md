@@ -34,7 +34,7 @@ Key references in the owning lobe:
 
 ## Testing approach
 
-No automated tests change. Manual checks are in `VZOO_SECURITY_GUIDE_TESTING.md`: the guide appears in the repository's Security tab, its claims match the code on `v483`, and the settings are on.
+No automated tests change. Manual checks are in `VZOO_SECURITY_GUIDE_TESTING.md`: the guide appears in the repository's Security tab once `v483` is the default branch, its claims match the code on `v483`, and the settings are on.
 
 ## Implementation sequence
 

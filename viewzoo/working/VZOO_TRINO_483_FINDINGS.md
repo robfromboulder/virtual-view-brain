@@ -6,7 +6,7 @@ ViewZoo is built against Trino 479, and a plugin build works with exactly one Tr
 
 ## Preferred approach: a reviewed upgrade into a new `v483` branch
 
-Cut `v483` from the tip of `v479` unchanged, do the upgrade on a work branch `trino-483`, and merge it into `v483` by PR. Once merged, `v483` becomes the repository's default branch and the base for all further work.
+Cut `v483` from the tip of `v479` unchanged, do the upgrade on a work branch `trino-483`, and merge it into `v483` by PR. Once merged, `v483` is the base for all further work. `v479` stays unchanged as the stable reference for current users and forks, and remains the default branch until the first `v483` release, `483a`, is published.
 
 | Aspect | Detail |
 |---|---|
@@ -28,4 +28,3 @@ Cut `v483` from the tip of `v479` unchanged, do the upgrade on a work branch `tr
 ## What this doesn't solve
 
 - Users on Trino 480–482 still have no matching build.
-- `v479` stops receiving changes once the other items retarget.

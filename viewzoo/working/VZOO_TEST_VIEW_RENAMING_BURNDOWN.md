@@ -3,9 +3,9 @@
 Everything between working code and a merged PR.
 
 * PR wrangling
-  * create branch `test-view-renaming` off the default branch
+  * create branch `test-view-renaming` off `v483`
   * commit changes on branch
-  * create draft PR
+  * create draft PR against `v483`
   * review code changes
   * full rebuild and automated retest on PR code
   * review PR description against final code one last time

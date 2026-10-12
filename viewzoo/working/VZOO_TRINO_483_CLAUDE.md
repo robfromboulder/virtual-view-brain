@@ -1,6 +1,6 @@
 # Trino 483: Claude Runbook
 
-> Upgrade ViewZoo to Trino 483 on a new `v483` branch, via a reviewed PR, and make it the default branch.
+> Upgrade ViewZoo to Trino 483 on a new `v483` branch via a reviewed PR, leaving `v479` unchanged.
 >
 > **Branch:** `trino-483` · **Blocked-by:** —
 

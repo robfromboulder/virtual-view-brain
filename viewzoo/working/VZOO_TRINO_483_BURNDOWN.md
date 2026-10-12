@@ -18,5 +18,4 @@ Everything between working code and a merged PR.
 * docs
   * take screenshots
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
-* switch the GitHub default branch to `v483`
-* clear `TRINO_483` from the Blocked-by of `PG_REFRESH`, `WHY_VIEWZOO`, `SECURITY_GUIDE` and `RELEASE_BINARIES`
+* clear `TRINO_483` from the Blocked-by of `TEST_VIEW_RENAMING`, `PG_REFRESH`, `WHY_VIEWZOO`, `SECURITY_GUIDE`, `RELEASE_BINARIES` and `MULTIPLE_ZOOS`

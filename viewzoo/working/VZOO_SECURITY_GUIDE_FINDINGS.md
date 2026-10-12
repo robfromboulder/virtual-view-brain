@@ -10,7 +10,7 @@ A `SECURITY.md` at the repository root, in GitHub's conventional form, so it app
 
 | Aspect | Detail |
 |---|---|
-| Location | Repository root on `v483`, the default branch once the Trino 483 upgrade lands, which is where GitHub reads it |
+| Location | Repository root on `v483`; GitHub's Security tab reads the default branch, so it shows there once `v483` becomes the default at the `483a` release |
 | Reporting | How to report privately (GitHub private vulnerability reporting), and which version branches are supported |
 | Security modes | Both `DEFINER` and `INVOKER` are stored and returned unchanged; the connector enforces no policy on them |
 | Resource limits | Names are capped at 100 characters, but a definition's length is not, and every definition is held in memory |

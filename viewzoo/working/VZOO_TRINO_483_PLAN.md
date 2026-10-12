@@ -2,7 +2,7 @@
 
 ## Objective
 
-Upgrade ViewZoo from Trino 479 to Trino 483 on a new `v483` branch, cut from `v479` and changed only by a reviewed PR from the work branch `trino-483`. Then make `v483` the default branch. No functional changes.
+Upgrade ViewZoo from Trino 479 to Trino 483 on a new `v483` branch, cut from `v479` and changed only by a reviewed PR from the work branch `trino-483`. `v479` itself is never changed. No functional changes.
 
 ## Context
 
@@ -28,8 +28,8 @@ Key references in the owning lobe:
 |---|---|---|
 | `ViewZooMetadata.getColumnMetadata` | Returns `null`; `ColumnMetadata.comment` is now `Optional` | None expected, since ViewZoo never builds a `ColumnMetadata` |
 | Integration tests | Run against the 483 image | Behavior changes in Trino surface here |
-| Work items `PG_REFRESH`, `WHY_VIEWZOO`, `SECURITY_GUIDE`, `RELEASE_BINARIES` | Blocked by this item; retarget to `v483` | None until they start |
-| GitHub default branch | Switches from `v479` to `v483` after merge | Links and the Security tab follow the default branch |
+| Work items `TEST_VIEW_RENAMING`, `PG_REFRESH`, `WHY_VIEWZOO`, `SECURITY_GUIDE`, `RELEASE_BINARIES`, `MULTIPLE_ZOOS` | Blocked by this item; all target `v483` | None until they start |
+| GitHub default branch | Stays `v479` after merge; switches only once `483a` is published | Visitors see `v479` and its README until then |
 
 ## Testing approach
 
@@ -41,14 +41,13 @@ Key references in the owning lobe:
 2. On `trino-483`, bump the pom and fix any compile errors.
 3. Update docker-compose, the integration test path, the README and `CLAUDE.md`.
 4. Run unit and integration tests, then open the PR into `v483`.
-5. After merge, switch the default branch to `v483`.
 
 ## Scope boundary — what this does NOT include
 
-- Any feature or fix, including the four items waiting on this one.
+- Any feature or fix, including the six items waiting on this one.
 - Branches for Trino 480–482.
 - Releasing a binary, which is `VZOO_RELEASE_BINARIES`.
 
 ## Open issues
 
-1. Whether to also tag `v479`'s final state, under the release-tag rule, before work moves on.
+None. `v479` gets no tag: the unchanged branch is the reference, and a release tag would need the release workflow added to it.
