@@ -159,3 +159,19 @@ Rob's session, with Claude as co-author. It set out to turn the multi-panel comi
 - Read a project repo's `CLAUDE.md` before editing anything in it. A generated file looks like source until its build runs.
 - Check grid-line clearance by computing it: cap height from the font, then every baseline checked against the 100px grid.
 - Three open questions came out of the work: whether PhasingSheet still earns its place as a standalone component, the shipped heroes' 10px title-block field names against the 12px minimum, and the stale HeroSheet, IndexSheet and PhasingSheet previews. They are recorded in the visual design doc.
+
+---
+
+# Manifesto 0.70 change record, and the tag moved (2026-10-12)
+
+**Session ID**: `409efda1-fdc5-4f1a-9935-363ff19c2e3b`
+
+Rob's follow-up to the comic session, with Claude as co-author. After closeout, Rob noticed that the 0.70 release had shipped without an entry in the manifesto's `CHANGES.md`. Claude added one in the existing style, recording the comic, the badges replacing the title and tagline, and the removed caution. It was committed and pushed after the `v0.70` tag had already been pushed.
+
+## Decisions
+
+- **Move `v0.70` onto the change-record commit** so the tagged release includes its own change record. The tag was force-pushed minutes after it was first published, so nothing downstream was likely to have fetched it (Rob, on Claude's flag that this rewrites a published tag).
+
+## Lessons
+
+- A manifesto release has three parts: the version bump in the footer section, an entry in `CHANGES.md`, and the tag. Write the change record before tagging.
