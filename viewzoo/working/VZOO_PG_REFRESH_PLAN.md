@@ -54,7 +54,7 @@ The existing `testjdbc`/`testfs` data-provider suite must stay green. Testing tw
 
 - README positioning: "Why ViewZoo?", the two modes as workflows, pairing with the PG connector (`VZOO_WHY_VIEWZOO`).
 - Refresh for filesystem storage (timer, reload function, or fall-through on cache miss); #14 stays open for it.
-- The small JDBC fixes: duplicate schema names from `listSchemaNames`, cache updated before the storage write, the missing ": " in the startup error.
+- The small JDBC fixes: cache updated before the storage write, the missing ": " in the startup error.
 - A connection pool, configurable schema or table name, `jsonb` definitions, metadata columns, a history table, multi-tenancy (#10), security-mode enforcement (#13).
 
 ## Open issues
@@ -63,3 +63,4 @@ The existing `testjdbc`/`testfs` data-provider suite must stay green. Testing tw
 2. What happens when the JDBC user can't create the trigger: fail startup, or log a warning and run without refresh.
 3. Listener poll timeout and reconnect backoff values.
 4. Whether the two-coordinator check is worth automating with a second Trino service in docker-compose.
+5. The notification channel name. Catalogs can keep separate `viewzoo` tables in different schemas of one database, using `currentSchema`. A fixed `viewzoo` channel would then make every catalog reload on any other catalog's change. Name the channel after the table's schema, or send the schema in the payload and filter on it.
