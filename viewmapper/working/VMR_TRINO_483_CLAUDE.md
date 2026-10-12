@@ -1,6 +1,6 @@
 # Trino 483: Claude Runbook
 
-> Move ViewMapper to version branches, freezing `v479`, and upgrade to Trino 483 on a new `v483` branch via a reviewed PR, released as `483a`.
+> Move ViewMapper to version branches, freezing `v479`, and upgrade to Trino 483 on a new `v483` branch via a reviewed PR, with Sonnet 5.5 replacing the retired default model, released as `483a`.
 >
 > **Branch:** `trino-483` · **Blocked-by:** —
 

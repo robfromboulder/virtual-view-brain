@@ -2,7 +2,7 @@
 
 ## Objective
 
-Move ViewMapper to version branches and upgrade it from Trino 479 to Trino 483. Cut `v479` from `main` as a frozen reference, cut `v483` from `v479`, and change `v483` only by a reviewed PR from the work branch `trino-483`. Release `483a` from `v483`. `v479` and `main` are never changed afterwards. No functional changes.
+Move ViewMapper to version branches and upgrade it from Trino 479 to Trino 483. Cut `v479` from `main` as a frozen reference, cut `v483` from `v479`, and change `v483` only by a reviewed PR from the work branch `trino-483`. Replace the retired default model with Sonnet 5.5, so the release works. Release `483a` from `v483`. `v479` and `main` are never changed afterwards. The model change is the only functional change.
 
 ## Context
 
@@ -18,6 +18,9 @@ Key references in the owning lobe:
 - Repository: branches `v479` and `v483`; the default branch moves `main` → `v479` → `v483` (see Implementation sequence).
 - `viewmapper-agent/pom.xml` — project version and `trino.version` to `483`; fix any compile errors in `TrinoSqlParser` or `DependencyExtractor`.
 - `viewmapper-agent/.../Main.java` — the CLI's `--version` string, `ViewMapper 483`.
+- `viewmapper-agent/.../AnthropicConfig.java` — `DEFAULT_MODEL` to `claude-sonnet-5-5`.
+- `viewmapper-agent/.../ViewMapperAgent.java` — on the `AnthropicChatModel` builder, set `maxTokens` explicitly, because LangChain4j defaults it to 1024 and thinking counts against it. Set `returnThinking(true)` so thinking blocks come back and can be sent with the next request (`sendThinking` already defaults to true). Upgrade LangChain4j only if 1.10 still can't run Sonnet 5.5's tool loop.
+- Docs that name the default model or show `ANTHROPIC_MODEL` examples.
 - `viewmapper-mcp-server/pyproject.toml` — version `483`.
 - `viewmapper-mcp-server/Dockerfile` — `viewmapper-483.jar` in the `COPY` and `VIEWMAPPER_JAR`.
 - `build.sh` and `clean.sh` — JAR name, image tag and summaries.
@@ -31,13 +34,14 @@ Key references in the owning lobe:
 | Existing code | Interaction | Risk |
 |---|---|---|
 | `DependencyExtractor` (`DefaultTraversalVisitor`) | Its overrides of `visitTable`, `visitWith` and others run under the 483 visitor | Behavior changes in the visitor show up as missing or extra dependencies; the parser test suite catches them |
+| LangChain4j 1.10 with Sonnet 5.5 | Thinking is always on, and its blocks must come back with each tool result; 1.10 defaults `returnThinking` to false and `max_tokens` to 1024 | Without both settings, thinking blocks are dropped from the tool loop and answers are cut short |
 | `trino-jdbc` 483 | Connects to users' Trino servers, which may be older | Usually compatible across versions; check against an older server |
 | Released image `479a` and tag `v479a` | Unchanged | None; `479a` users are unaffected |
 | `main` | Frozen at the commit `v479` is cut from | Links to `main` keep working but stop updating |
 
 ## Testing approach
 
-`mvn clean package` with the agent's unit tests, including new parser cases; `pytest` for the MCP server; `build.sh` builds the image. Checking Claude Desktop against the built image by hand, in both test-dataset and JDBC modes, goes in `VMR_TRINO_483_TESTING.md`.
+`mvn clean package` with the agent's unit tests, including new parser cases; `pytest` for the MCP server; `build.sh` builds the image. Checking Claude Desktop against the built image by hand, in both test-dataset and JDBC modes, goes in `VMR_TRINO_483_TESTING.md`. That includes a live check, with a real API key, that Sonnet 5.5 calls the tools on all four bundled datasets. A model that skips tools still writes plausible prose, so check tool calls, not the answer's tone.
 
 ## Implementation sequence
 
@@ -51,7 +55,7 @@ Key references in the owning lobe:
 
 ## Scope boundary — what this does NOT include
 
-- Any feature or fix beyond what 483 requires.
+- Any feature or fix beyond what 483 and a working default model require. The rest of modernizing the Claude integration and the MCP server is `VMR_MODERNIZE`.
 - Branches for Trino 480–482.
 - A release for `v479`, which already has `479a`.
 
@@ -59,3 +63,4 @@ Key references in the owning lobe:
 
 1. Whether `release.sh` should read the version from the pom instead of hard-coding it, so each version branch needs no edit there.
 2. Whether the `v479` and `main` branches should be protected against pushes once frozen.
+3. Whether LangChain4j 1.10 runs Sonnet 5.5's tool loop as is, or needs the upgrade to 1.22 in this item.
