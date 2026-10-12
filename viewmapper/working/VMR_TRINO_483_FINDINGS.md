@@ -16,7 +16,7 @@ Adopt ViewZoo's branching convention. Cut `v479` from the tip of `main` and leav
 | Default branch | `v479` as soon as it's cut (identical to `main`, so nothing visible changes); `v483` once `483a` is released |
 | Java | Unchanged: Trino 483 still targets Java 25 |
 | Dependencies | `trino-parser` and `trino-jdbc` 479 → 483, through the `trino.version` property |
-| Parser | `DependencyExtractor` builds on Trino's `DefaultTraversalVisitor`, which in 483 descends into new relations such as `PIVOT`, so tables inside new syntax are still found |
+| Parser | `DependencyExtractor` builds on Trino's `DefaultTraversalVisitor`, which in 483 descends into new relations such as `PIVOT`, so tables inside new syntax are still found. It does not descend into a table function's `TABLE(...)` argument: that falls through to a no-op. So the table in `TABLE(exclude_columns(input => TABLE(orders), ...))` is silently missing from the graph (#3), and this item fixes it |
 | Version strings | Agent pom version and the CLI's `--version` string in `Main.java`; MCP server `pyproject.toml` version and Dockerfile JAR name; `build.sh`, `clean.sh`, and `release.sh`, which accepts only `479[a-z]`; docs across the root, agent and MCP server directories; the README hero's revision number |
 | Default model | `claude-sonnet-5-5` (Sonnet 5.5), still overridable with `ANTHROPIC_MODEL`. Thinking is always on for it, so `max_tokens` is set explicitly rather than left to LangChain4j's default; LangChain4j is upgraded only if 1.10 can't drive it |
 | Release | After merge, `./release.sh 483a` publishes image `483a` and git tag `483a`. `release.sh` stops adding a `v` prefix, so tags match ViewZoo's and can't be mistaken for the `v483` branch; the published `v478a`–`v479a` tags stay |

@@ -2,7 +2,7 @@
 
 ## Objective
 
-Bring ViewMapper's Claude integration, MCP server and image up to current practice, keeping the architecture: explicit effort, thinking blocks returned across tool calls, refusal handling, timeouts for thinking models, an audited system prompt, MCP Python SDK 2.x, and a pinned current base image. Targets the `v483` branch, released as `483b` or later. The default model stays Sonnet 5.5.
+Bring ViewMapper's Claude integration, MCP server and image up to current practice, keeping the architecture: explicit effort, thinking blocks returned across tool calls, refusal handling, timeouts for thinking models, an audited system prompt, MCP Python SDK 2.x, and a pinned current base image. Make failures unmistakable to the client (#8), and diagrams render rather than show as source (#7). Targets the `v483` branch, released as `483b` or later. The default model stays Sonnet 5.5.
 
 ## Context
 
@@ -22,7 +22,9 @@ Key references in the owning lobe:
   - The system prompt — audited against current prompting guidance, then rewritten where it over-prescribes.
 - MCP server:
   - `pyproject.toml` — `mcp` 2.x.
-  - `mcp_server.py` — run on 2.x; the low-level `Server` and `stdio_server` it uses still exist there. Set the subprocess timeout to match the agent.
+  - `mcp_server.py` — run on 2.x; the low-level `Server` and `stdio_server` it uses still exist there. Set the subprocess timeout to match the agent. Return failures, timeouts included, as tool errors with `isError` (#8).
+  - The tool description — say that an error result means the question wasn't answered and must not be answered from earlier results (#8), and steer the client to render Mermaid output (#7).
+- Agent: connection failures name the likely cause, such as a malformed URL or an unreachable host, instead of passing through the driver's message (#8).
 - `Dockerfile` — both stages on one pinned, current Ubuntu base.
 - Docs — environment variables, the default model, and timeouts.
 
@@ -36,7 +38,7 @@ Key references in the owning lobe:
 
 ## Testing approach
 
-Unit tests with a mock model stay green, plus new cases for refusals and timeouts. The MCP server's `pytest` suite is ported to 2.x. Live checks with a real API key confirm that Sonnet 5.5 calls the tools on all four bundled datasets at the chosen effort. They also record time and cost per question, so effort is chosen by measurement. Manual Claude Desktop checks go in `VMR_MODERNIZE_TESTING.md`.
+Unit tests with a mock model stay green, plus new cases for refusals and timeouts. The MCP server's `pytest` suite is ported to 2.x. Live checks with a real API key confirm that Sonnet 5.5 calls the tools on all four bundled datasets at the chosen effort. They also record time and cost per question, so effort is chosen by measurement. MCP tests cover a failing subprocess returning a tool error. Manual Claude Desktop checks go in `VMR_MODERNIZE_TESTING.md`, including a malformed connection URL (#8) and a plain request for a diagram that should render without asking for a file (#7).
 
 ## Implementation sequence
 
@@ -57,3 +59,4 @@ Unit tests with a mock model stay green, plus new cases for refusals and timeout
 1. Stay on LangChain4j (upgraded to 1.22) or move to the official Anthropic Java SDK. As of 1.22, LangChain4j handles thinking blocks (`returnThinking`/`sendThinking`) and an explicit `maxTokens`. It has no effort setting or refusal handling. Effort could only be sent through its `customParameters` map, untested and possibly colliding with its own `output_config`. Weigh that against rebuilding the mock-model test seam on the official SDK.
 2. Which effort level for Sonnet 5.5. Its default is `high`; start the measurement at `medium` for multistep tool use.
 3. Timeout values for the agent and the MCP subprocess, and whether a long question should report progress rather than just wait.
+4. Whether MCP 2.x offers an output form that Claude Desktop renders as a diagram more reliably than Mermaid text (#7).

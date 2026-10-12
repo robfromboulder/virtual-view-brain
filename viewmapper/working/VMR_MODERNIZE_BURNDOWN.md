@@ -17,4 +17,5 @@ Everything between working code and a merged PR.
 * docs
   * take screenshots
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
+* close #7 and #8 from the PR
 * after merge, run `./release.sh` with the next letter, pull the image, and confirm a question in Claude Desktop calls the tools

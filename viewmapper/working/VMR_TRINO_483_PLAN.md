@@ -2,7 +2,7 @@
 
 ## Objective
 
-Move ViewMapper to version branches and upgrade it from Trino 479 to Trino 483. Cut `v479` from `main` as a frozen reference, cut `v483` from `v479`, and change `v483` only by a reviewed PR from the work branch `trino-483`. Replace the retired default model with Sonnet 5.5, so the release works. Release `483a` from `v483`. `v479` and `main` are never changed afterwards. The model change is the only functional change.
+Move ViewMapper to version branches and upgrade it from Trino 479 to Trino 483. Cut `v479` from `main` as a frozen reference, cut `v483` from `v479`, and change `v483` only by a reviewed PR from the work branch `trino-483`. Replace the retired default model with Sonnet 5.5, so the release works. Release `483a` from `v483`. `v479` and `main` are never changed afterwards. Two functional changes: the default model, and finding tables passed to table functions (#3).
 
 ## Context
 
@@ -27,7 +27,8 @@ Key references in the owning lobe:
 - `release.sh` — accept `483[a-z]`, and the usage example. Tag the release `483a` instead of `v483a`, matching ViewZoo and `VMR_APPROACH.md`; a `v` prefix reads like a version branch name. Existing tags `v478a`–`v479a` stay as published.
 - Docs: root `README.md` (Claude Desktop examples to `483a`), `CLAUDE.md`; the agent's `README.md`, `CLAUDE.md`, `CONTRIBUTING.md` and `TESTING.md`; the MCP server's `README.md` and `TESTING.md`. Contributor docs say that contributions target the current version branch.
 - `.github/images/hero.src.svg` — revision `483` in the drawn title block and the `aria-label`, re-exported to `hero.svg` with the brain's `text2path.py`; the README's hero alt text to match.
-- Tests: parser cases for syntax added in 480–483 that can carry table references, at least `PIVOT`.
+- `viewmapper-agent/.../DependencyExtractor.java` — override `visitTableArgument` to process the argument's table, so `TABLE(...)` arguments to table functions such as `exclude_columns` are found (#3).
+- Tests: parser cases for syntax added in 480–483 that can carry table references, at least `PIVOT`; and table functions with `TABLE(...)` arguments, including `exclude_columns`.
 
 ## Interaction with existing code
 
@@ -55,7 +56,7 @@ Key references in the owning lobe:
 
 ## Scope boundary — what this does NOT include
 
-- Any feature or fix beyond what 483 and a working default model require. The rest of modernizing the Claude integration and the MCP server is `VMR_MODERNIZE`.
+- Any feature or fix beyond what 483, a working default model and #3 require. The rest of modernizing the Claude integration and the MCP server is `VMR_MODERNIZE`.
 - Branches for Trino 480–482.
 - A release for `v479`, which already has `479a`.
 

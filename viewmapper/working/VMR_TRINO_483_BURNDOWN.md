@@ -22,3 +22,4 @@ Everything between working code and a merged PR.
 * after merge, run `./release.sh 483a`, pull the image, and confirm a question in Claude Desktop calls the tools
 * once `483a` is published, make `v483` the default branch
 * clear `TRINO_483` from the Blocked-by of `MODERNIZE`
+* close #3 from the PR, since the fix ships with it
