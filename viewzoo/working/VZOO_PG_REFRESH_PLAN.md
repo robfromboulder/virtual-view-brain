@@ -2,7 +2,7 @@
 
 ## Objective
 
-Make JDBC storage refresh views live across coordinators. A Postgres trigger on the `viewzoo` table sends a notification on every change, and each coordinator listens and reloads its in-memory views. Targets the `v479` branch. No new infrastructure, no change to the table's columns, no change to filesystem mode's behavior.
+Make JDBC storage refresh views live across coordinators. A Postgres trigger on the `viewzoo` table sends a notification on every change, and each coordinator listens and reloads its in-memory views. Targets the `v483` branch. No new infrastructure, no change to the table's columns, no change to filesystem mode's behavior.
 
 ## Context
 

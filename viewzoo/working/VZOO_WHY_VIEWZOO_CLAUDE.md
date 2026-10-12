@@ -2,7 +2,7 @@
 
 > Explain in the README and mini-brain why ViewZoo exists relative to Trino's PostgreSQL connector and other view stores, with the two storage modes recast as workflows.
 >
-> **Branch:** `why-viewzoo` · **Blocked-by:** —
+> **Branch:** `why-viewzoo` · **Blocked-by:** `TRINO_483`
 
 ## Running Tests
 

@@ -2,7 +2,7 @@
 
 ## Objective
 
-Add a `SECURITY.md` that tells users how to report a vulnerability and documents ViewZoo's security properties as they are today: security modes, unbounded definition length, and who can change views in each storage mode. Turn on Dependabot alerts and code scanning for the repository. Targets the `v479` branch. No code changes.
+Add a `SECURITY.md` that tells users how to report a vulnerability and documents ViewZoo's security properties as they are today: security modes, unbounded definition length, and who can change views in each storage mode. Turn on Dependabot alerts and code scanning for the repository. Targets the `v483` branch. No code changes.
 
 ## Context
 
@@ -34,7 +34,7 @@ Key references in the owning lobe:
 
 ## Testing approach
 
-No automated tests change. Manual checks are in `VZOO_SECURITY_GUIDE_TESTING.md`: the guide appears in the repository's Security tab, its claims match the code on `v479`, and the settings are on.
+No automated tests change. Manual checks are in `VZOO_SECURITY_GUIDE_TESTING.md`: the guide appears in the repository's Security tab, its claims match the code on `v483`, and the settings are on.
 
 ## Implementation sequence
 

@@ -3,9 +3,9 @@
 Everything between working code and a merged PR.
 
 * PR wrangling
-  * create branch `release-binaries` off `v479`
+  * create branch `release-binaries` off `v483`
   * commit changes on branch
-  * create draft PR against `v479`
+  * create draft PR against `v483`
   * review code changes
   * full rebuild and automated retest on PR code
   * review PR description against final code one last time
@@ -17,6 +17,6 @@ Everything between working code and a merged PR.
 * docs
   * take screenshots
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
-* after merge, push tag `479a` and confirm the release and its archive
+* after merge, push tag `483a` and confirm the release and its archive
 * delete the test fork's tags and releases
 * carry the workflow forward to each new version branch

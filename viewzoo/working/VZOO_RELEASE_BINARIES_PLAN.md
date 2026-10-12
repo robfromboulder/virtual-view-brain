@@ -2,7 +2,7 @@
 
 ## Objective
 
-Publish a prebuilt ViewZoo plugin for each Trino version as a GitHub release, built by a GitHub Actions workflow when a version tag is pushed, so users can install without Java or Maven. Release tags are always the Trino version plus a letter, starting at `a`, and never the bare version. Targets the `v479` branch, giving the first published release, `479a`. No code changes.
+Publish a prebuilt ViewZoo plugin for each Trino version as a GitHub release, built by a GitHub Actions workflow when a version tag is pushed, so users can install without Java or Maven. Release tags are always the Trino version plus a letter, starting at `a`, and never the bare version. Targets the `v483` branch, giving the first published release, `483a`. No code changes.
 
 ## Context
 
@@ -28,22 +28,22 @@ Key references in the owning lobe:
 
 ## Testing approach
 
-The workflow is the test. Run it on a fork first, so no real release letter is spent or deleted in testing, then check by hand that the release appears, the archive unpacks to a working plugin directory, and Trino 479 starts with it. Those steps go in `VZOO_RELEASE_BINARIES_TESTING.md`.
+The workflow is the test. Run it on a fork first, so no real release letter is spent or deleted in testing, then check by hand that the release appears, the archive unpacks to a working plugin directory, and Trino 483 starts with it. Those steps go in `VZOO_RELEASE_BINARIES_TESTING.md`.
 
 ## Implementation sequence
 
 1. Write the workflow and run it on a fork.
-2. Check the archive by installing it into a clean Trino 479.
+2. Check the archive by installing it into a clean Trino 483.
 3. Update the install docs.
-4. Merge, tag `479a`, and confirm the published release.
+4. Merge, tag `483a`, and confirm the published release.
 
 ## Scope boundary — what this does NOT include
 
 - Maven Central publishing, container images, or artifact signing.
-- Releases for branches older than `v479`.
+- Releases for branches older than `v483`.
 - Any change to the build itself, beyond what packaging the archive needs.
 
 ## Open issues
 
-1. Whether to release older versions. `v470` and `v475`–`v478` would each need the workflow backported and an `a` tag. `467` has no branch: its commit sits in the history of `main` and `v470`. A manually triggered run that builds a given commit would cover old versions without backporting.
+1. Whether to release older versions. `v470` and `v475`–`v479` would each need the workflow backported and an `a` tag. `467` has no branch: its commit sits in the history of `main` and `v470`. A manually triggered run that builds a given commit would cover old versions without backporting.
 2. Whether to attach the sources jar the build also produces, or only the plugin directory.

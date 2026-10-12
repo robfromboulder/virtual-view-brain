@@ -2,7 +2,7 @@
 
 > Refresh JDBC-stored views live across coordinators via Postgres LISTEN/NOTIFY.
 >
-> **Branch:** `pg-refresh` · **Blocked-by:** —
+> **Branch:** `pg-refresh` · **Blocked-by:** `TRINO_483`
 
 ## Running Tests
 

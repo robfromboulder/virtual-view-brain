@@ -2,7 +2,7 @@
 
 > Add a SECURITY.md documenting vulnerability reporting and ViewZoo's security properties, and turn on Dependabot alerts and code scanning.
 >
-> **Branch:** `security-guide` · **Blocked-by:** —
+> **Branch:** `security-guide` · **Blocked-by:** `TRINO_483`
 
 ## Running Tests
 

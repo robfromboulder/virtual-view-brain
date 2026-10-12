@@ -3,9 +3,9 @@
 Everything between working code and a merged PR.
 
 * PR wrangling
-  * create branch `why-viewzoo` off `v479`
+  * create branch `why-viewzoo` off `v483`
   * commit changes on branch
-  * create draft PR against `v479`
+  * create draft PR against `v483`
   * review doc changes
   * full rebuild and automated retest on PR code
   * review PR description against final docs one last time

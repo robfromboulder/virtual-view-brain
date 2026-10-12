@@ -1,8 +1,8 @@
 # Release Binaries: Claude Runbook
 
-> Publish a prebuilt plugin for each Trino version as a GitHub release, built by a GitHub Actions workflow when a release tag (`479a`, `479b`, …) is pushed.
+> Publish a prebuilt plugin for each Trino version as a GitHub release, built by a GitHub Actions workflow when a release tag (`483a`, `483b`, …) is pushed.
 >
-> **Branch:** `release-binaries` · **Blocked-by:** —
+> **Branch:** `release-binaries` · **Blocked-by:** `TRINO_483`
 
 ## Running Tests
 
