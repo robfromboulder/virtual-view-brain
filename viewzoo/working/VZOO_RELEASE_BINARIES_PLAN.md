@@ -29,11 +29,11 @@ Key references in the owning lobe:
 
 ## Testing approach
 
-The workflow is the test. Run it on a fork first, so no real release letter is spent or deleted in testing, then check by hand that the release appears, the archive unpacks to a working plugin directory, and Trino 483 starts with it. Those steps go in `VZOO_RELEASE_BINARIES_TESTING.md`.
+The workflow is the test. Run it first in a throwaway private repository, such as `viewzoo-release-test`, holding a copy of the `release-binaries` branch, so no real release letter is spent or deleted in testing. GitHub doesn't allow forking a repository into the account that owns it. Then check by hand that the release appears, the archive unpacks to a working plugin directory, and Trino 483 starts with it. Those steps go in `VZOO_RELEASE_BINARIES_TESTING.md`.
 
 ## Implementation sequence
 
-1. Write the workflow and run it on a fork.
+1. Write the workflow, push it to a throwaway private repository, and run it there.
 2. Check the archive by installing it into a clean Trino 483.
 3. Update the install docs.
 4. Merge, tag `483a`, and confirm the published release.

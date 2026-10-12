@@ -19,5 +19,5 @@ Everything between working code and a merged PR.
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
 * after merge, push tag `483a` and confirm the release and its archive
 * once `483a` is published, switch the GitHub default branch from `v479` to `v483`
-* delete the test fork's tags and releases
+* delete the throwaway test repository, with its tags and releases
 * carry the workflow forward to each new version branch
