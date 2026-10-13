@@ -128,3 +128,29 @@ robfromboulder, with Claude as co-author, ran a medium-effort code review over t
 
 - A quiet Maven run (`-q`) hides the test summary, so a commit made after it isn't verified. The first commit of a hand split was checked again afterwards in a temporary worktree.
 - Raising a timeout can make a blocking call in an async server worse, so check the two together.
+
+---
+
+# Live checks on the review fixes (2026-10-12)
+
+**Session ID**: `56cd4860-7dca-495c-8559-a68903877697`
+
+robfromboulder, with Claude as co-author, continued this session after its closeout. They brought PR #10's description up to date with the review fixes and had the focused-diagram checks re-run on the pushed code. Nothing changed in the code. The PR's Testing section now records the live runs.
+
+## Turn by turn
+
+- Claude updated PR #10's description:
+  - the 600s run timeout and the startup check;
+  - the truncation note and `maxNodes` clamp;
+  - a new bullet for the non-blocking MCP server;
+  - test counts of 227 and 19.
+- The earlier live-check line had claimed "the final code", so Claude marked it as predating the fixes.
+- robfromboulder had the focused-diagram check re-run. On `complex_enterprise`, `customer_360` drew 9 views for the runbook prompt and 12 at 3 levels each way, and neither got a truncation note. The review had claimed `customer_360` reaches 49 views, which is wrong.
+- To reach the cap, Claude loaded the dataset into `DependencyAnalyzer` from a single-file Java program and counted each view's neighbours. Only `fact_orders` exceeds 50 views at 2 levels each way, with 52.
+- `fact_orders` at those depths drew 50 views. The model said the diagram was incomplete and offered a higher `maxNodes` or a smaller depth. Asked for no limit, it drew all 52 without error.
+- robfromboulder had the four runs added to the PR's Testing section.
+
+## Lessons
+
+- The no-limit run doesn't prove the clamp. Verbose mode doesn't log tool arguments, and 52 views would have drawn before the fix too, since the old error only appeared above 100. The clamp rests on its unit test.
+- A live check on a cap needs data that exceeds it. Count the views in range before writing the prompt.
