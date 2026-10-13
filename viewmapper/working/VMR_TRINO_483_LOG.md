@@ -66,3 +66,31 @@ robfromboulder, with Claude as co-author, ran a medium-effort `/code-review` ove
 
 - Review findings about naming need checking against `git branch -a` and the surrounding diff before acting. Both naming findings in this review rested on a misread.
 - PR #10's description may still mention `returnThinking`, and it doesn't cover the timeout or parser changes. The burndown's final description review should catch both.
+
+---
+
+# Live checks find the focused-diagram crash (2026-10-12)
+
+**Session ID**: `21670272-abad-4b74-8e38-ac45af71b373`
+
+robfromboulder, with Claude as co-author, continued this session after its first closeout. They brought PR #10's description up to date, re-ran the live CLI checks, and fixed a crash in focused diagrams that the corrected checks exposed. They also fixed the tool parameter schemas the model sees. Three commits are pushed to `trino-483`, and PR #10's description covers them.
+
+## Turn by turn
+
+- Claude rewrote PR #10's description to match the code. The `returnThinking` sentence came out, and bullets for timeouts, CTE scoping and `ORDER BY`/`WINDOW` went in.
+- robfromboulder asked for the live checks on the final code. All five passed. Verbose mode doesn't log tool calls, so the evidence was data only tools could produce: view counts, centrality scores, and dependent counts that matched the diagram.
+- The diagram check asked for `customer_360` in `simple_ecommerce`, where it doesn't exist, so the agent fell back to the full schema. robfromboulder agreed to move the check to `complex_enterprise`. There the agent exited with a Jackson error: `generateMermaid` took a `SubgraphResult`, which has no creator Jackson can use, so the model's JSON arguments could never construct it. The class, the tool and LangChain4j are unchanged since `v479`, so the bug was already there.
+- Claude offered two fixes: simple arguments, or a Jackson creator on the type. robfromboulder chose simple arguments. `generateMermaid` now takes the focus view and depths and extracts the subgraph itself, and the drawing moved to a `renderSubgraph` method that isn't a tool. The prompt now reserves `extractSubgraph` for listing views without drawing them.
+- New tests call the tool through LangChain4j's `DefaultToolExecutor` with JSON arguments, with parameter names read from the generated spec. Temporarily re-annotating the old subgraph-taking method reproduced the live error in that harness, which showed the tests would have caught the crash.
+- Claude raised the missing `-parameters` flag as a follow-up for modernize. robfromboulder asked whether it was small enough to do now. A jshell dump of the spec showed the model seeing `arg0`–`arg3` with no descriptions, all required, including `maxNodes`. The pom now sets `<parameters>true</parameters>`, and both subgraph tools carry `@P` descriptions with `maxNodes` optional. robfromboulder had the `generateMermaid` fix committed separately first.
+- Six live checks passed on the final JAR. They included a 3-up, 2-down diagram around `executive_dashboard` whose depths matched the request.
+
+## Decisions
+
+- robfromboulder kept the focused-diagram and parameter fixes on `trino-483` rather than deferring them, although both predate the upgrade.
+
+## Lessons
+
+- Unit tests that call a `@Tool` method directly skip the JSON layer, which is where this crash lived. A tool test needs at least one call through `DefaultToolExecutor`.
+- `ToolSpecifications.toolSpecificationsFrom` in jshell, with the module's classpath, shows exactly what the model receives. It is the quickest check on a tool's parameter names and required flags.
+- When a live check's prompt names something absent from its dataset, the check passes without exercising its path. A check's inputs need verifying against the data.
