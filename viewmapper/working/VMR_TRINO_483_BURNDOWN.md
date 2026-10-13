@@ -23,6 +23,9 @@ Everything between working code and a merged PR.
   * the branch rule for contributors went into the root `CONTRIBUTING.md` (both modules) rather than the agent's, which the plan named
   * `release.sh` checks for and pushes the tag through `refs/tags/`, because a tag like `483a` is valid hex and a bare `git rev-parse` can resolve it to a commit abbreviation
   * open issue 3 resolved: LangChain4j 1.10 runs Sonnet 5.5's tool loop with `maxTokens(16000)` and `returnThinking(true)`, so no upgrade
+  * reversed: `returnThinking(true)` was removed, because extended thinking is never enabled and the option did nothing
+  * the per-call timeout default went from 60s to 180s and the MCP server's run timeout became `VIEWMAPPER_TIMEOUT_SECONDS` (default 300), since `maxTokens(16000)` can outlast 60s; the plan left configuration to modernize
+  * beyond the plan: `DependencyExtractor` now scopes CTE names per WITH clause and visits ORDER BY and WINDOW subqueries
 * after merge, run `./release.sh 483a`, pull the image, and confirm a question in Claude Desktop calls the tools
 * once `483a` is published, make `v483` the default branch
 * clear `TRINO_483` from the Blocked-by of `MODERNIZE`

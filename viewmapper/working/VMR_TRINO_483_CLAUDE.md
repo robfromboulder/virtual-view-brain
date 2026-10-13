@@ -15,7 +15,7 @@ cd viewmapper-agent && mvn clean package
 cd ../viewmapper-mcp-server && ./venv/bin/pytest -q
 ```
 
-**Expected:** 215 agent tests pass in under a minute, including `TrinoSqlParserTableFunctionTests` (8) and the two `PIVOT` cases in `TrinoSqlParserEdgeTests`; 14 MCP server tests pass. Six of the eight table-function tests fail if `DependencyExtractor::visitTableArgument` is removed.
+**Expected:** 222 agent tests pass in under a minute, including `TrinoSqlParserTableFunctionTests` (9) and the two `PIVOT` cases in `TrinoSqlParserEdgeTests`; 14 MCP server tests pass. Seven of the nine table-function tests fail if `DependencyExtractor::visitTableArgument` is removed.
 
 ### Step 2 — image
 
