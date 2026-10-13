@@ -13,6 +13,7 @@ Cut `v483` from the tip of `v479` unchanged, do the upgrade on a work branch `tr
 | Java | Unchanged: Trino 483 still targets Java 25 |
 | Dependencies | Trino artifacts 479 → 483; Airlift aligned with Trino 483's 439. Slice, `jackson-annotations` and OpenTelemetry are supplied by Trino at runtime, so they track Trino 483's versions (Airbase 395: Slice 2.8, Jackson 2.22, OpenTelemetry 1.64.0), not the newest releases. The PostgreSQL driver is bundled with the plugin, so it goes to the current release |
 | SPI | Every method ViewZoo overrides has the same signature in 483 as in 479; `ConnectorMetadata` only gains a default method. The breaking changes from 480 to 483 are in interfaces ViewZoo doesn't implement (split managers, page sources, `Constraint`, blocks), except `ColumnMetadata.comment` becoming `Optional`, which ViewZoo never constructs |
+| Tested compatibility | Trino's plugin loader has no SPI version check. The unmodified `v479` build passed all 6 integration tests (both catalogs) against `trinodb/trino:483` on 2026-10-12, with only the test image changed. The upgrade is version bumps, not compatibility fixes, and a clean first build is expected |
 | Version strings | The pom version, README install steps and badges, the repo's `CLAUDE.md`, the docker-compose Trino image, and the integration test's plugin path all carry `479` |
 | Skipped versions | No branches for 480–482 |
 
