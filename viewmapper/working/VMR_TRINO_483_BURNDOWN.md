@@ -28,6 +28,10 @@ Everything between working code and a merged PR.
   * beyond the plan: `DependencyExtractor` now scopes CTE names per WITH clause and visits ORDER BY and WINDOW subqueries
   * beyond the plan: `generateMermaid` takes a focus view and depths instead of a `SubgraphResult`, which the model's JSON arguments could never construct, so focused diagrams have failed since at least 479
   * beyond the plan: the agent compiles with `-parameters` and the subgraph tools carry `@P` descriptions, because the model saw their parameters as `arg0`–`arg3`, all required
+  * reversed: the run timeout default went from 300s to 600s, because one run makes several model calls in sequence and two near the 180s per-call limit exceeded 300s
+  * beyond the plan: the MCP server runs the agent with asyncio's subprocess API, so the event loop keeps answering during a run, and a timeout or client cancellation kills the agent
+  * beyond the plan: a malformed or non-positive `VIEWMAPPER_TIMEOUT_SECONDS` stops the server at startup, as a missing JAR or API key already does
+  * beyond the plan: `generateMermaid` appends a TRUNCATED note when the node cap cut the diagram, and clamps `maxNodes` of 0 or over 100 to 100 instead of returning an error
 * after merge, run `./release.sh 483a`, pull the image, and confirm a question in Claude Desktop calls the tools
 * once `483a` is published, make `v483` the default branch
 * clear `TRINO_483` from the Blocked-by of `MODERNIZE`

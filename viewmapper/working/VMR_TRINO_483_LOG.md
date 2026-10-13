@@ -94,3 +94,37 @@ robfromboulder, with Claude as co-author, continued this session after its first
 - Unit tests that call a `@Tool` method directly skip the JSON layer, which is where this crash lived. A tool test needs at least one call through `DefaultToolExecutor`.
 - `ToolSpecifications.toolSpecificationsFrom` in jshell, with the module's classpath, shows exactly what the model receives. It is the quickest check on a tool's parameter names and required flags.
 - When a live check's prompt names something absent from its dataset, the check passes without exercising its path. A check's inputs need verifying against the data.
+
+---
+
+# Review fixes for the diagram tools and MCP timeouts (2026-10-12)
+
+**Session ID**: `56cd4860-7dca-495c-8559-a68903877697`
+
+robfromboulder, with Claude as co-author, ran a medium-effort code review over the last ten commits on `trino-483` and had Claude fix nine of its ten findings. Each fix is its own commit, all nine are pushed to `trino-483`, and PR #10's description doesn't cover them yet.
+
+## Turn by turn
+
+- The review returned ten findings. Ranked first: `generateMermaid` dropped the subgraph's `truncated` flag, so a diagram cut to 50 nodes looked complete. Second: the 300s run timeout was less than two model calls at the 180s per-call limit. Third: `MAX_TOKENS` of 16000 exceeds some models' output limits.
+- robfromboulder had the first two fixed and declined the `MAX_TOKENS` fix. They're unlikely to change models, and if they do, they want a loud failure.
+- `generateMermaid` now appends a TRUNCATED line after the diagram's fence, and the system prompt tells the model to report it. The run timeout default went to 600s.
+- Claude pointed out that the longer timeout made another finding worse: the async `call_tool` blocked the event loop for a whole run. robfromboulder had it fixed next. Claude chose asyncio's subprocess API over `asyncio.to_thread`, so a timeout or client cancellation kills the Java process instead of leaving it running. A stand-in `java` script on PATH confirmed the timeout fires, the loop keeps ticking, and no process is left behind.
+- robfromboulder asked for one commit per fix. The timeout and event-loop changes shared `mcp_server.py`, so the timeout hunk was staged on its own.
+- Next came the stale "Use extractSubgraph instead" message and the `maxNodes` description that promised "0 = unlimited" while drawing stops at 100. Claude clamped `maxNodes` of 0 or over 100 to a new `MAX_DIAGRAM_VIEWS` constant rather than returning the unfenced error. The two fixes were split by hand into two commits, and tests were run at each.
+- The remaining four went in as four commits:
+  - a malformed `VIEWMAPPER_TIMEOUT_SECONDS` now fails at startup;
+  - long lines are wrapped;
+  - the Javadoc no longer narrates design history;
+  - the `@P` descriptions are shared constants on `ExtractSubgraphToolExecutor`.
+- robfromboulder had the branch pushed.
+
+## Decisions
+
+- robfromboulder declined to make `MAX_TOKENS` depend on the model.
+- Claude made a bad timeout value a startup error rather than a tool error. The server already fails at startup on missing configuration, and the "never raise to the client" rule covers tool calls.
+- About 25 lines in other agent files that were already over 130 characters were left alone, because they predate this work and the review didn't flag them.
+
+## Lessons
+
+- A quiet Maven run (`-q`) hides the test summary, so a commit made after it isn't verified. The first commit of a hand split was checked again afterwards in a temporary worktree.
+- Raising a timeout can make a blocking call in an async server worse, so check the two together.
