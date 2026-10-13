@@ -8,10 +8,19 @@
 
 Run the steps from the platform runbook first (if the brain has one), verifying results match the expectations documented there. Then run the work-specific step(s) below.
 
-### Step N — <work-specific test> ← NEW in this branch
+### Step 1 — agent and MCP server suites
 
 ```bash
-# fill in once the work item has tests
+cd viewmapper-agent && mvn clean package
+cd ../viewmapper-mcp-server && ./venv/bin/pytest -q
 ```
 
-**Expected:** <runtime, pass/fail expectations, which tests are active>
+**Expected:** 215 agent tests pass in under a minute, including `TrinoSqlParserTableFunctionTests` (8) and the two `PIVOT` cases in `TrinoSqlParserEdgeTests`; 14 MCP server tests pass. Six of the eight table-function tests fail if `DependencyExtractor::visitTableArgument` is removed.
+
+### Step 2 — image
+
+```bash
+./build.sh
+```
+
+**Expected:** `viewmapper-483 is go 🚀` and a local image `viewmapper:483`.
