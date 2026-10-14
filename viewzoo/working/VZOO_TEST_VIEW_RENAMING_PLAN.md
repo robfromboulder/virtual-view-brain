@@ -2,7 +2,7 @@
 
 ## Objective
 
-Add `ALTER VIEW ... RENAME TO` test cases to ViewZoo's test suite, covering the renaming variations that the current suite omits. Purely additive — no production code changes.
+Implement `ALTER VIEW ... RENAME TO` in ViewZoo (previously unsupported) and cover it with integration tests on both storage backends.
 
 ## Context
 
@@ -15,30 +15,33 @@ Key references in the owning lobe:
 
 ## What changes
 
-Test files in the ViewZoo project repo (`../viewzoo`). Fill in specific files and cases during implementation.
+- `ViewZooMetadata` — `renameView` override; name validation extracted to a shared helper
+- `ViewZooStorageClient` — new `renameView` method, implemented by `ViewZooJdbcClient` and `ViewZooLocalFileSystemClient`
+- `TestViewZooIntegration` — `testViewRenaming` plus two assertion helpers
 
 ## Interaction with existing code
 
 | Existing code | Interaction | Risk |
 |---|---|---|
 | Existing test suite | New test cases follow established patterns | Low — additive only |
+| `createView` | Validation moved into `validateName`, behavior unchanged | Low — covered by existing name tests |
 
 ## Testing approach
 
-The work item is itself test work. Automated: the new test cases must pass in the existing suite. No manual testing beyond running the suite. Manual steps live in `VZOO_TEST_VIEW_RENAMING_TESTING.md`.
+Automated: `testViewRenaming` must pass on both catalogs alongside the existing integration tests. No manual testing beyond running the suite. Manual steps live in `VZOO_TEST_VIEW_RENAMING_TESTING.md`.
 
 ## Implementation sequence
 
-1. Identify existing test patterns for DDL operations in the ViewZoo test suite
-2. Add `ALTER VIEW x RENAME TO y` test case variations
-3. Run the full test suite to confirm new tests pass and no regressions
+1. Add `renameView` to the storage interface and both clients
+2. Override `renameView` in `ViewZooMetadata`
+3. Add `testViewRenaming` to the integration suite
+4. Run the full integration suite on both catalogs
 
 ## Scope boundary — what this does NOT include
 
 - Other DDL operation test cases (DROP, CREATE, ALTER beyond rename)
-- Production code changes
 - Test infrastructure changes
 
 ## Open issues
 
-1. Exact rename variations to cover (simple rename, rename across schemas, rename with dependencies) — decide during implementation based on what the codebase supports
+None. Variations covered: in-schema, cross-schema, existing target, missing source, invalid target, restart persistence. Cross-catalog rename is rejected by the Trino engine before reaching the connector.
