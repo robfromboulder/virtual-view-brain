@@ -1,6 +1,6 @@
 # ViewZoo: Technical Approach
 
-> V6, 2026-10-13.
+> V7, 2026-10-13.
 
 This document describes the proposed approach for addressing the problems defined in `VZOO_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -16,7 +16,7 @@ The two environments are served by two storage backends rather than by one compr
 
 ## 2. Architecture
 
-Every view operation Trino issues — create, replace, drop, list and get — lands in the connector's metadata layer, which serves reads from an in-memory copy of every view.
+Every view operation Trino issues — create, replace, rename, drop, list and get — lands in the connector's metadata layer, which serves reads from an in-memory copy of every view.
 
 Underneath it sits one storage interface with two implementations, selected at startup by configuration: one JSON file per view on the filesystem, or rows in a PostgreSQL table. Nothing above the interface knows which is in use.
 

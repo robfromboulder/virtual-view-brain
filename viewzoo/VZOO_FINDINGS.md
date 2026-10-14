@@ -1,6 +1,6 @@
 # ViewZoo: Implementation Findings
 
-> V3, 2026-10-13.
+> V4, 2026-10-13.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -21,3 +21,15 @@ Trino's plugin loader performs no SPI version check, so a build for one release 
 ## 3. `hero.svg` carries its text as outlined paths
 
 The README hero image draws its text as glyph outlines, so a text search for a version number or date misses it; only `hero.src.svg` holds the text as `<text>`. A version sweep must search `hero.src.svg`. Re-rendering `hero.svg` from the source with Inkscape alters the artwork (rounded enclosure corners, lost SQL indentation), so until the original render tool is known, change its text by outlining only the affected strings and swapping those paths in at their existing positions. Established by the 483 badge fix (PR #15, `f376256`).
+
+## 4. Rename trusts storage, not the cache, to detect conflicts
+
+Trino's `RenameViewTask` rejects a rename onto an existing view, or of a missing one, before calling the connector, and `renameView` repeats both checks. Both read the in-memory cache, so neither catches a cache that disagrees with storage — another coordinator sharing the store, or a file changed outside Trino. Each storage client therefore enforces source-exists and target-absent itself, and when storage reports the source missing, `renameView` evicts the stale cache entry.
+
+The filesystem client renames by hard link, then deletes the source. `Files.move` with `ATOMIC_MOVE` silently replaces an existing target on POSIX, and without it the existence check precedes `rename(2)`, which still replaces a target written in between; `link(2)` refuses an existing target atomically. A crash between link and delete leaves a duplicate view, never a lost one. Filesystems without hard links, such as some network or FUSE mounts, cannot rename.
+
+Because the engine pre-empts both conflict cases, SQL-level tests pass even with the connector's checks deleted; those checks are unit-tested against a fake storage client instead. Established by PR #16 (`a9eb9a5`, `adccc71`, `6e6304f`). `createView` and `dropView` still update the cache before storage (#20).
+
+## 5. Closing keywords do not fire on version-branch PRs
+
+GitHub acts on `Closes #N` only when a PR merges into the default branch. ViewZoo PRs target the current version branch, which is not the default (`v479` while `v483` is current), so issues a PR fixes must be closed by hand after the merge. Found when PR #16 merged into `v483` and left #18 open.

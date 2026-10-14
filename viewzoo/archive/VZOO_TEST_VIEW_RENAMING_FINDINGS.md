@@ -28,4 +28,4 @@ ViewZoo's test cases don't include `ALTER VIEW x RENAME TO y` variations. View r
 ## What this doesn't solve
 
 - Test coverage for other DDL operations beyond rename
-- Bugs found in review and filed instead of fixed here: path characters in view names (viewzoo#17), statement leaks in the JDBC client's older methods (viewzoo#19), `createView` updating the cache before storage (viewzoo#20). Filesystem rename after external file deletion (viewzoo#18) was filed, then fixed here after a second review
+- Bugs found in review and filed instead of fixed here: path characters in view names (viewzoo#17), statement leaks in the JDBC client's older methods (viewzoo#19), `createView` and `dropView` updating the cache before storage (viewzoo#20). Filesystem rename after external file deletion (viewzoo#18) was filed, then fixed here after a second review
