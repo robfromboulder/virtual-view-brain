@@ -1,6 +1,6 @@
 # Virtual View: Technical Approach
 
-> V4, 2026-09-23.
+> V5, 2026-10-13.
 
 This document describes the proposed approach for addressing the problems defined in `VV_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -32,7 +32,7 @@ ViewMapper's examples use `viewzoo.*` schemas. That is convenient sample data, n
 
 **No coupling between the tools.** ViewMapper could read stored definitions directly from whatever holds them, and instead goes through Trino's metadata. Universality is worth more than the shortcut: a mapper that understood ViewZoo's storage would be a mapper that only works on hierarchies ViewZoo stores, which contradicts adopting either tool alone.
 
-**Different release strategies for the two code projects, deliberately.** ViewZoo compiles against the Trino SPI, which breaks between Trino versions, so it takes the Trino version as its own version number and keeps a branch per supported version. ViewMapper connects over JDBC and carries no such constraint, so it moves `main` forward and tags releases with the Trino version plus a letter, as in `479a`. The projects are on the same Trino version today; nothing in the design requires them to stay in step, and work targeting either one names the Trino version it assumes.
+**One release convention for both code projects.** Each keeps a branch per supported Trino version, with `main` effectively unused. A new branch is cut unchanged from the previous one and never merged back, the upgrade lands on it by reviewed PR before other work builds on it, and contributions target a version branch. Fixes are carried forward by hand. A release is tagged with the Trino version plus a letter, as in `483a`, never `latest` and never with a `v` prefix, which would read like a version branch's name. This replaces an earlier split in which ViewMapper, free of ViewZoo's plugin-interface constraint, moved `main` forward and tagged releases `v479a`. ViewMapper adopted version branches with its 483 upgrade (ViewMapper PR #10), so a contributor now learns one model across the ecosystem; each project's reason for needing a stable branch per version is its own. Published `v`-prefixed tags stay as they are. The projects are on the same Trino version today; nothing in the design requires them to stay in step, and work targeting either one names the Trino version it assumes.
 
 ---
 

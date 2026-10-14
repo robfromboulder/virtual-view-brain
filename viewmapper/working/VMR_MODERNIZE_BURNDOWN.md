@@ -2,6 +2,12 @@
 
 Everything between working code and a merged PR.
 
+* carried over from `TRINO_483`, which merged in PR #10 and closed out before its release
+  * run `./release.sh 483a` from `v483`, pull the image, and confirm a question in Claude Desktop calls the tools
+  * in Claude Desktop with `test://complex_enterprise`, ask "what are the central hub views?" and confirm the tool-call panel shows ViewMapper and the answer lists centrality scores
+  * in Claude Desktop with a `jdbc:trino://` connection to a live server, ideally older than 483, list catalogs and analyze a schema with views, and confirm the 483 driver connects without errors
+  * fold both Claude Desktop checks into the MCP server's `TESTING.md`, with the rule that a check passes on numbers only a tool produces, since a model that skips tools still writes plausible prose
+  * once `483a` is published, make `v483` the default branch
 * PR wrangling
   * create branch `modernize` off `v483`
   * commit changes on branch

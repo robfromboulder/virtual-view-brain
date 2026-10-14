@@ -2,7 +2,7 @@
 
 > Bring ViewMapper's Claude integration, MCP server and image up to current practice, keeping the architecture and the Sonnet 5.5 default.
 >
-> **Branch:** `modernize` · **Blocked-by:** `TRINO_483`
+> **Branch:** `modernize` · **Blocked-by:** —
 
 ## Running Tests
 

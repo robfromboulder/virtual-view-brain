@@ -1,6 +1,6 @@
 # ViewZoo: Technical Approach
 
-> V5, 2026-10-13.
+> V6, 2026-10-13.
 
 This document describes the proposed approach for addressing the problems defined in `VZOO_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -34,7 +34,7 @@ Underneath it sits one storage interface with two implementations, selected at s
 
 **View operations are synchronized.** Metadata methods are serialized rather than made concurrent. For a workload of occasional DDL against a small in-memory map, correctness is worth more than the throughput given up, and it removes an entire class of bug from a connector whose failure mode would be losing view definitions.
 
-**A branch per Trino version, with `main` effectively unused.** Trino numbers releases without semantic versioning and can break plugin interfaces in any of them, so a branch is compatible with exactly one Trino release. New branches are cut unchanged from the previous branch and never merged back, and contributions target a version branch. The upgrade itself lands on the new branch by reviewed PR, so it is reviewed and tested before other work builds on it. The cost is that fixes must be carried forward by hand; the benefit is that a user on an older Trino has something that actually compiles against it.
+**A branch per Trino version, following the ecosystem's release convention.** Trino numbers releases without semantic versioning and can break plugin interfaces in any of them, so a branch is compatible with exactly one Trino release. The cost is that fixes must be carried forward by hand; the benefit is that a user on an older Trino has something that actually compiles against it.
 
 **Filesystem storage is treated as a feature, not a fallback.** Views as JSON files in a directory means view definitions can live in a repository with history, review and branching — the same handling as application code, without a database or a file share. This is the reason the filesystem backend exists alongside the database one rather than being a development shortcut.
 

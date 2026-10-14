@@ -1,6 +1,6 @@
 # ViewMapper: Technical Approach
 
-> V4, 2026-08-02.
+> V5, 2026-10-13.
 
 This document describes the proposed approach for addressing the problems defined in `VMR_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -38,7 +38,7 @@ That interface is what keeps the split honest. The agent can be driven from a te
 
 **Claude models only, and the output is presented as an aid rather than an authority.** The guidance behavior depends on a model that reasons well about when a diagram would be useless and what to offer instead, and quality on other model families has not been established — other families are believed workable and would need substantial testing to reach parity. The consequence is accepted rather than hidden: a user supplies an Anthropic API key, and results are documented as requiring review by someone qualified before decisions rest on them, because a plausible wrong answer is the failure mode this design cannot rule out.
 
-**Public releases are tagged with the Trino version plus a letter — `479a`, `479b` — and never `latest`.** Users paste a tag into a Claude Desktop config file and keep it for months, so an ambiguous tag would give two users different software under the same name and make caching behavior unpredictable. Local builds use the bare version and never leave the machine.
+**Releases follow the ecosystem's release convention, and an older version branch is frozen.** Users paste a tag into a Claude Desktop config file and keep it for months, so the source behind that tag has to stay findable and never change. A frozen branch also leaves its release's defects in place, including `479a`'s retired default model: the remedy for a user on an old release is moving to the current one, not a patch. Local builds use the bare version and never leave the machine.
 
 **Contributions go through Claude Code, design first.** The workflow is to discuss the change, record the design decision, then implement, test and update the documentation in the same session. The intent is that the reasoning behind a change is captured while it is still in someone's head rather than reconstructed later.
 
