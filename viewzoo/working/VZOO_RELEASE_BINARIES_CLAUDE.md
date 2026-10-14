@@ -2,7 +2,7 @@
 
 > Publish a prebuilt plugin for each Trino version as a GitHub release, built by a GitHub Actions workflow when a release tag (`483a`, `483b`, …) is pushed.
 >
-> **Branch:** `release-binaries` · **Blocked-by:** `TRINO_483`
+> **Branch:** `release-binaries` · **Blocked-by:** —
 
 ## Running Tests
 

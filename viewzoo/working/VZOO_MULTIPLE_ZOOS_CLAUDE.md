@@ -2,7 +2,7 @@
 
 > Document and test running several ViewZoo catalogs, up to one per tenant, with isolated storage, and measure how many views a catalog can hold.
 >
-> **Branch:** `multiple-zoos` · **Blocked-by:** `TRINO_483`
+> **Branch:** `multiple-zoos` · **Blocked-by:** —
 
 ## Running Tests
 

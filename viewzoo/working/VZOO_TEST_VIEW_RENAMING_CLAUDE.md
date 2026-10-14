@@ -2,7 +2,7 @@
 
 > Add `ALTER VIEW ... RENAME TO` test coverage to ViewZoo's test suite.
 >
-> **Branch:** `test-view-renaming` · **Blocked-by:** `TRINO_483`
+> **Branch:** `test-view-renaming` · **Blocked-by:** —
 
 ## Running Tests
 
