@@ -16,8 +16,9 @@ Key references in the owning lobe:
 ## What changes
 
 - Agent:
-  - `pom.xml` — LangChain4j to 1.22, or replace it with `anthropic-java`.
-  - `ViewMapperAgent.java` — effort, thinking blocks returned across tool calls, refusal handling, and a test seam that keeps the reasoning layer testable without API calls.
+  - `pom.xml` — replace LangChain4j with `anthropic-java`.
+  - `ViewMapperAgent.java` — the SDK's tool runner, effort, thinking blocks returned across tool calls, refusal handling with server-side fallback, and a test seam that keeps the reasoning layer testable without API calls.
+  - The six tool executors — re-declared as the SDK's annotated tool classes, keeping their contracts.
   - `AnthropicConfig.java` — effort and timeout settings, with environment overrides alongside `ANTHROPIC_MODEL`.
   - The system prompt — audited against current prompting guidance, then rewritten where it over-prescribes.
 - MCP server:
@@ -32,8 +33,8 @@ Key references in the owning lobe:
 
 | Existing code | Interaction | Risk |
 |---|---|---|
-| `MockChatModel` and the agent tests | Depend on LangChain4j's `ChatModel` | Moving to the official SDK needs a new seam to keep tests free of API calls |
-| The six tool executors | Registered by annotation | Have to keep their contracts under whichever integration is chosen |
+| `MockChatModel` and the agent tests | Depend on LangChain4j's `ChatModel` | Replaced by a new seam that keeps tests free of API calls |
+| The six tool executors | Registered by LangChain4j's `@Tool` | Re-declared for the SDK's tool runner; each keeps a test that goes through the runner's JSON deserialization |
 | MCP server's conversation history | Replayed into each subprocess call | Must keep working under the 2.x API |
 
 ## Testing approach
@@ -42,11 +43,10 @@ Unit tests with a mock model stay green, plus new cases for refusals and timeout
 
 ## Implementation sequence
 
-1. Decide the integration (open issue 1).
-2. Agent: integration, effort, thinking blocks, refusals, timeouts.
-3. System prompt audit and rewrite, checked live on all four datasets.
-4. MCP server on 2.x.
-5. Docker base, docs, and release.
+1. Agent: move to `anthropic-java`, effort, thinking blocks, refusals, timeouts.
+2. System prompt audit and rewrite, checked live on all four datasets.
+3. MCP server on 2.x.
+4. Docker base, docs, and release.
 
 ## Scope boundary — what this does NOT include
 
@@ -56,7 +56,6 @@ Unit tests with a mock model stay green, plus new cases for refusals and timeout
 
 ## Open issues
 
-1. Stay on LangChain4j (upgraded to 1.22) or move to the official Anthropic Java SDK. As of 1.22, LangChain4j handles thinking blocks (`returnThinking`/`sendThinking`) and an explicit `maxTokens`. It has no effort setting or refusal handling. Effort could only be sent through its `customParameters` map, untested and possibly colliding with its own `output_config`. Weigh that against rebuilding the mock-model test seam on the official SDK.
-2. Which effort level for Sonnet 5.5. Its default is `high`; start the measurement at `medium` for multistep tool use.
-3. Timeout values for the agent and the MCP subprocess, and whether a long question should report progress rather than just wait.
-4. Whether MCP 2.x offers an output form that Claude Desktop renders as a diagram more reliably than Mermaid text (#7).
+1. Which effort level for Sonnet 5.5. Its default is `high`; start the measurement at `medium` for multistep tool use.
+2. Timeout values for the agent and the MCP subprocess, and whether a long question should report progress rather than just wait.
+3. Whether MCP 2.x offers an output form that Claude Desktop renders as a diagram more reliably than Mermaid text (#7).

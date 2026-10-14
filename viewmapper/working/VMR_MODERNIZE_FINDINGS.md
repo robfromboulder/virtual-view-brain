@@ -19,7 +19,7 @@ Keep the two-module design, the subprocess interface, and the six tools. Bring e
 
 | Aspect | Detail |
 |---|---|
-| Claude integration | LangChain4j 1.22, or the official Anthropic Java SDK (`anthropic-java`) with its tool runner — decided in this item |
+| Claude integration | The official Anthropic Java SDK (`anthropic-java`) with its tool runner, replacing LangChain4j |
 | Effort | Set explicitly and chosen by measurement on the bundled datasets, rather than left at the default |
 | Thinking | Thinking blocks are returned unchanged with each tool result, as current models require |
 | Refusals | `stop_reason: "refusal"` is handled and reported to the user, with server-side fallback enabled where the integration supports it |
@@ -30,11 +30,13 @@ Keep the two-module design, the subprocess interface, and the six tools. Bring e
 | Diagrams | The tool description and result shape steer Claude Desktop to render Mermaid rather than show its source; 2.x output options are investigated (#7) |
 | Image | A pinned, current Ubuntu base for both Docker stages |
 
+- **The official SDK over LangChain4j 1.22** — effort, refusal handling and server-side fallback are first-class there. LangChain4j 1.22 has no refusal handling and could send effort only through an untested `customParameters` map that may collide with its own `output_config`. Rewriting the six tool classes and the mock-model seam is a one-time cost.
 - **Same shape, current parts** — the design decisions in the ViewMapper approach docs still hold. What has aged is the dependencies and the assumptions built into the prompt and the settings.
 - **The default model stays a Sonnet** — Sonnet 5.5, already set by the Trino 483 upgrade, at half Opus 5.5's per-token price for users paying with their own API key.
 
 ## Alternatives considered
 
+- **Stay on LangChain4j, upgraded to 1.22** — keeps `MockChatModel` and the `@Tool` executors unchanged, at the cost of effort and refusals.
 - **Stop at the model swap** — `483a` works with Sonnet 5.5 and LangChain4j 1.10, but without effort control, refusal handling or a prompt written for the model it runs on.
 - **Default to Opus 5.5** — Anthropic's current default model, but twice the per-token price. `ANTHROPIC_MODEL` still lets users choose it.
 
@@ -45,4 +47,4 @@ Keep the two-module design, the subprocess interface, and the six tools. Bring e
 
 ## Reversals
 
-- `VMR_AGENT_APPROACH.md`, Key Design Decisions — "LangChain4j for the model integration." It is reversed only if this item chooses the official SDK.
+- `VMR_AGENT_APPROACH.md`, Key Design Decisions — "LangChain4j for the model integration." Reversed: this item moves to the official SDK.
