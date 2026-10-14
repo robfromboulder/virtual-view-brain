@@ -14,4 +14,4 @@ Run the steps from the platform runbook first (if the brain has one), verifying 
 mvn clean package && mvn test -Pintegration
 ```
 
-**Expected:** ~30s with Docker running; 8 tests pass, 0 failures — four tests (including `testViewRenaming`) on each of `testjdbc` and `testfs`.
+**Expected:** the package step runs 14 unit tests, including `TestViewZooMetadata` and `TestViewZooLocalFileSystemClient`, with 0 failures. The integration step takes ~30s with Docker running; 8 tests pass, 0 failures — four tests (including `testViewRenaming`) on each of `testjdbc` and `testfs`.

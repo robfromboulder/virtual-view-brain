@@ -18,6 +18,7 @@ Key references in the owning lobe:
 - `ViewZooMetadata` — `renameView` override; name validation extracted to a shared helper
 - `ViewZooStorageClient` — new `renameView` method, implemented by `ViewZooJdbcClient` and `ViewZooLocalFileSystemClient`
 - `TestViewZooIntegration` — `testViewRenaming` plus two assertion helpers
+- `TestViewZooMetadata`, `TestViewZooLocalFileSystemClient` — new unit tests for rename logic the integration suite can't reach
 
 ## Interaction with existing code
 
@@ -28,7 +29,7 @@ Key references in the owning lobe:
 
 ## Testing approach
 
-Automated: `testViewRenaming` must pass on both catalogs alongside the existing integration tests. No manual testing beyond running the suite. Manual steps live in `VZOO_TEST_VIEW_RENAMING_TESTING.md`.
+Automated: the new unit tests must pass under `mvn clean package`, and `testViewRenaming` must pass on both catalogs alongside the existing integration tests. No manual testing beyond running the suite. Manual steps live in `VZOO_TEST_VIEW_RENAMING_TESTING.md`.
 
 ## Implementation sequence
 

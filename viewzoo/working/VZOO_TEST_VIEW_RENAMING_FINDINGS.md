@@ -13,10 +13,11 @@ ViewZoo's test cases don't include `ALTER VIEW x RENAME TO y` variations. View r
 | Aspect | Detail |
 |---|---|
 | Metadata | `renameView` validates the target name with the same rules as `createView`, rejects a missing source or an existing target, then updates storage before the in-memory cache so a storage failure leaves the cache unchanged |
-| JDBC storage | One `UPDATE` of the `(schema, view_name)` key — atomic |
-| Filesystem storage | `Files.move` with `ATOMIC_MOVE`; source and target share one directory, so the move is a same-filesystem rename |
+| JDBC storage | One `UPDATE` of the `(schema, view_name)` key — atomic; zero rows updated is `ViewNotFoundException`, a unique-key violation is `ALREADY_EXISTS` |
+| Filesystem storage | Hard link to the target, then delete the source. `Files.move` without `ATOMIC_MOVE` only checks for the target before `rename(2)`, which still replaces it, so a racing writer loses its view; `link(2)` refuses an existing target atomically. A crash between link and delete leaves a duplicate, not a lost view. A missing source file is `ViewNotFoundException`, matching JDBC |
+| Stale cache | The cache loads once at startup, so another coordinator or an external edit can make it disagree with storage. Both storage clients enforce source-exists and target-absent themselves rather than trusting the cache check, and when storage reports the source missing, `renameView` evicts it from the cache |
 | Definition | Unchanged by rename — the stored catalog/schema is the resolution context for unqualified names, not the view's own name |
-| Tests | One integration test per catalog: in-schema rename, cross-schema rename, existing target, missing source, invalid target name, persistence across restart |
+| Tests | One integration test per catalog: in-schema rename, cross-schema rename, existing target, missing source, invalid target name, persistence across restart. Trino's engine rejects existing-target and missing-source before calling the connector, so `TestViewZooMetadata` (with a fake storage client) covers the connector's own checks and `TestViewZooLocalFileSystemClient` covers the no-overwrite move |
 
 ## Alternatives considered
 
@@ -27,4 +28,4 @@ ViewZoo's test cases don't include `ALTER VIEW x RENAME TO y` variations. View r
 ## What this doesn't solve
 
 - Test coverage for other DDL operations beyond rename
-- Pre-existing ordering in `createView`, which updates the cache before storage
+- Bugs found in review and filed instead of fixed here: path characters in view names (viewzoo#17), statement leaks in the JDBC client's older methods (viewzoo#19), `createView` updating the cache before storage (viewzoo#20). Filesystem rename after external file deletion (viewzoo#18) was filed, then fixed here after a second review

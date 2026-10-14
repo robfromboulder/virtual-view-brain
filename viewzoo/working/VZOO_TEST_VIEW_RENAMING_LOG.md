@@ -38,3 +38,39 @@ While this session worked, another session ran the TRINO_483 closeout in the sam
 
 - Issue viewzoo#9 is closed although the work hasn't merged. The PR body says `Refs #9`, so Rob can decide whether to reopen it.
 - Remaining burndown: code review, full rebuild and retest on the PR code, and reviewer feedback.
+
+---
+
+# Two review passes harden rename (2026-10-13)
+
+**Session ID**: `30137d7e-d5f1-4e92-879a-f17b98ff87b0`
+
+Continuation of the same session by Rob Dickinson (robfromboulder), with Claude as co-author, after the first closeout. A rebuild and retest on the PR code passed, then two `/code-review medium` passes run by Rob on PR #16 drove two rounds of fixes. Rob directed each round: fix the in-scope findings, add unit tests, and file the remaining bugs as GitHub issues rather than work items. The PR ended at 14/14 unit and 8/8 integration tests and now closes viewzoo#18.
+
+## First review
+
+The review's main finding was that the rename's safety rested on the in-memory cache, which loads once at startup and can disagree with storage when coordinators share it or files are edited externally. `ATOMIC_MOVE` silently replaced an existing view file on POSIX, and a JDBC `UPDATE` matching zero rows reported success, so the view vanished at restart. Claude dropped `ATOMIC_MOVE`, made zero rows a not-found error, mapped a unique-key violation to `ALREADY_EXISTS`, and kept error causes.
+
+The review also showed the integration test's existing-target and missing-source cases were caught by Trino's `RenameViewTask` before reaching the connector, so they proved nothing about the connector's own checks. `TestViewZooMetadata`, with a fake storage client, and `TestViewZooLocalFileSystemClient` were added to cover them. The first `ConnectorViewDefinition` fixture failed because the SPI rejects an empty column list, and this TestNG version's `assertThrows` returns void, so `expectThrows` is used where the exception is inspected.
+
+Path characters in names, a stale cache after external file deletion, and statement leaks in older JDBC methods were filed as viewzoo#17, #18 and #19.
+
+## Second review
+
+The second pass showed the first fix overclaimed: without `ATOMIC_MOVE`, `Files.move` checks for the target and then calls `rename(2)`, which still replaces a file written in between. Claude switched to a hard link then delete, because `link(2)` refuses an existing target atomically and a crash between the steps leaves a duplicate rather than a lost view. Hard links work on the container filesystem the `testfs` catalog uses.
+
+The same pass found that a view missing from storage stayed listed and un-renamable. The filesystem client now reports a missing source as `ViewNotFoundException`, matching JDBC, and `renameView` evicts the stale cache entry, which resolves viewzoo#18 within this PR. A shared path helper and `SchemaTableName`-formatted messages removed duplication.
+
+`createView` updating the cache before storage was filed as viewzoo#20. A finding that the integration test leaks views across runs was rejected: test storage lives inside the containers, which teardown removes.
+
+## Decisions
+
+Rob left viewzoo#9 closed, consistent with how other issues were closed when they became work items, so the PR keeps `Refs #9`.
+
+## Concurrent sessions
+
+Uncommitted `VMR_MODERNIZE` edits from another session were in the brain tree at this closeout and were left out of this commit.
+
+## Open threads
+
+- Remaining burndown: a final check of the PR description against the code, and reviewer feedback.
