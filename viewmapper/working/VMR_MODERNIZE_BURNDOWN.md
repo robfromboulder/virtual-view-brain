@@ -34,5 +34,7 @@ Everything between working code and a merged PR.
   * the SDK builds a tool's schema from a Jackson-annotated class as strict, with every field required, and refuses a class with no fields; optional parameters (`limit`, `maxNodes`) now state their default in the description, and the two no-argument tools are declared from a hand-built `BetaTool`
   * `listSchemas` documented `catalog` as optional for catalog-bound connections, but both providers always required it, so strict mode changed nothing there
   * a refusal, a `max_tokens` stop, or a tool loop past 25 model calls now fails the run instead of returning partial text
+  * the image moved to `ubuntu:resolute-20260927` (26.04 LTS), whose archive carries Python 3.14 and OpenJDK 25, so the deadsnakes and Adoptium repositories are gone; the 26.04 base lacks `addgroup` and blocks system `pip`, so the Dockerfile uses `groupadd`/`useradd -m` and a venv
+  * the image grew from 671MB to 792MB, mostly from a larger base layer and the agent JAR gaining 43MB of SDK dependencies (Kotlin runtime, OkHttp, JSON schema generator)
 * close #7 and #8 from the PR
 * after merge, run `./release.sh` with the next letter, pull the image, and confirm a question in Claude Desktop calls the tools
