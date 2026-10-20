@@ -8,10 +8,11 @@
 
 Run the steps from the platform runbook first (if the brain has one), verifying results match the expectations documented there. Then run the work-specific step(s) below.
 
-### Step N — <work-specific test> ← NEW in this branch
+### Step 1 — Storage error tests ← NEW in this branch
 
 ```bash
-# fill in once the work item has tests
+mvn test -Dtest=TestViewZooLocalFileSystemClient
+mvn clean package -DskipTests && mvn test -Pintegration -Dtest='TestViewZooJdbcClient,TestViewZooIntegration'
 ```
 
-**Expected:** <runtime, pass/fail expectations, which tests are active>
+**Expected:** all pass. Before the fix, on a macOS host, 10 unit and 17 integration tests fail. The integration run takes about 3½ minutes, longer before the fix because each crashing case waits 30 s and recreates the Trino container. `testCaseInsensitiveCollisionRejected` skips itself on a case-sensitive filesystem, and `testFileNameCollision` checks the rename message only on `testfsmount` under a macOS host.
