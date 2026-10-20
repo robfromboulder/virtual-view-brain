@@ -198,3 +198,23 @@ Rob Dickinson (robfromboulder), with Claude as co-author, reviewed PR #23, which
 
 - Rob asked what belonged in the findings. The rename finding's note that create and drop still updated the cache first was removed as superseded, and a new finding records that storage-first ordering holds only for all-or-nothing storage writes, citing #28 and #29, with the reason the JDBC close case was not filed.
 - Claude closed #20 by hand after the merge, since closing keywords do not fire on version-branch PRs.
+
+---
+
+# JDBC client tests reviewed and merged (2026-10-19)
+
+**Session ID**: `f006cd89-48a7-4233-bb1e-741c4507a35e`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, took PR #30 (Testcontainers tests for `ViewZooJdbcClient`, fixing #26) through four medium-effort code reviews, fixing the in-scope findings after each. The PR merged into `v483` as `20dd781`, and Claude closed #26 by hand. The session ran without a work item.
+
+## Review rounds
+
+- First review: Rob had Claude fix five findings. The class joined the `integration` group. The tracking proxy now wraps only results whose declared return type is a `Statement` or `ResultSet` interface and skips handles already tracked. The production `ObjectMapper` setup moved into `ViewZooStorageClientProvider.createObjectMapper()` for the test to share. Assertions compare every field of a stored definition, since neither `ConnectorViewDefinition` nor `ViewColumn` implements `equals`. The constructor's error message got its separator and cause. Rob skipped the hard-coded Testcontainers version and the `postgres:16` image duplicated from the Compose file.
+- Second review: it objected to the `integration` group that the first had asked for. Rob asked whether consistency with the existing integration test was the strongest argument. Claude said the stronger one was the rule behind it, that the default build stays free of Docker. Rob kept the group and Claude updated the PR description, which still claimed `mvn test` ran the class. Claude also added a parse-failure resource test, used the shared mapper in the filesystem client test, chained causes on the remaining JDBC exceptions, and set `copy-dependencies` to runtime scope. Claude first confirmed that a package build had been copying test and provided jars (testcontainers, docker-java, testng, trino-main) into `target/`, outside the plugin directory.
+- Rob noticed the cause chaining overlapped #24 and chose to back all of it out of #30, so #24 fixes JDBC and filesystem together; this included the constructor separator. The PR had changed `ViewZooJdbcClient` only for #24, so Claude restored the file from `v483`.
+- Third review: Rob had Claude remove the Docker-availability skip, so the class fails without Docker like `TestViewZooIntegration`. Claude also renamed the reconnect test to `testConstructorKeepsExistingViews`, since every client call already opens a new connection, added an `executeSql` helper, dropped unused imports, and split the CLAUDE.md integration-test section into the Compose test and the Testcontainers test. Claude recommended skipping the proxy's `unwrap` gap, since a tracked delegate closed through a raw handle still counts as closed.
+- Fourth review: everything it raised repeated an earlier decision or was negligible. Claude recommended stopping the reviews, and Rob merged after a full run: 21 unit and 19 integration tests passed.
+
+## Lessons
+
+- Repeated medium reviews of one PR re-raise settled trade-offs, the `integration` group most of all. Recording that decision as a finding is meant to stop the churn.

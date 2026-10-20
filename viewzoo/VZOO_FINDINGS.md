@@ -1,6 +1,6 @@
 # ViewZoo: Implementation Findings
 
-> V5, 2026-10-19.
+> V6, 2026-10-19.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -39,3 +39,7 @@ GitHub acts on `Closes #N` only when a PR merges into the default branch. ViewZo
 `createView`, `dropView` and `renameView` write storage first and update the cache only when storage succeeds (PR #23, `10abcc1`, fixing #20). That keeps cache and storage in agreement only if a failed storage write changes nothing. Filesystem `createView` breaks this: `Files.writeString` empties the file before writing, so a failed write leaves a corrupt file that stops the catalog from loading on restart (#28). `createView` also doesn't follow §4's rule of trusting storage over the cache: without `OR REPLACE` it checks only the cache, and both storage clients overwrite (#29).
 
 The PR #23 review also raised that a JDBC connection close that throws after autocommit reports a committed write as failed, leaving the cache behind storage. It was not filed: closing a PostgreSQL connection rarely throws after a successful commit, and the old cache-first order failed in the mirror-image case.
+
+## 7. Docker-dependent tests belong in the `integration` group
+
+The default `mvn test` stays free of Docker, so any test that needs Docker joins the TestNG `integration` group, even a self-contained Testcontainers test that needs no built plugin. Skipping such a test when Docker is absent was rejected: under `-Pintegration` the Compose-based tests fail without Docker, so a skip would let a run pass with no JDBC coverage. The cost is that `TestViewZooJdbcClient` (PR #30) runs only under `-Pintegration`. Code reviews flag this as a coverage gap on every pass; it is a deliberate choice, not an oversight.
