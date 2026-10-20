@@ -17,6 +17,5 @@ Everything between working code and a merged PR.
 * docs
   * take screenshots
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
-* comment on #14 that JDBC mode now refreshes live, and leave it open for filesystem mode
 * carry the fix forward to the next version branch when it is cut
 * follow-on items from `viewzoo/archive/VIEWZOO_PG_NOTES.md`: small JDBC fixes, connection pool and configurable table, `jsonb` and metadata columns, history table

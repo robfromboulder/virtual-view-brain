@@ -17,4 +17,3 @@ Everything between working code and a merged PR.
 * docs
   * take screenshots
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
-* comment on #10 with what shipped; leave it open for the sandbox discussion

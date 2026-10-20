@@ -26,7 +26,7 @@ Each catalog gets its own storage: its own directory, or its own Postgres schema
 - **A `viewzoo.jdbc_table` (and schema) configuration property** — what #10 first proposed. It works, but `currentSchema` already gives the same separation, and per-schema grants give stronger isolation. It stays available if someone needs two catalogs in one schema.
 - **Make `listSchemaNames` return each schema once** — it currently returns a schema once per view, but Trino de-duplicates schema names before showing them, so nothing a user sees changes. Not worth a code change here.
 - **Refuse to start when another catalog uses the same storage** — catches the mistake, but catalogs in separate Trino clusters can't see each other, and sharing storage on purpose is legitimate.
-- **A per-user private sandbox schema** (from the #10 discussion) — a different problem, private drafts rather than tenancy, with open questions about cross-references, security mode and refresh. It stays open in #10 for further discussion.
+- **A per-user private sandbox schema** (from the #10 discussion) — a different problem, private drafts rather than tenancy, with open questions about cross-references, security mode and refresh. Declined (Rob, 2026-10-19): routing storage by session user is authorization inside storage, against the store holding what it is given; the README shows the sandbox built from per-user schemas and Trino access control, or a local filesystem catalog.
 
 ## What this doesn't solve
 

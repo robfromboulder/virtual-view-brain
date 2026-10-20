@@ -30,6 +30,7 @@ Key references in the owning lobe:
 | `createView` updates the cache before storage | Unchanged here | A failed write fires no trigger, so the phantom view persists until the next change to the table triggers a reload; that fix is a separate item |
 | `ViewZooJdbcClient` startup DDL | Gains function and trigger creation | Extra privileges are needed; `CREATE OR REPLACE TRIGGER` needs Postgres 14+ |
 | `VZOO_WHY_VIEWZOO` work item | Adds the startup-refresh limitation and possibly the PG connector test catalog this item edits | Whichever merges second rebases onto the other |
+| `VZOO_FS_REFRESH` work item | Needs the same reload-and-swap in `ViewZooMetadata` | Whichever merges first builds it; the other rebases onto it |
 | One `DriverManager` connection per operation | The listener adds one long-lived connection per coordinator | Holds one slot in the connection limit |
 
 ## Testing approach
@@ -53,7 +54,7 @@ The existing `testjdbc`/`testfs` data-provider suite must stay green. Testing tw
 ## Scope boundary — what this does NOT include
 
 - README positioning: "Why ViewZoo?", the two modes as workflows, pairing with the PG connector (`VZOO_WHY_VIEWZOO`).
-- Refresh for filesystem storage (timer, reload function, or fall-through on cache miss); #14 stays open for it.
+- Refresh for filesystem storage (timer, reload function, or fall-through on cache miss); `VZOO_FS_REFRESH` covers it.
 - The small JDBC fixes: cache updated before the storage write, the missing ": " in the startup error.
 - A connection pool, configurable schema or table name, `jsonb` definitions, metadata columns, a history table, multi-tenancy (#10), security-mode enforcement (#13).
 

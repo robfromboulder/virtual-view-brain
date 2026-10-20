@@ -18,6 +18,7 @@ Key references in the owning lobe:
 - `README.md`:
   - a "Running Multiple Catalogs" section: one directory or one Postgres schema per catalog, an example catalog file using `currentSchema`, the schema and `CREATE` grant it needs first, the warning that shared storage (including the default `public` schema) merges catalogs, and that filesystem and JDBC catalogs can be mixed.
   - the catalog-per-tenant pattern: Trino access control per catalog, a Postgres user per tenant limited to its schema, and fully qualified names inside views.
+  - a per-user sandbox built from what exists: a schema per user enforced by Trino access control, or a local Trino with a filesystem catalog for drafting views before a PR.
   - under Limitations, the measured view count and startup time.
 - `src/test/docker/` — a Postgres init script creating a second schema, and a `testjdbc2` catalog using `currentSchema` for it.
 - `TestViewZooIntegration.java` — a test that views created in one JDBC catalog don't appear in the other.
@@ -42,7 +43,7 @@ Integration tests against the docker-compose stack: the existing `testjdbc`/`tes
 
 ## Scope boundary — what this does NOT include
 
-- A per-user sandbox schema (#10 discussion), which stays open for discussion.
+- A per-user sandbox schema mapped to separate storage per user (#10 discussion); declined, beyond the README paragraph above.
 - A table-name configuration property.
 - Refresh (#14) and security-mode enforcement (#13).
 

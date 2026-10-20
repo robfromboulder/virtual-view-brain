@@ -30,7 +30,8 @@ Key references in the owning lobe:
 |---|---|---|
 | `VZOO_WHY_VIEWZOO` work item | Both edit the README | Whichever merges second rebases its README edit onto the other |
 | `VZOO_PG_REFRESH` work item | Adds privileges the JDBC user needs (creating a function and a trigger) | The guide's JDBC section must be updated when it merges |
-| Issue #13 | Would make the connector enforce a security-mode policy | The guide's security-mode section must be updated if it lands |
+| `VZOO_SECURITY_MODE` work item | Would make the connector enforce a security-mode policy | The guide's security-mode section must be updated if it lands |
+| `VZOO_STORAGE_ERRORS` work item | One bad file or row no longer stops the catalog loading | The guide's statement that it does must be updated if it lands first |
 
 ## Testing approach
 
@@ -45,7 +46,7 @@ No automated tests change. Manual checks are in `VZOO_SECURITY_GUIDE_TESTING.md`
 ## Scope boundary — what this does NOT include
 
 - A length check on view definitions, or any other code change.
-- Enforcing a security-mode policy (#13).
+- Enforcing a security-mode policy (`VZOO_SECURITY_MODE`).
 - A threat model or security review of Trino itself.
 
 ## Open issues

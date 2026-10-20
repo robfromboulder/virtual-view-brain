@@ -28,5 +28,5 @@ A `SECURITY.md` at the repository root, in GitHub's conventional form, so it app
 ## What this doesn't solve
 
 - The missing length check remains; only the guide mentions it.
-- Policy on security modes stays unenforced until #13 is decided.
+- Policy on security modes stays unenforced until the `VZOO_SECURITY_MODE` work item lands.
 - The guide has to be carried forward to each new version branch, and updated when the default branch changes.
