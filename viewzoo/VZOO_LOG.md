@@ -382,3 +382,33 @@ Rob Dickinson (robfromboulder), with Claude as co-author, took the storage error
 
 - Carry the change forward when the next version branch is cut.
 - #28 (atomic filesystem writes) and #29 (a plain create refusing to overwrite) remain; #29 closes the overwrite risk that skipping introduced.
+
+---
+
+# Safe create built, merged and closed out (2026-10-20)
+
+**Session ID**: `b90555b8-6e82-414d-b144-614ecf1033dc`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, took the safe create work item from a plan with no code to a merge in the same session that closed out storage errors. Claude implemented it in two commits on `safe-create`, opened #32, and fixed findings from four code reviews. Rob chose to document the hard-link requirement in the README. Claude rebase-merged #32 into `v483` and ran the work-item closeout.
+
+## Lineage
+
+- Before starting, Rob judged the "carry the change forward when the next version branch is cut" burndown item unnecessary for this project. Claude removed it from the seven open work items that had it, leaving it in the append-only log, and committed that separately.
+- Claude read the item and found the plan partly stale after storage errors merged: `isExactFile` had become `requireNoConflictingFile`, and a truncated file was now skipped rather than fatal. #28 and #29 had been closed when the item was created, so the previous closeout entry's "#28 and #29 remain" meant the work, not the issues.
+- Rob settled the plan's three open questions on Claude's recommendations: leftover temp files are ignored, temp files are named `.viewzoo-<uuid>.tmp`, and the replace race is accepted.
+- Claude branched off `v483`. Adding `replace` to the storage `createView` changes its signature, so the failing-tests commit carried that plumbing too. Against the old storage code, 2 unit and 4 integration tests failed and nothing else did. The fix made all 62 unit and 68 integration tests pass. The README listed no filesystem requirements, so the plan's conditional README change didn't trigger.
+- Rob asked whether the plan was complete before archiving it early. Claude found every item done and recommended moving three things to the burndown: a README decision on hard links, the deviation notes, and setting the manual test plan to "None". Rob agreed, and the plan moved to `archive/`.
+- Rob had Claude push and open draft #32. A high review returned nine findings. Claude advised skipping six as decided costs: hard links, `fsync`, the cache going stale on refusal, leftover temp files, the replace race, and line length. Rob had Claude fix two in tests (the fake storage's map going out of sync, and a duplicated catalog-directory mapping) and document one: a replace swaps in a new file, dropping a hand-set mode or owner and replacing a symlink.
+- Rob ran two medium reviews of the test-fix commits. From the first, Rob had Claude fix two (cleanup leaking a cached view, and a path built three times). Five findings about the fake storage's rename not modelling real storage were skipped as out of scope, since this PR doesn't change rename. From the second, Rob had Claude fix four (a missing not-cached precondition, cleanup order, a comment that restated the code, and too-broad JDBC cleanup). Claude suggested stopping reviews of test-only follow-ups, since each pass found less, only in the previous pass's fixes.
+- Rob had Claude add the hard-link requirement to the README, plus a note that a leftover temp file is ignored and safe to delete, then commit, push, merge and close out.
+
+## Closeout
+
+- The decision record's rationale, rejected alternatives, Rob's three decisions and the accepted costs folded into a new ViewZoo finding on safe create.
+- Three findings reversed and were reconciled in place. Storage-first ordering no longer says create writes in place and checks only the cache. Rename by hard link now says create also needs hard links. Skipping unreadable entries now says a plain create refuses a skipped entry and only `OR REPLACE` overwrites it.
+- The runbook's checks are covered by the ViewZoo repo's existing test commands, and the manual test plan held none, so nothing folded into its `CLAUDE.md`.
+- No scope or approach claim changed: the cache is still loaded once and never refreshed.
+
+## Open threads
+
+- The metadata test's fake storage doesn't model real rename refusals (existing target, missing source, `failWrites`), and no test covers storage refusing a rename the cache allowed.

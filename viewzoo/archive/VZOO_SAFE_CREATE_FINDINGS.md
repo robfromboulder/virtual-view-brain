@@ -4,7 +4,7 @@
 
 Two defects in `createView` break the rule that a storage write either succeeds completely or changes nothing, which storage-first ordering depends on.
 
-- **Writes in place (#28).** Filesystem `createView` uses `Files.writeString`, which empties the file first. A write that fails partway, e.g. on a full disk, leaves a truncated `schema.table.json`, for a new view or a replaced one; the old definition is lost and, until `VZOO_STORAGE_ERRORS` lands, the catalog won't load on restart.
+- **Writes in place (#28).** Filesystem `createView` uses `Files.writeString`, which empties the file first. A write that fails partway, e.g. on a full disk, leaves a truncated `schema.table.json`, for a new view or a replaced one; the old definition is lost, and the view is skipped on restart.
 - **Checks only the cache (#29).** Without `OR REPLACE`, `ViewZooMetadata.createView` checks the in-memory cache, then both clients overwrite unconditionally: JDBC with `on conflict do update`, the filesystem with `writeString`. A view added to storage after the cache loaded — by another coordinator (#10) or an outside change (#14) — is silently replaced instead of failing with `ALREADY_EXISTS`.
 
 The two must be fixed together: the obvious fix for #28, a temp file moved into place with `ATOMIC_MOVE`, silently replaces an existing target on POSIX, which is exactly what #29 forbids.
@@ -37,6 +37,7 @@ Write the definition to a temp file in the same directory. Without `replace`, ha
 - Filesystems without hard links, such as some network or FUSE mounts, now can't create views either.
 - The cache still doesn't learn about a view that storage refused; it stays stale until restart.
 - Without `fsync`, a power loss can still lose a completed write.
+- A replace swaps in a new file rather than writing into the old one, so it drops a mode or owner set on the view file by hand and replaces a symlinked view file with a regular one. Keeping either would mean writing in place, which is what made writes non-atomic.
 
 ## Reversals
 

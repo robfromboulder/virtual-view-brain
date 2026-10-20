@@ -18,8 +18,8 @@ Key references in the owning lobe:
 - `storage/ViewZooStorageClient.java` — `createView` takes `boolean replace`.
 - `ViewZooMetadata.java` — pass `replace` through. Keep the cache check as a fast path; storage is now the authority.
 - `storage/ViewZooLocalFileSystemClient.java` — `createView`:
-  1. Validate the name and run the case-collision check (`isExactFile`) before writing anything.
-  2. Write the definition to a temp file in the view directory, named so `getViews` never loads it: hidden (leading `.`) and not ending in `.json`.
+  1. Validate the name and run the case-collision check (`requireNoConflictingFile`) before writing anything.
+  2. Write the definition to a temp file in the view directory named `.viewzoo-<uuid>.tmp`: hidden and not ending in `.json`, so `getViews` never loads it, and a fixed 49 bytes, so it fits the 255-byte limit for any view name.
   3. Without `replace`: `Files.createLink(path, temp)`; `FileAlreadyExistsException` becomes `ALREADY_EXISTS`. With `replace`: `Files.move(temp, path, ATOMIC_MOVE)`.
   4. Delete the temp file in `finally`.
 - `storage/ViewZooJdbcClient.java` — `createView`: without `replace`, a plain `INSERT`, mapping `UNIQUE_VIOLATION` to `ALREADY_EXISTS` as `renameView` does; with `replace`, the existing upsert.
@@ -31,10 +31,10 @@ Key references in the owning lobe:
 | Existing code | Interaction | Risk |
 |---|---|---|
 | `renameView` hard-link pattern | Create reuses it | Create now also fails on filesystems without hard links |
-| `isExactFile` collision check | Must run before the link or move | Running it after would let a case-colliding replace overwrite another view's file |
+| `requireNoConflictingFile` collision check | Must run before the link or move | Running it after would let a case-colliding replace overwrite another view's file |
 | `getViews` file filter (`!isHidden && endsWith(".json")`) | Must ignore temp files | A temp name ending in `.json` would load as a view after a crash |
 | Cache check in `ViewZooMetadata.createView` | Stays as a fast path | Storage refusing a view the cache lacks leaves the cache stale until restart; refresh is #14 / `VZOO_PG_REFRESH` |
-| `VZOO_STORAGE_ERRORS` work item | Both edit `createView` catch blocks; this item relies on its preserved causes | Small rebase for whichever merges second |
+| `UNIQUE_VIOLATION` mapping in JDBC `renameView` | JDBC create reuses it | — |
 
 ## Testing approach
 
@@ -59,8 +59,8 @@ A failed write partway (full disk) is hard to automate; cover it by asserting th
 - A fallback for filesystems without hard links.
 - `fsync` of the file or directory for durability across power loss.
 
-## Open issues
+## Resolved questions
 
-1. Whether to delete stale temp files left by a crash, e.g. on load, or simply ignore them.
-2. Temp name format: it must be unique per write (two coordinators sharing a directory) and fit the 255-byte limit for the longest allowed view name.
-3. Whether a create with `replace` should also go through link-then-check to refuse a target that became a different-case file between the collision check and the move, or accept that race as `VZOO_FINDINGS.md` already does for create.
+1. Temp files left by a crash are ignored, not deleted on load: load never modifies storage, and deleting could remove another coordinator's in-flight temp file (Rob).
+2. Temp files are named `.viewzoo-<uuid>.tmp`, unique across coordinators and independent of the view name's length (Rob).
+3. A create with `replace` accepts the race where a different-case file appears between the collision check and the move, as create already does (Rob).

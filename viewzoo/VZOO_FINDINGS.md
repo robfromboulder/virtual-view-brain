@@ -1,6 +1,6 @@
 # ViewZoo: Implementation Findings
 
-> V8, 2026-10-20.
+> V9, 2026-10-20.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -26,7 +26,7 @@ The README hero image draws its text as glyph outlines, so a text search for a v
 
 Trino's `RenameViewTask` rejects a rename onto an existing view, or of a missing one, before calling the connector, and `renameView` repeats both checks. Both read the in-memory cache, so neither catches a cache that disagrees with storage — another coordinator sharing the store, or a file changed outside Trino. Each storage client therefore enforces source-exists and target-absent itself, and when storage reports the source missing, `renameView` evicts the stale cache entry.
 
-The filesystem client renames by hard link, then deletes the source. `Files.move` with `ATOMIC_MOVE` silently replaces an existing target on POSIX, and without it the existence check precedes `rename(2)`, which still replaces a target written in between; `link(2)` refuses an existing target atomically. A crash between link and delete leaves a duplicate view, never a lost one. Filesystems without hard links, such as some network or FUSE mounts, cannot rename.
+The filesystem client renames by hard link, then deletes the source. `Files.move` with `ATOMIC_MOVE` silently replaces an existing target on POSIX, and without it the existence check precedes `rename(2)`, which still replaces a target written in between; `link(2)` refuses an existing target atomically. A crash between link and delete leaves a duplicate view, never a lost one. Filesystems without hard links, such as some network or FUSE mounts, cannot rename, and since PR #32 cannot create views either.
 
 Because the engine pre-empts both conflict cases, SQL-level tests pass even with the connector's checks deleted; those checks are unit-tested against a fake storage client instead. Established by PR #16 (`a9eb9a5`, `adccc71`, `6e6304f`).
 
@@ -36,7 +36,7 @@ GitHub acts on `Closes #N` only when a PR merges into the default branch. ViewZo
 
 ## 6. Storage-first ordering requires all-or-nothing storage writes
 
-`createView`, `dropView` and `renameView` write storage first and update the cache only when storage succeeds (PR #23, `10abcc1`, fixing #20). That keeps cache and storage in agreement only if a failed storage write changes nothing. Filesystem `createView` breaks this: `Files.writeString` empties the file before writing, so a failed write leaves a corrupt file, which load skips on restart, losing that view (#28). `createView` also doesn't follow §4's rule of trusting storage over the cache: without `OR REPLACE` it checks only the cache, and both storage clients overwrite (#29).
+`createView`, `dropView` and `renameView` write storage first and update the cache only when storage succeeds (PR #23, `10abcc1`, fixing #20). That keeps cache and storage in agreement only if a failed storage write changes nothing. Filesystem `createView` originally broke this by writing the view's file in place (#28), and without `OR REPLACE` it checked only the cache while both clients overwrote (#29); PR #32 fixed both, as the safe create finding records.
 
 The PR #23 review also raised that a JDBC connection close that throws after autocommit reports a committed write as failed, leaving the cache behind storage. It was not filed: closing a PostgreSQL connection rarely throws after a successful commit, and the old cache-first order failed in the mirror-image case.
 
@@ -56,6 +56,14 @@ Java on macOS reports directory listings in NFC, so an NFD file loads there rath
 
 A catalog whose connector fails to construct stops the whole Trino server at startup (exit 100, measured on Trino 483), so one view file or row that couldn't be read once took down every catalog on the server. Anyone able to write one bad entry, or one write that failed partway, could deny service to every view. Both storage clients therefore skip, with a one-line warning, any entry they can't read, parse or key, and still fail load when the directory, database or query itself fails, since no partial result would mean anything there. Rob set this as a fixed policy for both clients. Failing loudly, a flag choosing fail or skip, and quarantining or repairing the entry on load were rejected: the failing mode is never the safe one, and load must not modify storage. Logging the exception message can't leak or flood a definition, because Jackson 2.22 redacts its source and truncates echoed tokens.
 
-Read errors are skipped like parse errors. Rob kept that after review proposed failing load on I/O errors, accepting the cost: a valid entry that is briefly unreadable at startup is skipped, and until `createView` refuses to overwrite (#29) a plain `CREATE VIEW` of its name silently replaces it, in both storage types. A skipped entry stays in storage but is invisible to Trino: `DROP VIEW` reports it missing, a rename onto its name reports it exists, and removing it means editing storage directly.
+Read errors are skipped like parse errors. Rob kept that after review proposed failing load on I/O errors, accepting the cost: a valid entry that is briefly unreadable at startup is skipped, and `CREATE OR REPLACE VIEW` of its name silently replaces it. A skipped entry stays in storage but is invisible to Trino: `DROP VIEW` reports it missing, while a plain `CREATE VIEW` or a rename onto its name reports it exists (plain create since PR #32), and removing it means editing storage directly.
 
 JDBC skips rows whose schema or view name is empty or not lowercase. Trino lowercases every name ViewZoo stores, so only a row written outside Trino can be affected, and such a row was already broken before the change: it loaded under its lowercased name, which drop, rename and replace all missed. Each client's `parse` reports a NULL or JSON-null definition by throwing, so the warning carries a reason; reviews flag this as exceptions for control flow. Established by PR #31 (`7259591`, `265ba77`, `42357f9`), fixing #24 and #25.
+
+## 10. Create writes a whole file and lets storage refuse an existing view
+
+Two fixes had to land together. Writing a temp file and moving it into place with `ATOMIC_MOVE` makes a write all-or-nothing, but `rename(2)` silently replaces an existing target, which a plain `CREATE VIEW` must refuse. So filesystem create writes `.viewzoo-<uuid>.tmp` and hard-links it into place for a new view, since `link(2)` refuses an existing target atomically, and moves it atomically only for `OR REPLACE`. Rejected: `ATOMIC_MOVE` for every create (replaces), `CREATE_NEW` (writes in place), an existence check before the move (not atomic), and falling back to non-atomic writes without hard links (silent behavior differences; deferred). JDBC uses a plain `INSERT` for a new view and keeps the upsert for a replace.
+
+Rob decided that leftover temp files are ignored rather than deleted on load, since load never modifies storage and deleting could remove another coordinator's in-flight file. Rob also chose a fixed-length UUID name, independent of the view name's length, and accepted the race where a different-case file appears between the collision check and a replace's move, as create already accepts. A failed temp delete is logged rather than thrown, because throwing after the link would report a completed create as failed.
+
+Accepted costs: a replace swaps in a new file, dropping a mode or owner set by hand and turning a symlinked view file into a regular one, since keeping either means writing in place; without `fsync` a power loss can still lose a completed write; and when storage refuses a view the cache lacks, the cache stays stale until restart. Established by PR #32 (`7e862cb`, `0054a25`), fixing #28 and #29.
