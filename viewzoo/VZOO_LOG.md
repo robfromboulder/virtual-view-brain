@@ -351,3 +351,34 @@ Rob Dickinson (robfromboulder), with Claude as co-author, took the FS safe names
 - Carry the change forward when the next version branch is cut.
 - The #28 design points are not yet recorded on the issue.
 - The `fs-safe-names` branch still exists locally and on GitHub.
+
+---
+
+# Storage errors merged and closed out (2026-10-20)
+
+**Session ID**: `b90555b8-6e82-414d-b144-614ecf1033dc`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, took the storage errors work item from a draft PR to a merge: a full test run, two code reviews acting as the item's reviewers, fixes for five findings, three rounds of PR description changes, and the merge. Rob had Claude rebase-merge #31 into `v483` and run the work-item closeout. The code and the draft PR came from earlier sessions that left no log entries.
+
+## Lineage
+
+- Rob asked to read the item. Claude summarized it from the runbook, decision record and burndown, and found the branch and draft #31 in place.
+- Rob asked for every test. Claude ran `mvn clean package` and the whole `-Pintegration` suite rather than only the runbook's classes: 57 unit and 63 integration tests passed. The integration run took 1:42, against the runbook's estimate of about 3½ minutes for only two classes.
+- Rob ran a high review of #31, which returned nine findings. Claude checked them against the code and the decision record. Four restated accepted trade-offs: skipping on any I/O error, a plain create overwriting a skipped entry, a skipped entry being impossible to drop, and mixed-case JDBC rows vanishing on upgrade. Rob kept skipping on read errors and had Claude fix the other five. Rename reported a failed directory listing as a failed link. The case-conflict check was copied between create and rename. The lowercase name rule was copied between the clients. Each client's parse had two near-identical skip paths. A resource-closing test no longer exercised a failure. Claude kept the warning's reason by having `parse` throw for null definitions rather than return an `Optional`, and added a test injecting a `getString` failure. 57 unit and 64 integration tests passed, and Rob had Claude commit and push.
+- Rob had Claude update the PR description with an upgrade note on mixed-case JDBC rows and the limits of skipped entries, and add the same limits to the decision record.
+- Rob said the two of them were the reviewers, so no outside review was pending. Rob ran a medium review of the fix commit, which found no bug. Claude advised skipping all five findings. Two lines broke the 130-character limit, which the repo doesn't follow (70 longer lines exist). A static on the interface is public, which is harmless in a plugin. Throwing for null was deliberate. Listing the directory only happens when the target exists, as before, and `toRealPath` was already tried and reverted.
+- Rob questioned the upgrade note's advice to rename mixed-case rows, saying the exposure wasn't clear. Claude traced every write through `SchemaTableName`, which lowercases. Only a row written outside Trino can be mixed-case, and such a row was already broken, since drop, rename and replace missed it. Rob had Claude reword the note in the PR and the decision record.
+- Rob concluded the PR narrows nothing but that edge case. Claude added two corrections. A JSON-null definition, once listed but unqueryable, is now hidden. Skipping read errors trades a server that won't start for a valid entry that can be overwritten. Rob had Claude add the read-error risk to the PR's known limits.
+- Rob had Claude merge. The repo allows only rebase merges, so #31 landed as three rebased commits and its branch was deleted. #24 and #25 were already closed.
+
+## Closeout
+
+- The decision record's rationale, rejected alternatives and accepted costs folded into a new ViewZoo finding on skipping unreadable entries, including Rob's call to keep skipping read errors and the mixed-case exposure.
+- The finding that storage-first ordering requires all-or-nothing writes said a failed filesystem write stops the catalog from loading on restart. That reversed: the corrupt file is now skipped, losing only that view. It was reconciled in place.
+- The runbook's checks are covered by the ViewZoo repo's existing test commands, so nothing folded into its `CLAUDE.md`. The manual test plan held no checks.
+- No scope or approach claim changed: skipping an entry the store can't read is not the store judging views.
+
+## Open threads
+
+- Carry the change forward when the next version branch is cut.
+- #28 (atomic filesystem writes) and #29 (a plain create refusing to overwrite) remain; #29 closes the overwrite risk that skipping introduced.

@@ -1,6 +1,6 @@
 # ViewZoo: Implementation Findings
 
-> V7, 2026-10-19.
+> V8, 2026-10-20.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -36,7 +36,7 @@ GitHub acts on `Closes #N` only when a PR merges into the default branch. ViewZo
 
 ## 6. Storage-first ordering requires all-or-nothing storage writes
 
-`createView`, `dropView` and `renameView` write storage first and update the cache only when storage succeeds (PR #23, `10abcc1`, fixing #20). That keeps cache and storage in agreement only if a failed storage write changes nothing. Filesystem `createView` breaks this: `Files.writeString` empties the file before writing, so a failed write leaves a corrupt file that stops the catalog from loading on restart (#28). `createView` also doesn't follow §4's rule of trusting storage over the cache: without `OR REPLACE` it checks only the cache, and both storage clients overwrite (#29).
+`createView`, `dropView` and `renameView` write storage first and update the cache only when storage succeeds (PR #23, `10abcc1`, fixing #20). That keeps cache and storage in agreement only if a failed storage write changes nothing. Filesystem `createView` breaks this: `Files.writeString` empties the file before writing, so a failed write leaves a corrupt file, which load skips on restart, losing that view (#28). `createView` also doesn't follow §4's rule of trusting storage over the cache: without `OR REPLACE` it checks only the cache, and both storage clients overwrite (#29).
 
 The PR #23 review also raised that a JDBC connection close that throws after autocommit reports a committed write as failed, leaving the cache behind storage. It was not filed: closing a PostgreSQL connection rarely throws after a successful commit, and the old cache-first order failed in the mirror-image case.
 
@@ -51,3 +51,11 @@ Filesystem storage refuses names it can't store as one flat file, and the rules 
 Case-insensitive filesystems fold names in ways Java can't reproduce. APFS maps `ß` to `ss` and `ﬀ` to `ff`, which a rule built from per-character case mapping misses, and that rule also made Greek names ending in capital sigma uncreatable. `toRealPath` returns the stored name on macOS but the requested name on a case-insensitive Linux mount, so it misses collisions there. Both were tried and reverted, so the collision check compares the exact directory listing; reviews keep proposing `toRealPath` as a cheaper check.
 
 Java on macOS reports directory listings in NFC, so an NFD file loads there rather than being skipped, and no test of skipping NFD files can run on macOS. Files whose names Trino couldn't create are skipped with a warning rather than failing startup, so one stray file can't take the catalog down. The integration tests' only case-insensitive Linux directory is a macOS bind mount, because OrbStack's kernel lacks Unicode casefolding. HFS+, which stores names as NFD under a UTF-16 length limit, is an accepted untested gap. Established by PR #27 (`b1827b7`, `ca3dfcc`, `26dbb25`, `345916a`, `65e6897`), fixing #17.
+
+## 9. Storage skips unreadable entries instead of failing load
+
+A catalog whose connector fails to construct stops the whole Trino server at startup (exit 100, measured on Trino 483), so one view file or row that couldn't be read once took down every catalog on the server. Anyone able to write one bad entry, or one write that failed partway, could deny service to every view. Both storage clients therefore skip, with a one-line warning, any entry they can't read, parse or key, and still fail load when the directory, database or query itself fails, since no partial result would mean anything there. Rob set this as a fixed policy for both clients. Failing loudly, a flag choosing fail or skip, and quarantining or repairing the entry on load were rejected: the failing mode is never the safe one, and load must not modify storage. Logging the exception message can't leak or flood a definition, because Jackson 2.22 redacts its source and truncates echoed tokens.
+
+Read errors are skipped like parse errors. Rob kept that after review proposed failing load on I/O errors, accepting the cost: a valid entry that is briefly unreadable at startup is skipped, and until `createView` refuses to overwrite (#29) a plain `CREATE VIEW` of its name silently replaces it, in both storage types. A skipped entry stays in storage but is invisible to Trino: `DROP VIEW` reports it missing, a rename onto its name reports it exists, and removing it means editing storage directly.
+
+JDBC skips rows whose schema or view name is empty or not lowercase. Trino lowercases every name ViewZoo stores, so only a row written outside Trino can be affected, and such a row was already broken before the change: it loaded under its lowercased name, which drop, rename and replace all missed. Each client's `parse` reports a NULL or JSON-null definition by throwing, so the warning carries a reason; reviews flag this as exceptions for control flow. Established by PR #31 (`7259591`, `265ba77`, `42357f9`), fixing #24 and #25.

@@ -33,6 +33,8 @@ An entry that can't be read, parsed or keyed is logged and skipped; the rest of 
 ## What this doesn't solve
 
 - A skipped view silently disappears from SQL; only the log says why.
+- A skipped entry stays in storage, so `DROP VIEW` of its name reports it doesn't exist and a rename onto its name reports it already exists; removing it means editing storage directly.
+- A JDBC row with a mixed-case name, which loaded under its lowercased name before, is skipped after upgrading. Only a row written outside Trino can have one, since Trino lowercases every name ViewZoo stores, and such a row was already broken: drop, rename and replace missed it.
 - A definition that parses but whose SQL no longer works still fails only when queried.
 - Truncated files can still be written until `VZOO_SAFE_CREATE` makes filesystem writes atomic; this item only stops them from breaking load.
 - Until `VZOO_SAFE_CREATE` makes storage refuse a create without `OR REPLACE`, a plain `CREATE VIEW` of a skipped entry's name silently overwrites that entry in both storage types, losing a hand-edited file that may be one fix away from valid.
