@@ -1,6 +1,6 @@
 # ViewZoo: Implementation Findings
 
-> V6, 2026-10-19.
+> V7, 2026-10-19.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -43,3 +43,11 @@ The PR #23 review also raised that a JDBC connection close that throws after aut
 ## 7. Docker-dependent tests belong in the `integration` group
 
 The default `mvn test` stays free of Docker, so any test that needs Docker joins the TestNG `integration` group, even a self-contained Testcontainers test that needs no built plugin. Skipping such a test when Docker is absent was rejected: under `-Pintegration` the Compose-based tests fail without Docker, so a skip would let a run pass with no JDBC coverage. The cost is that `TestViewZooJdbcClient` (PR #30) runs only under `-Pintegration`. Code reviews flag this as a coverage gap on every pass; it is a deliberate choice, not an oversight.
+
+## 8. Filesystem name rules ask the filesystem rather than model it
+
+Filesystem storage refuses names it can't store as one flat file, and the rules live in `ViewZooLocalFileSystemClient` because JDBC stores and reloads the same names correctly; a blocklist in `ViewZooMetadata.validateName` (PR #21, closed) broke working JDBC names. Measured through Trino on Linux and macOS, including a restart, only `/` and NUL are unstorable; `\ : * ? < > | " ' %`, control characters and non-ASCII all round-trip, so they stay accepted. Linux limits a file name to 255 bytes and macOS doesn't, so the limit is enforced on macOS too, keeping a directory shared through git loadable on both.
+
+Case-insensitive filesystems fold names in ways Java can't reproduce. APFS maps `ß` to `ss` and `ﬀ` to `ff`, which a rule built from per-character case mapping misses, and that rule also made Greek names ending in capital sigma uncreatable. `toRealPath` returns the stored name on macOS but the requested name on a case-insensitive Linux mount, so it misses collisions there. Both were tried and reverted, so the collision check compares the exact directory listing; reviews keep proposing `toRealPath` as a cheaper check.
+
+Java on macOS reports directory listings in NFC, so an NFD file loads there rather than being skipped, and no test of skipping NFD files can run on macOS. Files whose names Trino couldn't create are skipped with a warning rather than failing startup, so one stray file can't take the catalog down. The integration tests' only case-insensitive Linux directory is a macOS bind mount, because OrbStack's kernel lacks Unicode casefolding. HFS+, which stores names as NFD under a UTF-16 length limit, is an accepted untested gap. Established by PR #27 (`b1827b7`, `ca3dfcc`, `26dbb25`, `345916a`, `65e6897`), fixing #17.
