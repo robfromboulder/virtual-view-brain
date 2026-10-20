@@ -18,4 +18,3 @@ Everything between working code and a merged PR.
   * take screenshots
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
 * repository settings: private vulnerability reporting, Dependabot alerts, code scanning default setup
-* carry `SECURITY.md` forward to each new version branch, so the default branch always has it
