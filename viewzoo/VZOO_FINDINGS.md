@@ -1,6 +1,6 @@
 # ViewZoo: Implementation Findings
 
-> V4, 2026-10-13.
+> V5, 2026-10-19.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -28,8 +28,14 @@ Trino's `RenameViewTask` rejects a rename onto an existing view, or of a missing
 
 The filesystem client renames by hard link, then deletes the source. `Files.move` with `ATOMIC_MOVE` silently replaces an existing target on POSIX, and without it the existence check precedes `rename(2)`, which still replaces a target written in between; `link(2)` refuses an existing target atomically. A crash between link and delete leaves a duplicate view, never a lost one. Filesystems without hard links, such as some network or FUSE mounts, cannot rename.
 
-Because the engine pre-empts both conflict cases, SQL-level tests pass even with the connector's checks deleted; those checks are unit-tested against a fake storage client instead. Established by PR #16 (`a9eb9a5`, `adccc71`, `6e6304f`). `createView` and `dropView` still update the cache before storage (#20).
+Because the engine pre-empts both conflict cases, SQL-level tests pass even with the connector's checks deleted; those checks are unit-tested against a fake storage client instead. Established by PR #16 (`a9eb9a5`, `adccc71`, `6e6304f`).
 
 ## 5. Closing keywords do not fire on version-branch PRs
 
 GitHub acts on `Closes #N` only when a PR merges into the default branch. ViewZoo PRs target the current version branch, which is not the default (`v479` while `v483` is current), so issues a PR fixes must be closed by hand after the merge. Found when PR #16 merged into `v483` and left #18 open.
+
+## 6. Storage-first ordering requires all-or-nothing storage writes
+
+`createView`, `dropView` and `renameView` write storage first and update the cache only when storage succeeds (PR #23, `10abcc1`, fixing #20). That keeps cache and storage in agreement only if a failed storage write changes nothing. Filesystem `createView` breaks this: `Files.writeString` empties the file before writing, so a failed write leaves a corrupt file that stops the catalog from loading on restart (#28). `createView` also doesn't follow §4's rule of trusting storage over the cache: without `OR REPLACE` it checks only the cache, and both storage clients overwrite (#29).
+
+The PR #23 review also raised that a JDBC connection close that throws after autocommit reports a committed write as failed, leaving the cache behind storage. It was not filed: closing a PostgreSQL connection rarely throws after a successful commit, and the old cache-first order failed in the mirror-image case.

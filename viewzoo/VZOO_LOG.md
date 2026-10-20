@@ -175,3 +175,26 @@ Rob Dickinson (robfromboulder), with Claude as co-author, closed out the TEST_VI
 
 - The item was rescoped from tests only to implementing rename, and filesystem rename moved from `ATOMIC_MOVE` to a plain move to a hard link across two reviews; the findings record the final position.
 - The burndown's manual checks and screenshots were never done: the test plan named the automated suite as its only check, and the README change is text.
+
+---
+
+# Storage-first cache ordering reviewed and merged (2026-10-19)
+
+**Session ID**: `2f960a1d-cdb0-4305-b6f7-d01e27140dbc`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, reviewed PR #23, which makes `createView` and `dropView` write storage before updating the cache. The review's in-scope findings were fixed on the PR, its storage-code findings became issues #28 and #29, and the PR merged into `v483` as `10abcc1`. The session ran without a work item.
+
+## Review
+
+- Rob ran a medium-effort code review of #23. It judged the reordering sound but found that a failed storage write can still leave cache and storage disagreeing, through storage code the PR did not touch: filesystem writes happen in place, `createView` without `OR REPLACE` checks only the cache while both storage clients overwrite, and a JDBC close that throws after autocommit reports a committed write as failed. It also found that the fake storage client ignored create and drop, and that the PR repeated one ordering comment in three methods.
+
+## Decisions
+
+- Rob chose to file issues rather than widen #23 into storage code it had not changed. Claude checked the issues opened that day (#24 to #26) and the older open ones; none covered these findings.
+- Claude proposed filing the in-place write (with the partial-file case folded in) and the cache-only existence check, and not filing the JDBC close case as too unlikely and no worse than the old order. Rob agreed, and Claude filed #28 and #29.
+- The test gap and the repeated comment stayed in the PR, since both concerned its own change. Claude stated the ordering once on the cache field and made the fake storage client record create and drop calls, with tests for both the success paths and the paths that must not reach storage. Unit (21) and integration (8) tests passed.
+
+## Placement
+
+- Rob asked what belonged in the findings. The rename finding's note that create and drop still updated the cache first was removed as superseded, and a new finding records that storage-first ordering holds only for all-or-nothing storage writes, citing #28 and #29, with the reason the JDBC close case was not filed.
+- Claude closed #20 by hand after the merge, since closing keywords do not fire on version-branch PRs.
