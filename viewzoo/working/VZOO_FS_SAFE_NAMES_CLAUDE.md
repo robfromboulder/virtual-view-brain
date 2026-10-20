@@ -15,4 +15,4 @@ mvn test -Dtest=TestViewZooLocalFileSystemClient
 mvn clean package -DskipTests && mvn test -Pintegration
 ```
 
-**Expected:** all unit and integration tests pass; on the tests-only commit, the rejection tests fail.
+**Expected:** all unit and integration tests pass. The integration output reports `testfs` as case-sensitive and, on a macOS host, `testfsmount` as case-insensitive.
