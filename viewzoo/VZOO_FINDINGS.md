@@ -1,6 +1,6 @@
 # ViewZoo: Implementation Findings
 
-> V9, 2026-10-20.
+> V10, 2026-10-20.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -26,7 +26,7 @@ The README hero image draws its text as glyph outlines, so a text search for a v
 
 Trino's `RenameViewTask` rejects a rename onto an existing view, or of a missing one, before calling the connector, and `renameView` repeats both checks. Both read the in-memory cache, so neither catches a cache that disagrees with storage — another coordinator sharing the store, or a file changed outside Trino. Each storage client therefore enforces source-exists and target-absent itself, and when storage reports the source missing, `renameView` evicts the stale cache entry.
 
-The filesystem client renames by hard link, then deletes the source. `Files.move` with `ATOMIC_MOVE` silently replaces an existing target on POSIX, and without it the existence check precedes `rename(2)`, which still replaces a target written in between; `link(2)` refuses an existing target atomically. A crash between link and delete leaves a duplicate view, never a lost one. Filesystems without hard links, such as some network or FUSE mounts, cannot rename, and since PR #32 cannot create views either.
+The filesystem client renames by hard link, then deletes the source. `Files.move` with `ATOMIC_MOVE` silently replaces an existing target on POSIX, and without it the existence check precedes `rename(2)`, which still replaces a target written in between; `link(2)` refuses an existing target atomically. A crash between link and delete leaves a duplicate view, never a lost one. A failed delete rolls back instead (PR #33): the target is removed only while it is still the same file as the source, which narrows but can't close the window in which another writer replaces it. If the source is confirmed gone and the target confirmed present, the failed delete took effect anyway, so the rename is reported as completed, keeping the cache in step with storage (Rob). An unreadable state falls through to the rollback, since `Files.notExists` and `Files.exists` are each true only when confirmed. Filesystems without hard links, such as some network or FUSE mounts, cannot rename, and since PR #32 cannot create views either.
 
 Because the engine pre-empts both conflict cases, SQL-level tests pass even with the connector's checks deleted; those checks are unit-tested against a fake storage client instead. Established by PR #16 (`a9eb9a5`, `adccc71`, `6e6304f`).
 
@@ -67,3 +67,9 @@ Two fixes had to land together. Writing a temp file and moving it into place wit
 Rob decided that leftover temp files are ignored rather than deleted on load, since load never modifies storage and deleting could remove another coordinator's in-flight file. Rob also chose a fixed-length UUID name, independent of the view name's length, and accepted the race where a different-case file appears between the collision check and a replace's move, as create already accepts. A failed temp delete is logged rather than thrown, because throwing after the link would report a completed create as failed.
 
 Accepted costs: a replace swaps in a new file, dropping a mode or owner set by hand and turning a symlinked view file into a regular one, since keeping either means writing in place; without `fsync` a power loss can still lose a completed write; and when storage refuses a view the cache lacks, the cache stays stale until restart. Established by PR #32 (`7e862cb`, `0054a25`), fixing #28 and #29.
+
+## 11. Storage error paths are forced with permissions, and one seam
+
+A 2026-10-20 coverage run, including the plugin inside the Trino container, found every main path covered and the error paths not. Directory permissions force most failures through the real filesystem calls: a read-only directory fails a link or a write, an execute-only one resolves a path but can't be listed, and the tests skip themselves when run as a user who ignores permissions. A delete that follows a link needs the same directory permission the link just used, so permissions can't fail it alone; those deletes go through a package-private `deleteFile` that a test subclass overrides. Immutable files and a fault-injecting `FileSystem` were rejected, the first for blocking links on macOS and needing root on Linux, the second for re-plumbing the client.
+
+Rob chose to unit-test the SPI methods no integration test reaches, so their not-found results are pinned. Coverage after the work was 98.9% of lines and 97.8% of branches; the rest can't happen: a serialization failure, an `InvalidPathException` after names are validated, and a null name at the filesystem's name check. Reviews flag concurrent-writer races around the rename rollback on every pass; they are accepted, as other races are. Established by PR #33 (`af881e0`, `531df42`, `3990c82`).

@@ -15,7 +15,8 @@ One gap hides a bug. When `renameView` links the target but then fails to delete
 
 | Aspect | Detail |
 |---|---|
-| Rename rollback | When the source delete fails, delete the new link before throwing, so storage is left as it was |
+| Rename rollback | When the source delete fails, delete the new link before throwing, so storage is left as it was, but only while the target is still the same file as the source |
+| Source already gone | A failed delete that removed the source anyway has completed the rename, so it is logged and reported as success, keeping the cache in step with storage (Rob) |
 | Reachable by permissions | Rename link failure (read-only directory), listing failure (execute-only directory, where `Files.exists` works but `Files.list` doesn't), unreadable and unwritable directory |
 | Needs a seam | Source delete and temp delete after a link, since both need the same directory write permission the link just used |
 | Seam | An overridable delete in `ViewZooLocalFileSystemClient`, overridden by a failing test subclass, as `TestViewZooJdbcClient` overrides `getConnection` |
@@ -37,6 +38,7 @@ One gap hides a bug. When `renameView` links the target but then fails to delete
 - `createView`'s serialization failure and `isLoadable`'s null-name branch for filesystem names stay untested, since neither can happen.
 - A crash between link and delete still leaves both files; only a failed delete rolls back.
 - If the rollback delete also fails, both files remain, as after a crash.
+- The check that the target is still the source's link and the rollback delete aren't atomic, so another writer replacing the target in between can still lose its view.
 - Coverage is measured once, not gated in the build.
 - Permission-based tests skip themselves when run as root.
 

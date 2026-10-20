@@ -412,3 +412,53 @@ Rob Dickinson (robfromboulder), with Claude as co-author, took the safe create w
 ## Open threads
 
 - The metadata test's fake storage doesn't model real rename refusals (existing target, missing source, `failWrites`), and no test covers storage refusing a rename the cache allowed.
+
+---
+
+# Coverage run and test hardening setup (2026-10-20)
+
+**Session ID**: `b90555b8-6e82-414d-b144-614ecf1033dc`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, measured test coverage across the whole suite once safe create had merged, then set up this work item to close the gaps it found. Earlier in the same session they closed out storage errors and safe create; those stretches are logged in the ViewZoo log.
+
+## Lineage
+
+- At the safe create closeout, Claude found it had archived that item's burndown without its last entry, a one-off JaCoCo report after merge, and told Rob. Rob asked Claude to run it.
+- JaCoCo isn't in the pom, so Claude attached the agent from the command line for the unit and integration runs. For the plugin code inside the Trino container, Claude added a temporary `docker-compose.override.yml` that Compose picks up automatically. It mounts the agent and sets `JAVA_TOOL_OPTIONS`, and the JVM writes its data when the test teardown stops the container. The JaCoCo CLI merged the three data files. Without the container data, the connector wiring showed 0% and the storage provider 29%.
+- The first report call failed because zsh doesn't word-split an unquoted variable holding several options; writing the options out fixed it.
+- The result was 92% of lines and 93% of branches, with every main path covered. The gaps were filesystem error paths, two configuration checks, one JDBC rename failure, and SPI methods Trino 483 never calls. Reading the uncovered rename path, Claude found a bug: a failed source delete after a successful link throws while storage keeps both files.
+- Claude offered an issue, a work item or a log note. Rob chose a work item. Rob decided to fix the rename bug in this item rather than only test it, and to unit-test every uncalled method rather than first checking which ones Trino can reach.
+- Claude scaffolded the item's documents and recorded the coverage procedure in its runbook, so the rerun at the end can repeat it.
+
+## Lessons
+
+- A burndown's last entry can be a post-merge task, so read it in full before archiving the burndown at closeout.
+- Failures that need the same directory permission as the operation before them, such as a delete right after a link, can't be isolated with permissions and need a test seam.
+
+---
+
+# Test hardening built, merged and closed out (2026-10-20)
+
+**Session ID**: `b90555b8-6e82-414d-b144-614ecf1033dc`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, built the test hardening work item in the session that set it up: tests first, then the rename rollback fix, a coverage rerun, three code reviews, and the merge of #33 into `v483`. Claude then ran the work-item closeout.
+
+## Lineage
+
+- Rob asked to start with the tests. Claude branched off `v483` and settled the plan's open questions with defaults: a package-private `deleteFile` seam, a rollback failure attached as suppressed, and the connector built through its factory with Trino's `TestingConnectorContext`, which `trino-main` already supplies. Trino's `LifeCycleManager` is final and its methods map has a package-private constructor, so the factory was the only way to construct a connector.
+- The seam had to land with the tests so they would compile. Against the old code only the two rollback tests failed; the fix made all 73 unit and 68 integration tests pass.
+- Claude reran coverage with the runbook's procedure: 98.9% of lines and 97.8% of branches, up from 92% and 93%. `viewPath`'s `InvalidPathException` catch was missing from the decision record's list of paths that can't happen. Rob had Claude push and open draft #33.
+- A high review found the rollback could delete the only copy: a delete that removed the source but reported failure, or a target replaced meanwhile, would lose the view. Rob had Claude guard the rollback and fix four test findings. Claude confirmed the new test failed against the unguarded rollback before relying on it. Rob agreed to skip three: `deleteIfExists` hiding a vanished source, routing `dropView` through the seam, and line length.
+- A medium review found that a guarded rollback which kept the target still threw, leaving the cache on the old name, and that `Files.exists` reads an unreadable state as missing. Rob approved Claude's proposal to report the rename as completed when the source is gone. Claude also reworded two comments that overclaimed, added a test for a replaced target, and replaced the test client's flag with a hook run just before each simulated failure.
+- A second medium review found the completion check trusted `NoSuchFileException.getFile()` and reported success with both files gone. Claude switched to `Files.notExists(source) && Files.exists(target)`, each true only when confirmed, added a both-gone test, and dropped a comment that narrated another test suite. Claude advised stopping reviews, since two rounds had circled concurrent-writer races around the same rollback. Rob merged after this round.
+
+## Closeout
+
+- The rename-by-hard-link finding gained the rollback, its guard, and Rob's call to report a rename completed when the failed delete removed the source.
+- The decision record's testing approach, rejected alternatives and final coverage folded into a new ViewZoo finding on forcing storage error paths.
+- The runbook's coverage procedure folded into the ViewZoo repo's `CLAUDE.md` as its own section. The test step is covered by the existing test commands, and the manual test plan held no checks.
+- No scope or approach claim changed.
+
+## Open threads
+
+- The metadata test's fake storage still doesn't model real rename refusals.

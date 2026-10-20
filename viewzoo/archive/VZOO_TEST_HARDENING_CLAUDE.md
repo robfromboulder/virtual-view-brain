@@ -11,10 +11,11 @@ Run the steps from the platform runbook first (if the brain has one), verifying 
 ### Step 1 — Hardening tests ← NEW in this branch
 
 ```bash
-# fill in once the work item has tests
+mvn test -Dtest='TestViewZooLocalFileSystemClient,TestViewZooMetadata,TestViewZooStorageClientProvider,TestViewZooConnector'
+mvn test -Pintegration -Dtest=TestViewZooJdbcClient
 ```
 
-**Expected:** <runtime, pass/fail expectations, which tests are active>
+**Expected:** all pass. Before the rename fix, only `testRenameRollsBackWhenSourceDeleteFails` and `testRenameRollbackFailureIsSuppressed` fail. The permission-based tests skip themselves when run as a user who ignores permissions, such as root.
 
 ### Step 2 — Coverage measurement
 

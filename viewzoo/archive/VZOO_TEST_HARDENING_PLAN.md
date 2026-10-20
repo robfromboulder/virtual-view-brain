@@ -56,8 +56,8 @@ All new tests are unit tests (`mvn test`) except the JDBC rename failure, which 
 - Changing what the uncalled methods return.
 - The metadata test's fake storage modelling real rename refusals (existing target, missing source, `failWrites`).
 
-## Open issues
+## Resolved questions
 
-1. The seam's shape: a package-private overridable method, or an injected delete function.
-2. What to report when the rollback delete also fails, leaving both files.
-3. How to construct `ViewZooConnector` in a unit test to call `shutdown`.
+1. The seam is a package-private `deleteFile(Path)` in `ViewZooLocalFileSystemClient`, used for the source delete and the temp delete, and overridden by an anonymous test subclass.
+2. When the rollback delete also fails, the original failure is thrown with the rollback's exception attached as suppressed, and both files remain.
+3. `ViewZooConnector` is built through `ViewZooConnectorFactory` with Trino's `TestingConnectorContext`, which `trino-main` already supplies as a test dependency.

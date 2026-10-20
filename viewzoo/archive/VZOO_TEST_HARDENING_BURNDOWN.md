@@ -18,3 +18,5 @@ Everything between working code and a merged PR.
 * docs
   * take screenshots
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
+  * coverage after the work: 98.9% of lines and 97.8% of branches, up from 92% and 93%
+  * deviation: the decision record's list of paths that can't happen missed `viewPath`'s `InvalidPathException` catch, which stays uncovered because names are validated before a path is built
