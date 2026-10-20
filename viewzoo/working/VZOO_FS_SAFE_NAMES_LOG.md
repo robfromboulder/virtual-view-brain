@@ -45,3 +45,20 @@ Rob Dickinson (robfromboulder), with Claude as co-author, reviewed PR #21 for #1
 
 - Remaining burndown: PR review, reviewer feedback, manual checks, closing #17 by hand after merge, and carrying forward to the next version branch.
 - Whether to reject names that differ only in Unicode normalization remains open.
+
+---
+
+# PR #27 rebased onto merged #23 (2026-10-19)
+
+**Session ID**: `2f960a1d-cdb0-4305-b6f7-d01e27140dbc`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, had PR #27 rebased onto `v483` after #23 (storage before cache in `createView` and `dropView`) merged in the same session. The rebase confirmed the earlier trial merge: no conflicts, and the item's tests still pass on top of #23.
+
+## Lineage
+
+- The session's main work was reviewing and merging #23, logged in the ViewZoo log. Once #23 merged, Claude flagged that this item's trial merge needed confirming against the real `v483`, and Rob asked for the rebase.
+- Claude rebased both commits onto `v483` without conflicts, rebuilt the plugin, and ran the suites: 42 of 42 unit tests and 20 of 20 integration tests passed. Claude force-pushed `fs-safe-names` with lease, and GitHub reports #27 mergeable. It is still a draft.
+
+## Open threads
+
+- Remaining burndown is unchanged: PR review, reviewer feedback, manual checks, closing #17 by hand after merge, and carrying forward to the next version branch.
