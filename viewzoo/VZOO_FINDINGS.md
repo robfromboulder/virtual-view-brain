@@ -1,6 +1,6 @@
 # ViewZoo: Implementation Findings
 
-> V12, 2026-10-20.
+> V13, 2026-10-20.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -32,7 +32,7 @@ Because the engine pre-empts both conflict cases, SQL-level tests pass even with
 
 ## 5. Closing keywords do not fire on version-branch PRs
 
-GitHub acts on `Closes #N` only when a PR merges into the default branch. ViewZoo PRs target the current version branch, which is not the default (`v479` while `v483` is current), so issues a PR fixes must be closed by hand after the merge. Found when PR #16 merged into `v483` and left #18 open.
+GitHub acts on `Closes #N` only when a PR merges into the default branch. ViewZoo PRs target the current version branch, so while that branch isn't yet the default, issues a PR fixes must be closed by hand after the merge. Found when PR #16 merged into `v483` while `v479` was the default and left #18 open. The default became `v483` before PR #37 merged, so PRs into `v483` close their issues again until the next version branch starts.
 
 ## 6. Storage-first ordering requires all-or-nothing storage writes
 
@@ -85,3 +85,9 @@ Rob decided that older version branches get no binaries, that releases attach no
 The README's "Why ViewZoo?" table shipped before live refresh, which the positioning was first planned to wait for, because the docs were ready long before the code. Its storage sections stopped casting files as development and the database as production, since a production user syncs filesystem views from git (#10, #14). The unqualified recommendation of JDBC storage for multi-container deployments was cut rather than kept: views load only at startup, so coordinators sharing a table drift apart until restarted. JDBC storage is credited instead with durability, backups and SQL access to the definitions. The README states that restart requirement both in Limitations and in ViewZoo's own table rows, so a refresh feature landing must change all three.
 
 Rob placed the section last and moved both storage modes' reasons into the table, leaving each storage section to say only how it stores views. Each row credits what that option does well before its costs, so neighbors read as different tradeoffs rather than worse choices, and ViewZoo's rows carry their own costs so the table isn't a pitch. The comparison's claims were checked against the Trino 483 connector and metastore docs, Iceberg's REST spec and `JdbcUtil`, and the Polaris and Lakekeeper docs; Trino's docs don't say that Iceberg's JDBC catalog stores views, which its `JdbcUtil` shows. The comparison describes other projects as of October 2026 and will age as they change. The hero was left unchanged, because its tagline already matches and its storage enclosures carry no environment. Established by PR #35 (`761bd19`, merged as `8489de3`).
+
+## 14. Vulnerability handling lives in repository settings and local scans
+
+`SECURITY.md` sends reports through GitHub private vulnerability reporting, which Rob turned on along with Dependabot alerts; secret scanning and push protection were already on. Rob chose not to turn on GitHub code scanning and runs security scans with Claude locally instead. Dependabot security updates, which would open PRs against the default branch, are off. Claude proposed that only the newest version branch receives fixes, and Rob accepted it by merging PR #37. GitHub's Security tab reads `SECURITY.md` from the default branch only.
+
+The guide documents behavior rather than changing it: a check on view definition length was left for a work item of its own, since it needs its own limit. The guide's 20,000,000-character limit is jackson-core 2.22's default `StreamReadConstraints` string cap, measured by a probe against the bundled jars, so a Jackson upgrade must recheck it. Established by PR #37 (`ef8de20`), for #11.

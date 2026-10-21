@@ -613,3 +613,49 @@ Rob Dickinson (robfromboulder), with Claude as co-author, asked Claude to strip 
 ## Lesson
 
 The setup template's "Interaction with existing code" table invites a row per neighboring work item. Most of those rows were coordination notes that went stale once the neighbor merged.
+
+---
+
+# Draft the security guide and open its PR (2026-10-20)
+
+**Session ID**: `34ab1b70-b72b-480e-84f3-137278163584`
+
+Rob Dickinson (robfromboulder) asked Claude to read the security guide work item and draft `SECURITY.md`. The session checked the plan's claims against `v483`, wrote the guide plus a README badge on a new `security-guide` branch in its own worktree, corrected the work item's findings and plan to match the code, and opened draft PR #37 against `v483`.
+
+## Verifying the plan against the code
+
+Rob directed mid-session that the code is ground truth wherever it and the work-item docs disagree. Three of the plan's premises had gone stale on `v483`:
+
+- A file or row that fails to parse no longer stops the catalog loading: both storage clients' `getViews` skip it and log a warning. The plan's storage-errors risk row was moot.
+- A name containing `/` can't escape `viewzoo.dir`: filesystem storage rejects `/` and NUL in names, and `viewPath` refuses any path whose parent isn't the directory. The path-safety open issue closed with no vulnerability to fix.
+- The Jackson cap is real. The plugin bundles jackson-core 2.22.1, whose default `StreamReadConstraints` cap a string at 20,000,000 characters with no document-length limit. A standalone probe against the bundled jars showed a string one past the cap serializes fine and fails to read with `StreamConstraintsException`, an `IOException`, so a view with SQL that long is stored, keeps working until the next restart, and is then skipped with a warning.
+
+One property the docs missed: `ViewZooMetadata` is a Guice singleton that reads storage only in its constructor, so an edit made directly to storage takes effect only at the next restart. The guide states this alongside the point that whoever can write storage controls the owner a `DEFINER` view runs as.
+
+## Decisions
+
+- **Supported versions:** Claude wrote "only the newest version branch receives fixes" into the guide and the findings. Rob hadn't confirmed it explicitly; the draft PR was where it got reviewed.
+- **README link:** a Security badge after License, matching the existing Contributing badge, rather than prose that would collide with the Why ViewZoo README rework.
+- **Worktree:** Rob was working on `why-viewzoo` in another session from the main checkout, so at Rob's request this work moved to a separate worktree at `../viewzoo-security-guide` and the session switched into it. The branch's upstream to `origin/v483` was unset so a plain push can't land on `v483`.
+
+## Repository state found
+
+The default branch was still `v479`. Private vulnerability reporting was off, though the guide links to it. Dependabot security updates were off. Secret scanning and push protection were on.
+
+---
+
+# Close out the security guide (2026-10-20)
+
+**Session ID**: `32f759f5-1afc-4c01-b340-786d444fedaa`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, asked Claude to close out the security guide work item, reporting that Rob had turned on private vulnerability reporting and Dependabot alerts and would use Claude locally for security code scanning rather than GitHub's. Claude confirmed the repository state, folded the item into the canonical docs and retired its working files.
+
+## State confirmed
+
+PR #37 had merged into `v483` as `ef8de20` with no review comments, so Claude recorded the supported-versions policy as accepted by Rob at merge. The default branch was now `v483`, so the Security tab shows the guide. The GitHub API showed private vulnerability reporting and Dependabot alerts on, code scanning default setup not configured, and Dependabot security updates still off; Rob didn't ask to change the last one, so it was recorded as off.
+
+## Folding
+
+- The default branch moving to `v483` made the closing-keywords finding's "`v479` while `v483` is current" false, so Claude rewrote it in place rather than adding beside it.
+- The guide's statements were omitted from the findings, since `SECURITY.md` now states them. What it can't show went in: the repository settings and Rob's local-scanning choice, the supported-versions acceptance, the deferred length check, and that the 20,000,000-character limit is tied to Jackson's default.
+- The item's manual checks were one-time acceptance checks (Security tab, settings, claims at merge), so none folded into the project repo's `CLAUDE.md`.
