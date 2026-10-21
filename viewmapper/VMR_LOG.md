@@ -175,3 +175,33 @@ robfromboulder, with Claude as co-author, closed out the `TRINO_483` work item f
 
 - robfromboulder chose to close out before the release.
 - Claude left out the deleted `InPredicate` override, the `refs/tags/` hardening and the removed `returnThinking`, because the shipped code shows each and no canonical doc claimed otherwise.
+
+---
+
+# Release 483a and make v483 the default branch (2026-10-21)
+
+**Session ID**: `2ca15cea-1598-433a-9dce-f30999b95c10`
+
+robfromboulder, with Claude as co-author, released `483a` from `v483` and made `v483` the repo's default branch. The session had started on the `MODERNIZE` item, whose part is logged with that item. `v479`, the old default, pins a Claude model that no longer exists, so its published image fails at the first model call.
+
+## Turn by turn
+
+- robfromboulder raised switching the default branch to `v483` before releasing it. Claude found that the `v483` README points at `robfromboulder/viewmapper-mcp-server:483a`, which wasn't on DockerHub, so a switch would send new users to an image that couldn't be pulled. Claude recommended releasing `483a` first. robfromboulder agreed, releasing the Trino 483 changes without the `modernize` work.
+- Claude checked out `v483` at the PR #10 merge, started `./build.sh` in the background, and gave robfromboulder the two Claude Desktop checks carried over from `TRINO_483`.
+- robfromboulder reported both checks passing and asked for the release. Claude found the build still running. `build.sh` had already removed the old `viewmapper:483`, which was this session's `modernize` build, and the `v483` image appeared only after the report. So the checks had exercised `modernize`. Claude held the release and asked for a rerun against the new image.
+- The build also showed that `ANTHROPIC_API_KEY` was now set in the shell, so `v483`'s `testTestDatasetStillWorks` had made one real model call. `modernize` had already replaced that test.
+- robfromboulder reported the checks passing on the new image. Docker's event log showed no container started from it, and none running. Claude reported that and held again. robfromboulder told Claude to release anyway.
+- Claude ran `./release.sh 483a` with both API key variables unset. 227 tests passed, and `RunCommandJdbcTest` took 0.2s against 9s with the key, so no model call was made. The script pushed `483a` for `linux/amd64` and `linux/arm64` and pushed tag `483a` at `c665f68`.
+- The published image, pulled and driven over stdio with raw JSON-RPC, answered `initialize` and `tools/list` on MCP 1.30.0 with the old tool description. That confirms the release was built from `v483`. No model answer was exercised.
+- robfromboulder asked Claude to switch the default branch. `gh repo edit --default-branch v483` did, and GitHub confirmed it.
+
+## Decisions
+
+- robfromboulder chose to release before switching the default branch, so the default branch works on the day it changes.
+- robfromboulder released `483a` over Claude's report that Docker showed no Claude Desktop run on the release build.
+- Claude ran the release with the API keys unset, since `v483` still carries the test that calls the real agent.
+
+## Lessons
+
+- `build.sh` deletes `viewmapper:483` before rebuilding, and Claude Desktop keeps using whichever image the tag named when it started. Wait for the build to finish, restart Claude Desktop, and confirm a container start from the new image ID before counting a check.
+- Check whether an API key is set before each build, not once per session: the shell environment changed partway through this one.
