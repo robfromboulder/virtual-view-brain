@@ -1,6 +1,6 @@
 # ViewZoo: Technical Approach
 
-> V7, 2026-10-13.
+> V8, 2026-10-20.
 
 This document describes the proposed approach for addressing the problems defined in `VZOO_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -10,7 +10,7 @@ This document describes the proposed approach for addressing the problems define
 
 Be a connector that stores views, and be unremarkable about it. Everything a user does here is ordinary Trino SQL against ordinary Trino views, and the only unusual thing about the catalog is where the definitions ended up. That is the whole product claim: adopting this should be a configuration file, not a technique.
 
-The two environments are served by two storage backends rather than by one compromise. Files on disk suit development, testing and version control, because a JSON file per view is something a person can read, a repository can hold, and a pull request can review. A database suits production, because it survives containers being replaced, is reachable from every node, and is already in the backup schedule. Neither is a degraded version of the other, and the choice is a configuration property.
+The two workflows are served by two storage backends rather than by one compromise, and neither backend is tied to an environment. Files suit view definitions handled as code, because a JSON file per view is something a person can read, a repository can hold, and a pull request can review. A database suits view definitions handled as shared data, because it survives containers being replaced, is reachable from every node, and is already in the backup schedule. An earlier framing cast files as the development backend and the database as the production backend; it was dropped because a production user syncs filesystem views from git (#10, #14), and because views load only at startup, so coordinators sharing a database don't stay in step without a restart. Neither is a degraded version of the other, and the choice is a configuration property.
 
 ---
 

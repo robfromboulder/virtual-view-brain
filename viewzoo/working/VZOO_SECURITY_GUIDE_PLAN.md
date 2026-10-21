@@ -29,7 +29,6 @@ Key references in the owning lobe:
 
 | Existing code | Interaction | Risk |
 |---|---|---|
-| `VZOO_WHY_VIEWZOO` work item | Both edit the README | Whichever merges second rebases its README edit onto the other |
 | `VZOO_PG_REFRESH` work item | Adds privileges the JDBC user needs (creating a function and a trigger) | The guide's JDBC section must be updated when it merges |
 | `VZOO_SECURITY_MODE` work item | Would make the connector enforce a security-mode policy | The guide's security-mode section must be updated if it lands |
 

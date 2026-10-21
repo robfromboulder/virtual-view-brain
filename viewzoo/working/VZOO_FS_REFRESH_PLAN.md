@@ -18,7 +18,7 @@ Key references in the owning lobe:
 - `config/` — a refresh interval property (name to settle, e.g. `viewzoo.refresh_interval`), as an Airlift `Duration`, unset meaning no refresh.
 - `ViewZooMetadata.java` — reload `storageClient.getViews()` and swap the map inside the existing lock, as `VZOO_PG_REFRESH` also needs.
 - A scheduled daemon executor that runs the reload on the interval, stopped when the connector shuts down.
-- `README.md` — document the property, the staleness window it leaves, and the sync pattern it supports.
+- `README.md` — document the property, the staleness window it leaves, and the sync pattern it supports, and update the startup-refresh limitation and the filesystem row of the "Why ViewZoo?" table, which says views deploy by syncing the directory and restarting Trino.
 
 ## Interaction with existing code
 

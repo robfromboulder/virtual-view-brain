@@ -29,7 +29,7 @@ Key references in the owning lobe:
 |---|---|---|
 | `ViewZooJdbcClient` startup `CREATE TABLE IF NOT EXISTS viewzoo` | Unqualified, so it lands in the `currentSchema` schema | Fails if that schema doesn't exist; documented, not handled |
 | `VZOO_PG_REFRESH` work item | Its notification channel is a fixed `viewzoo` | With a table per schema in one database, every catalog reloads on any tenant's change; its channel should include the schema |
-| `VZOO_WHY_VIEWZOO` and `VZOO_SECURITY_GUIDE` work items | All edit the README | Whichever merges later rebases its README edit |
+| `VZOO_SECURITY_GUIDE` work item | Both edit the README | Whichever merges later rebases its README edit |
 
 ## Testing approach
 

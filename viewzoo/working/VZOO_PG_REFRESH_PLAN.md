@@ -20,7 +20,7 @@ Key references in the owning lobe:
 - `ViewZooMetadata.java` — register the callback, and on callback reload `storageClient.getViews()` and swap the map inside the existing lock.
 - `src/test/docker/trino/catalog/` — add a PostgreSQL connector catalog over the same database, so tests can write to the table directly.
 - `TestViewZooIntegration.java` — add the refresh tests (see Testing approach).
-- `README.md` — change the startup-refresh limitation so it applies to filesystem storage only, and say that JDBC storage refreshes live, including after direct writes to the table. Note the extra privileges the JDBC user needs.
+- `README.md` — change the startup-refresh limitation so it applies to filesystem storage only, drop the JDBC storage row's restart clause from the "Why ViewZoo?" table, and say that JDBC storage refreshes live, including after direct writes to the table. Note the extra privileges the JDBC user needs.
 
 ## Interaction with existing code
 
@@ -29,7 +29,7 @@ Key references in the owning lobe:
 | `ViewZooMetadata` map and `synchronized` methods | Reload swaps the map under the same lock | A reload during DDL must not lose the write; the lock serializes them |
 | `createView` updates the cache before storage | Unchanged here | A failed write fires no trigger, so the phantom view persists until the next change to the table triggers a reload; that fix is a separate item |
 | `ViewZooJdbcClient` startup DDL | Gains function and trigger creation | Extra privileges are needed; `CREATE OR REPLACE TRIGGER` needs Postgres 14+ |
-| `VZOO_WHY_VIEWZOO` work item | Adds the startup-refresh limitation and possibly the PG connector test catalog this item edits | Whichever merges second rebases onto the other |
+| `VZOO_WHY_VIEWZOO` (merged, PR #35) | Added the startup-refresh limitation and the JDBC row's restart clause this item edits; left adding `pg.properties` to `src/test/docker` to this item | Rebase onto `v483` |
 | `VZOO_FS_REFRESH` work item | Needs the same reload-and-swap in `ViewZooMetadata` | Whichever merges first builds it; the other rebases onto it |
 | One `DriverManager` connection per operation | The listener adds one long-lived connection per coordinator | Holds one slot in the connection limit |
 
@@ -53,7 +53,7 @@ The existing `testjdbc`/`testfs` data-provider suite must stay green. Testing tw
 
 ## Scope boundary — what this does NOT include
 
-- README positioning: "Why ViewZoo?", the two modes as workflows, pairing with the PG connector (`VZOO_WHY_VIEWZOO`).
+- README positioning: "Why ViewZoo?" and pairing with the PG connector, which shipped in PR #35.
 - Refresh for filesystem storage (timer, reload function, or fall-through on cache miss); `VZOO_FS_REFRESH` covers it.
 - The small JDBC fixes: cache updated before the storage write, the missing ": " in the startup error.
 - A connection pool, configurable schema or table name, `jsonb` definitions, metadata columns, a history table, multi-tenancy (#10), security-mode enforcement (#13).
