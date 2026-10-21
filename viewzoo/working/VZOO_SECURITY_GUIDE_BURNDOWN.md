@@ -17,4 +17,6 @@ Everything between working code and a merged PR.
 * docs
   * take screenshots
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
+  * on `v483`, malformed files and rows are skipped with a warning (not catalog-fatal), and names that would escape `viewzoo.dir` are rejected; the guide documents both, and the plan's `VZOO_STORAGE_ERRORS` risk and path-safety open issue were dropped
+  * the supported-versions policy (newest branch only) was chosen by Claude, pending Rob's review on PR #37
 * repository settings: private vulnerability reporting, Dependabot alerts, code scanning default setup
