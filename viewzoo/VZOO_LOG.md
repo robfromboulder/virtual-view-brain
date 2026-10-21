@@ -659,3 +659,23 @@ PR #37 had merged into `v483` as `ef8de20` with no review comments, so Claude re
 - The default branch moving to `v483` made the closing-keywords finding's "`v479` while `v483` is current" false, so Claude rewrote it in place rather than adding beside it.
 - The guide's statements were omitted from the findings, since `SECURITY.md` now states them. What it can't show went in: the repository settings and Rob's local-scanning choice, the supported-versions acceptance, the deferred length check, and that the 20,000,000-character limit is tied to Jackson's default.
 - The item's manual checks were one-time acceptance checks (Security tab, settings, claims at merge), so none folded into the project repo's `CLAUDE.md`.
+
+---
+
+# Publish the first 483 release (2026-10-21)
+
+**Session ID**: `32f759f5-1afc-4c01-b340-786d444fedaa`
+
+After the security guide closeout, Rob Dickinson (robfromboulder), with Claude as co-author, decided to leave Dependabot security updates off and to publish the first release for Trino 483. Claude ran the release procedure in the project repo's `CLAUDE.md` and published `483a` on `1dceda4` once Rob approved it.
+
+## Release procedure
+
+Every step passed on the first attempt: the checkout was clean and matched `origin/v483`, no `483a` tag or release existed, `mvn clean package && mvn test -Pintegration` ran 68 tests with none failing, and the zip installed into a clean `trinodb/trino:483` created a view and queried it as `"1"`.
+
+## Release notes
+
+Rob asked for the procedure's one-line notes to be expanded into the high points since `v479`. Claude drafted one bullet per user-facing PR into `v483`, leaving out PRs that changed only tests, docs or comments. Rob then asked for a line on tests and coverage. Claude counted `@Test` methods in `src/test` (8 on `v479`, 85 on `v483`), because Surefire's total counts data-provider runs differently. Claude quoted coverage as the 98.9% of lines and 97.8% of branches measured at PR #33 with no starting point, since coverage was never measured on `v479`. The earliest measurement, 92% and 93%, was taken partway through the 483 work. Rob added a line about the runbook for Claude-driven development, Claude supplied the PRs that changed `CLAUDE.md` or `CONTRIBUTING.md` (#27, #30, #34, #36), and Rob reordered the list to put process and docs first. Claude pointed out that Rob's edit to the #27 bullet ("can't store as one file, escaping `viewzoo.dir`") could read as if names escape; Rob kept it.
+
+## Lesson
+
+Each `gh release edit` on a draft gives it a new `untagged-…` URL, so the draft link given to Rob has to be re-fetched after every edit.
