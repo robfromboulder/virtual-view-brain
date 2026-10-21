@@ -37,3 +37,39 @@ robfromboulder, with Claude as co-author, started the `MODERNIZE` work item from
 
 - The SDK's class-derived tool schemas are always strict and all-required. Check the generated schema before relying on an optional parameter.
 - A unit test that calls a tool method directly doesn't exercise the SDK's argument handling. `FakeMessageService.callTool` goes through the real runner.
+
+---
+
+# Port the MCP server to 2.x and make failures unmistakable (2026-10-21)
+
+**Session ID**: `2ca15cea-1598-433a-9dce-f30999b95c10`
+
+robfromboulder, with Claude as co-author, picked the `MODERNIZE` item back up from the ViewMapper repo on the `modernize` branch. The session moved the MCP server to MCP Python SDK 2.3.0, returned every failed call as a tool error, reworded the tool description for #7 and #8, made the agent name the likely cause of a failed Trino connection, and removed a test that could make a paid API call. Four commits landed on PR #11. Everything left on the item needs API spend.
+
+## Turn by turn
+
+- Claude read the item's documents and summarized its state. The log had no entry for the session that moved the image to Ubuntu 26.04, though the burndown records that change.
+- robfromboulder asked for every test that costs nothing. Both suites passed (232 agent, 19 MCP) with no API key in the shell. Claude said no test could spend money, which turned out to be wrong later in the session.
+- robfromboulder asked Claude to start the 2.x port. The subprocess timeout was already 600s and configurable, so the port was the SDK and `isError`. The 2.x low-level `Server` has no `list_tools`/`call_tool` decorators: handlers go to the constructor, take a request context and params, and return `ListToolsResult`/`CallToolResult` with snake_case fields. Every failure path now returns `is_error=True` through one helper.
+- Claude added a test that runs `mcp_server.py` over stdio with the 2.x client against a nonexistent JAR. Run by hand, the error came back with `isError` set and the agent's own message, negotiated at protocol `2025-11-25`.
+- robfromboulder asked to commit, reword the tool description, then build. Claude read #7 and #8 and rewrote the description to say what the tool finds, to render Mermaid blocks as a diagram (a Mermaid artifact in Claude Desktop), and to report an error result rather than answer from earlier results. The wording explains why rather than issuing ALWAYS/NEVER rules. `./build.sh` built a 794MB image with `mcp` 2.3.0, and a stdio connection into the container listed the tool with the new description, with no tool call made.
+- robfromboulder asked to push and then improve the agent's connection errors. A probe against the 483 driver showed it parses the URL in `getConnection` and touches the network only on the first query. URL errors such as a non-numeric port come back as a misleading `No host specified`, and network errors arrive wrapped in `Error executing query`.
+- `RunCommand::loadFromJdbc` now reports a `getConnection` failure as a malformed URL with the expected forms, and maps an unknown host, a refused connection or a timeout on the first query to a message naming host and port and what to check. Other SQL errors pass through unchanged. Messages never echo the URL, and the driver's own text has the URL stripped, because a Trino URL can carry a password.
+- While reading `RunCommandJdbcTest`, Claude found that `testTestDatasetStillWorks` ran the real agent on `simple_ecommerce`, so it would make a paid call whenever a key was set. It asserted only that the exit code was 0 or 1. robfromboulder asked to fix it. `testTestConnectionStringAccepted` uses a missing `test://` dataset, which passes the prefix check and fails before the agent is built. With a fake key and the SDK's base URL pointed at a dead local port, all 237 agent tests passed.
+- robfromboulder asked for this closeout and raised making `v483` the repo's default branch, since `v479` pins a model that no longer exists.
+
+## Decisions
+
+- robfromboulder had Claude commit and push each step separately onto PR #11.
+- Claude put the rule about not answering from earlier results in the tool description, which the client reads before every call, and kept the error messages about what to fix.
+- Claude made connection messages name only host and port, given that the URL may hold a password.
+- Claude dropped the test's full start-to-finish run of a real dataset through `RunCommand`, since any valid dataset goes on to the model.
+
+## What didn't work
+
+- The driver's `timeout` URL property doesn't shorten an unroutable host's failure: at `timeout=10s` it retried 12 times over 2.1 minutes, against 4 attempts over 2 minutes by default.
+
+## Lessons
+
+- "No API key in this shell" proves a run was free, not that the suite is. Grep tests for paths that construct the real client before calling a suite safe.
+- The Trino driver's lazy connect means `getConnection` succeeding says nothing about reachability. Classify failures by where they surface.
