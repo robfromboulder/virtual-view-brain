@@ -1,6 +1,6 @@
 # ViewZoo: Implementation Findings
 
-> V10, 2026-10-20.
+> V11, 2026-10-20.
 
 Findings made during implementation that are not evident from reading the code. Each entry names the options considered and the reason the chosen approach won. Assume the current codebase is available as ground truth — this document does not restate what the code already shows.
 
@@ -73,3 +73,9 @@ Accepted costs: a replace swaps in a new file, dropping a mode or owner set by h
 A 2026-10-20 coverage run, including the plugin inside the Trino container, found every main path covered and the error paths not. Directory permissions force most failures through the real filesystem calls: a read-only directory fails a link or a write, an execute-only one resolves a path but can't be listed, and the tests skip themselves when run as a user who ignores permissions. A delete that follows a link needs the same directory permission the link just used, so permissions can't fail it alone; those deletes go through a package-private `deleteFile` that a test subclass overrides. Immutable files and a fault-injecting `FileSystem` were rejected, the first for blocking links on macOS and needing root on Linux, the second for re-plumbing the client.
 
 Rob chose to unit-test the SPI methods no integration test reaches, so their not-found results are pinned. Coverage after the work was 98.9% of lines and 97.8% of branches; the rest can't happen: a serialization failure, an `InvalidPathException` after names are validated, and a null name at the filesystem's name check. Reviews flag concurrent-writer races around the rename rollback on every pass; they are accepted, as other races are. Established by PR #33 (`af881e0`, `531df42`, `3990c82`).
+
+## 12. Releases are built on the maintainer's Mac, not by a workflow
+
+Rob didn't want the build and test environment published as a GitHub Actions workflow, so releases follow the procedure in the repository's `CLAUDE.md`, run by Claude on Rob's Mac. A committed release script was rejected for the same reason. A macOS build matches a Linux one because the plugin is pure Java with no native code. A draft release has no tag until it's published, so a draft can be checked without using up a letter. Also rejected: Maven Central, since Trino plugins are installed by copying a directory and publishing there needs signing keys; bare-version tags, since a fix would then replace an archive someone already downloaded; a release on every push, since that publishes unreviewed states; and a Trino image with ViewZoo installed, a second artifact that could follow later.
+
+Rob decided that older version branches get no binaries, that releases attach no sources because the tag marks them, and that release notes carry no checksum, since GitHub shows each asset's SHA-256 and the README doesn't check one. A binary's provenance is therefore only its tag and the maintainer's machine: no recorded build run exists, and binaries carry no signature or attestation. The README picks the newest release with a matching version prefix rather than following `releases/latest`, because every version branch shares one release list. Established by PR #34 (`f866f5b`, `11a7e1c`, `21fc40d`, `e36ce4d`), fixing #12.
