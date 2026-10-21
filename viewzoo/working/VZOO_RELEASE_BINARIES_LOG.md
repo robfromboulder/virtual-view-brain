@@ -14,7 +14,7 @@ Rob Dickinson (robfromboulder), with Claude as co-author, reframed the release b
 
 ## Lineage
 
-- Rob called this the only other non-documentation item he'd consider for the `v483` release, but didn't want a copy of the build and test environment published as a GitHub Actions workflow, and asked to reframe it as building releases locally on macOS. Claude agreed and proposed a procedure in the repo's `CLAUDE.md` rather than a workflow or a committed script.
+- Rob called this the only other non-documentation item Rob would consider for the `v483` release, but didn't want a copy of the build and test environment published as a GitHub Actions workflow, and asked to reframe it as building releases locally on macOS. Claude agreed and proposed a procedure in the repo's `CLAUDE.md` rather than a workflow or a committed script.
 - Rob asked how big the zip was: about 16 MB. Listing it showed `configuration-testing`, a test library, shipping in the plugin directory because the pom gave it compile scope. Rob had Claude rewrite the work item around local releases with that scope fix included.
 - Rob settled the open questions: no releases for older versions, and no source attachment, since the release's tag marks the sources.
 - The scope fix also dropped `byte-buddy`, which nothing else pulled in, taking the plugin directory from 47 jars to 45 and the zip to 12.1 MB. All unit and integration tests passed, the integration run loading the slimmer plugin into Trino 483.
@@ -31,5 +31,5 @@ Rob Dickinson (robfromboulder), with Claude as co-author, reframed the release b
 
 ## Open threads
 
-- Keep or cut the release-notes checksum in the procedure's steps 3 and 5.
+- Keep or cut the release-notes checksum in the release procedure.
 - `SECURITY_GUIDE`'s findings and plan still expect `v483` to become the default branch at the `483a` release.
