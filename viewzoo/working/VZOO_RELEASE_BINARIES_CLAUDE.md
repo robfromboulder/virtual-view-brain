@@ -1,6 +1,6 @@
 # Release Binaries: Claude Runbook
 
-> Publish a prebuilt plugin for each Trino version as a GitHub release, built by a GitHub Actions workflow when a release tag (`483a`, `483b`, …) is pushed.
+> Publish a prebuilt plugin for each Trino version as a GitHub release (`483a`, `483b`, …), built, tested and released from the maintainer's Mac by a procedure in the repository's `CLAUDE.md`.
 >
 > **Branch:** `release-binaries` · **Blocked-by:** —
 
@@ -8,10 +8,11 @@
 
 Run the steps from the platform runbook first (if the brain has one), verifying results match the expectations documented there. Then run the work-specific step(s) below.
 
-### Step N — <work-specific test> ← NEW in this branch
+### Step 1 — Build without the test library ← NEW in this branch
 
 ```bash
-# fill in once the work item has tests
+mvn clean package && mvn test -Pintegration
+ls target/viewzoo-483 | grep configuration-testing
 ```
 
-**Expected:** <runtime, pass/fail expectations, which tests are active>
+**Expected:** all tests pass, and the `grep` prints nothing.
