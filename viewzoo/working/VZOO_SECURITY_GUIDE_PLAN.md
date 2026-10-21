@@ -27,10 +27,7 @@ Key references in the owning lobe:
 
 ## Interaction with existing code
 
-| Existing code | Interaction | Risk |
-|---|---|---|
-| `VZOO_PG_REFRESH` work item | Adds privileges the JDBC user needs (creating a function and a trigger) | The guide's JDBC section must be updated when it merges |
-| `VZOO_SECURITY_MODE` work item | Would make the connector enforce a security-mode policy | The guide's security-mode section must be updated if it lands |
+None; no code changes.
 
 ## Testing approach
 
@@ -45,7 +42,7 @@ No automated tests change. Manual checks are in `VZOO_SECURITY_GUIDE_TESTING.md`
 ## Scope boundary — what this does NOT include
 
 - A length check on view definitions, or any other code change.
-- Enforcing a security-mode policy (`VZOO_SECURITY_MODE`).
+- Enforcing a security-mode policy.
 - A threat model or security review of Trino itself.
 
 ## Open issues

@@ -30,6 +30,6 @@ Each catalog gets its own storage: its own directory, or its own Postgres schema
 
 ## What this doesn't solve
 
-- Catalogs that share storage on purpose still drift apart until restarted, until refresh exists.
+- Catalogs that share storage on purpose still drift apart until restarted.
 - A Postgres schema must exist, with `CREATE` granted to the catalog's user, before the catalog starts; ViewZoo doesn't create it.
 - The scale number is a single measurement on one machine, not a guarantee.

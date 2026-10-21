@@ -12,7 +12,7 @@ On a configurable interval, reload every view from storage and swap the in-memor
 |---|---|
 | Trigger | Fixed interval, off by default |
 | Reload | Full `getViews()` and map swap, the same path as startup |
-| Bad files | Skipped and logged, per `VZOO_STORAGE_ERRORS` |
+| Bad files | Skipped and logged, as at startup |
 | Storage modes | Filesystem; JDBC open (see PLAN) |
 
 - **Fits the sync pattern** — a cron job writes files and the next tick picks them up, with no coordination between the two.
@@ -21,7 +21,7 @@ On a configurable interval, reload every view from storage and swap the in-memor
 
 ## Alternatives considered
 
-- **Fall through to storage on a cache miss** (proposed in #14) — finds new views but never changed or dropped ones, already rejected in `VZOO_PG_REFRESH`.
+- **Fall through to storage on a cache miss** (proposed in #14) — finds new views but never changed or dropped ones.
 - **Directory watching** — immediate, but `WatchService` is unreliable on network and container-mounted volumes, which is where synced directories live.
 - **A scalar function to refresh** (discussed in #14) — a function with a side effect is the wrong Trino construct; a procedure is the right shape, and whether to add one is open.
 

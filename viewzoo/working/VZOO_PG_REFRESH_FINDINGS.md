@@ -25,14 +25,14 @@ A statement-level trigger on the `viewzoo` table calls `pg_notify('viewzoo', '')
 ## Alternatives considered
 
 - **Application-side `NOTIFY` after each connector write** — simpler DDL, but blind to direct writes to the table, which are half of the problem.
-- **Timer-based reload** — works for both storage modes, but trades staleness against load and still leaves a window of drift. It remains the likely answer for filesystem mode (`VZOO_FS_REFRESH`).
+- **Timer-based reload** — works for both storage modes, but trades staleness against load and still leaves a window of drift.
 - **Fall through to storage on cache miss** — proposed in #14. It finds views that are new, but not views that changed or were dropped.
 - **Incremental update from the notification payload** — avoids a full reload, but a payload is capped at 8000 bytes and a delta protocol is more code than a small table justifies.
 - **Reload function callable from SQL** — useful for filesystem sync, but an extra step every writer must remember. Out of scope here.
 
 ## What this doesn't solve
 
-- Filesystem mode still loads once at startup; the `VZOO_FS_REFRESH` work item covers it.
+- Filesystem mode still loads once at startup.
 - A coordinator serves stale views for the moment between a commit and its reload; there is no read-your-writes guarantee across coordinators.
 - A reload replaces the whole map, so at some unmeasured store size it becomes the bottleneck.
 - The JDBC user must be allowed to create a function and a trigger, which a locked-down database may refuse.

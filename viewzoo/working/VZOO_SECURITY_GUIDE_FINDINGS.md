@@ -23,10 +23,10 @@ A `SECURITY.md` at the repository root, in GitHub's conventional form, so it app
 ## Alternatives considered
 
 - **Add a definition length check in the same item** — closes the gap instead of documenting it, but it is a code change with its own limit to choose, and it would hold back the guide. It can become its own work item.
-- **Put the security material in the README** — rejected because GitHub surfaces `SECURITY.md` specifically, and the README is already being reworked by another item.
+- **Put the security material in the README** — rejected because GitHub surfaces `SECURITY.md` specifically.
 
 ## What this doesn't solve
 
 - The missing length check remains; only the guide mentions it.
-- Policy on security modes stays unenforced until the `VZOO_SECURITY_MODE` work item lands.
+- Policy on security modes stays unenforced.
 - The guide has to be carried forward to each new version branch, and updated when the default branch changes.

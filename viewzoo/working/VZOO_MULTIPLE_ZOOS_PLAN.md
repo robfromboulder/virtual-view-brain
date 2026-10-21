@@ -28,8 +28,6 @@ Key references in the owning lobe:
 | Existing code | Interaction | Risk |
 |---|---|---|
 | `ViewZooJdbcClient` startup `CREATE TABLE IF NOT EXISTS viewzoo` | Unqualified, so it lands in the `currentSchema` schema | Fails if that schema doesn't exist; documented, not handled |
-| `VZOO_PG_REFRESH` work item | Its notification channel is a fixed `viewzoo` | With a table per schema in one database, every catalog reloads on any tenant's change; its channel should include the schema |
-| `VZOO_SECURITY_GUIDE` work item | Both edit the README | Whichever merges later rebases its README edit |
 
 ## Testing approach
 
@@ -45,7 +43,6 @@ Integration tests against the docker-compose stack: the existing `testjdbc`/`tes
 
 - A per-user sandbox schema mapped to separate storage per user (#10 discussion); declined, beyond the README paragraph above.
 - A table-name configuration property.
-- Refresh (#14) and security-mode enforcement (#13).
 
 ## Open issues
 

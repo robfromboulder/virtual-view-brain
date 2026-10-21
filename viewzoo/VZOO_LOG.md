@@ -588,3 +588,28 @@ Rob Dickinson (robfromboulder), with Claude as co-author, had Claude close out t
 ## Open threads
 
 - The hero title block's "500+ VIEWS" scale claim has no measurement behind it.
+
+---
+
+# Work items made orthogonal (2026-10-20)
+
+**Session ID**: `3ee9ad5d-30bd-4b1c-ba4d-09198737de1b`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, asked Claude to strip references between ViewZoo's open work items that aren't load-bearing, since items pointing at each other for their own sake drift. Claude edited the PLAN, FINDINGS, BURNDOWN and runbook docs of FS refresh, multiple zoos, PG refresh, security guide and security mode. The session ran from the project repo and touched several items, so it logs here rather than to any one item.
+
+## What was removed
+
+- References to items already closed out (storage errors, safe create, Why ViewZoo) as if they were still pending. Their behavior is in the code now: `getViews` in both storage clients skips and logs bad entries, and temp files don't end in `.json`. So FS refresh's Blocked-by became `—`, its interaction rows for those items went away, and security mode's row now names the skip-and-log code instead of the item.
+- "Covered by another item" pointers in scope boundaries, "what this doesn't solve" lines and rejected alternatives. Each statement stands alone, and a rejected alternative now gives its own reason instead of citing another item's rejection.
+- README rebase notes between items, and PR #35 history in the PG refresh plan.
+- Multiple zoos' copy of the PG refresh notification-channel question. The question stays in the PG refresh plan as an open issue, since that item's work resolves it.
+
+## Decisions
+
+- Claude kept the paired FS refresh and PG refresh rows. Both build the same reload-and-swap in `ViewZooMetadata`, so their merge order matters.
+- The security guide plan's rows saying the guide must change when PG refresh or security mode lands were moved, not deleted. The obligation belongs to the change that makes the guide wrong, so each of those plans now lists a `SECURITY.md` edit under what changes, naming the file rather than the item. Claude made this call; Rob hasn't reviewed it yet.
+- Left alone: links within one item that the setup template generates, GitHub issue numbers, links to canonical docs, the Reversals sections, and the security guide's append-only log.
+
+## Lesson
+
+The setup template's "Interaction with existing code" table invites a row per neighboring work item. Most of those rows were coordination notes that went stale once the neighbor merged.

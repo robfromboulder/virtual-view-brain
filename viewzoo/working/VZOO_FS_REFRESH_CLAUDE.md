@@ -2,7 +2,7 @@
 
 > Reload view files changed outside the connector on a configurable timer, so a git sync needs no Trino restart.
 >
-> **Branch:** `fs-refresh` · **Blocked-by:** `STORAGE_ERRORS`
+> **Branch:** `fs-refresh` · **Blocked-by:** —
 
 ## Running Tests
 
