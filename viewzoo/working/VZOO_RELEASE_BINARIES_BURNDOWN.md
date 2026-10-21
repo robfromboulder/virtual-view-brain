@@ -19,4 +19,4 @@ Everything between working code and a merged PR.
 * mini-brain closeout — note deviations and reversals here; `VV_WORK_CLOSEOUT.md` consumes them
   * the scope fix also dropped `byte-buddy`, which only `configuration-testing` pulled in, shrinking the release zip from about 15 MB to 12 MB
   * the README installs with a curl script that finds the newest `483<letter>` release through GitHub's API, rather than a manual download, and doesn't check the SHA-256
-* decide whether to keep the checksum in the release notes or cut it from steps 3 and 5 of the release procedure, since the README no longer checks it and GitHub shows each asset's SHA-256
+  * the release procedure computes no checksum and the release notes carry none, since the README doesn't check it and GitHub shows each asset's SHA-256 (Rob)

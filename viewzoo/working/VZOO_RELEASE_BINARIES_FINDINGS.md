@@ -16,7 +16,7 @@ Every release tag is the Trino version plus a letter: `483a` is the first releas
 | Build | `mvn clean package`, then the integration tests (`-Pintegration`); a failure publishes nothing |
 | Artifact | `target/viewzoo-<version>.zip` attached as `viewzoo-<tag>.zip` (e.g. `viewzoo-483a.zip`), about 15 MB; the pom version stays the bare Trino version |
 | Check | The zip unpacked into a clean `trinodb/trino:<version>` container, and a view created through it |
-| Release | A draft GitHub release created with `gh` at the tested commit, with the SHA-256 checksum in its notes, then published, which creates the tag |
+| Release | A draft GitHub release created with `gh` at the tested commit, then published, which creates the tag |
 | Procedure | The repository's `CLAUDE.md`; no workflow file and no release script |
 
 - **No published build environment** — Rob doesn't want a copy of the build and test environment published as a GitHub Actions workflow, so nothing about it runs on or is described for GitHub.
@@ -36,7 +36,7 @@ Every release tag is the Trino version plus a letter: `483a` is the first releas
 
 ## What this doesn't solve
 
-- A binary's provenance is its tag, its checksum and the maintainer's machine; no recorded build run exists, and binaries carry no signature or attestation.
+- A binary's provenance is its tag and the maintainer's machine; no recorded build run exists, and binaries carry no signature or attestation.
 - Releasing needs Java 25, Maven, Docker and an authenticated `gh` on that machine.
 - Users still need the binary built for exactly their Trino version; versions without a branch get nothing.
 - Older branches get no binaries (Rob).

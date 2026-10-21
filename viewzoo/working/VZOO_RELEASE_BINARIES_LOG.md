@@ -33,3 +33,25 @@ Rob Dickinson (robfromboulder), with Claude as co-author, reframed the release b
 
 - Keep or cut the release-notes checksum in the release procedure.
 - `SECURITY_GUIDE`'s findings and plan still expect `v483` to become the default branch at the `483a` release.
+
+---
+
+# Checksum cut, reviews fixed, release binaries merged (2026-10-20)
+
+**Session ID**: `480fd3c0-9c62-4fa9-9d7b-a5648106b9c2`
+
+Rob Dickinson (robfromboulder), with Claude as co-author, settled the release-notes checksum, fixed findings from two code reviews of draft PR #34, reran the full build and tests, brought the PR description in line with the final code, and merged #34 into `v483`.
+
+## Lineage
+
+- Rob loaded the work item and had Claude cut the checksum from the release procedure: step 3 no longer runs `shasum`, and step 5's notes are just the Trino version. Claude also dropped it from the PR description and from the decision record's release row and provenance line.
+- Rob ran a medium review of #34, which found 8 issues. Claude verified the two most serious and recommended four fixes, which Rob approved. The README script's lines now chain with `&&`, because with no release yet an empty URL failed the download and the `rm -rf` still deleted the installed plugin. Step 4 says the final `SELECT` prints `"1"`, rather than the last command, and starts by removing a leftover `viewzoo-release` container. Step 1 fetches quietly and checks `gh release list` for the tag, because a draft release has no tag for `git ls-remote` to find. Claude ran the chained script against a scratch `TRINO_HOME` with no release published: it stopped at curl and left the plugin in place. Skipped: quoting `$TRINO_HOME`, which the from-source line doesn't do either, the 100-release page and 26-letter limits, and `unzip -o` in the README.
+- The full rebuild and retest at the PR head passed 76 unit and 68 integration tests, and no `configuration-testing` jar was in the plugin directory.
+- Claude found that the PR description claimed installing needs no Java, which the README contradicts, and didn't mention the release check for drafts. Claude corrected both and added the chained script's no-release behavior to the testing notes.
+- Rob ran a second medium review, on the fix commit alone, which found 7 issues. Claude recommended fixing only one: step 4's `unzip` would prompt on a re-run that skipped `mvn clean`, which the container cleanup had just made possible. Rob approved `unzip -oq`, and Claude confirmed two extractions in a row overwrite without prompting. Claude argued the rest were cosmetic or already decided, among them `gh release view` instead of the list check, since it's unclear whether it finds drafts.
+- Rob asked whether release notes need content rules. Claude said not for `483a`, and that `--generate-notes --notes-start-tag <previous tag>` would list what changed from `483b` on, the start tag being needed because every version branch shares one release list. Rob left it for now and merged #34 as `1fa6338`.
+
+## Lessons
+
+- A review's fix can open a new path: making step 4 re-runnable exposed the `unzip` prompt that only a re-run reaches.
+- Shell lines that a user pastes together must chain any destructive step after the step that fetches what replaces it.
