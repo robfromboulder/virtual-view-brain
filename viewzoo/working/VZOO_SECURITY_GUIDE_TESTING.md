@@ -4,9 +4,13 @@ Checks run by hand for this work item (UI, API calls, data checks). At closeout 
 
 ## Setup
 
-<prerequisites: config flags, roles/users, sample data needed before the steps below>
+`v483` is the repository's default branch.
 
 ## Test cases
 
-1. **<case name>** — the steps to exercise it by hand.
-   - **Expected:** <observable result>
+1. **Security tab** — open the repository's Security tab.
+   - **Expected:** it shows `SECURITY.md`.
+2. **Claims match the code** — check each statement in `SECURITY.md` against the code on `v483`.
+   - **Expected:** every statement holds.
+3. **Repository settings** — open the repository's security settings.
+   - **Expected:** private vulnerability reporting, Dependabot alerts and code scanning default setup are on.

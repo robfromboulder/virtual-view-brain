@@ -20,3 +20,4 @@ Everything between working code and a merged PR.
   * on `v483`, malformed files and rows are skipped with a warning (not catalog-fatal), and names that would escape `viewzoo.dir` are rejected; the guide documents both
   * the supported-versions policy (newest branch only) was chosen by Claude, pending Rob's review on PR #37
 * repository settings: private vulnerability reporting, Dependabot alerts, code scanning default setup
+  * decide whether to also turn on Dependabot security updates, which open PRs automatically against the default branch
