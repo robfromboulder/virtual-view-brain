@@ -1,6 +1,6 @@
 # ViewMapper MCP Server: Scoping Statement
 
-> V6, 2026-10-26.
+> V6, 2026-10-27.
 
 This document defines the problem that the MCP server addresses, separately from design decisions and implementation details, as an objective and unbiased resource. It states the conversational half of the problem ViewMapper's scoping statement defines.
 
@@ -38,7 +38,7 @@ Chat client users are not developers of this tool and often not developers at al
 
 ### What a person will wait
 
-Somewhere under a minute before assuming the thing is broken. That ceiling is a property of the user, not of the workload, and any bound chosen has to sit under it while still covering the slow legitimate cases.
+Somewhere under a minute before assuming the thing is broken. That ceiling is a property of the user, not of the workload.
 
 ---
 

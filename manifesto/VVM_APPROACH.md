@@ -1,6 +1,6 @@
 # Virtual View Manifesto: Technical Approach
 
-> V5, 2026-10-26.
+> V5, 2026-10-27.
 
 This document describes the proposed approach for addressing the problems defined in `VVM_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -36,7 +36,7 @@ The order is the argument. The introduction establishes classical views and thei
 
 **Every SQL example uses the same three-level naming convention**, with physical objects as `connector.schema.table` and virtual ones as `catalog.schema.view`, and a schema promoted to a catalog when it crosses over. Repetition is the mechanism: the transformation is taught by every example showing it rather than by any passage explaining it. The same reasoning puts `SECURITY INVOKER` on every `CREATE VIEW` example except where the counter-example is the point.
 
-**The document is the agent interface, and nothing more is built.** Handing the manifesto to Claude and asking questions of it works today, unaided, because the qualities that serve a skeptical human reader — fixed terminology, self-contained examples, explicit conditions on every recommendation — are the same ones that make a text answerable. No agentic workflow is defined over this material, no cookbook exists, and no interface is planned. The position is that the writing standard already does this job, held until something shows it does not.
+**The document is the agent interface, and nothing more is built.** Handing the manifesto to Claude and asking questions of it works unaided, because the qualities that serve a skeptical human reader — fixed terminology, self-contained examples, explicit conditions on every recommendation — are the same ones that make a text answerable. The design defines no agentic workflow, cookbook or interface over this material. The position is that the writing standard already does this job, held until something shows it does not.
 
 **Open: whether applied material belongs here.** A body of recipes rather than argument would be a second product with a second audience, and the answer changes what completion means for this one.
 

@@ -1,6 +1,6 @@
 # Virtual View: Scoping Statement
 
-> V7, 2026-10-26.
+> V7, 2026-10-27.
 
 This document defines the problem that the virtual view ecosystem addresses, separately from design decisions and implementation details, as an objective and unbiased resource.
 
@@ -10,7 +10,7 @@ This document defines the problem that the virtual view ecosystem addresses, sep
 
 SQL views can serve as an application's data contract: layers of views standing between the application and physical storage, each replaceable without disturbing the layers above it or the queries in flight. This problem belongs to teams that run Trino and want views as that contract; both are given. Query engines make the pattern possible without making it practical. The engine treats each view as an isolated object, so everything that turns a pile of views into an architecture — the conventions, the shape of the hierarchy, the place the definitions live — falls to whoever adopts the pattern.
 
-Three obstacles therefore stand between a team and the pattern, and clearing one leaves the others in place. The practice is unwritten, so each team invents its own conventions and finds the sharp edges by hitting them. A hierarchy is invisible once built, because its dependencies exist only inside SQL text that the engine will show one view at a time. And the definitions need somewhere to live, which normally means adopting storage infrastructure heavier than the pattern it would support.
+Three obstacles therefore stand between a team and the pattern, and clearing one leaves the others in place. The practice is unwritten, so each team invents its own conventions and finds the sharp edges by hitting them. A hierarchy is invisible once built. And the definitions need somewhere to live.
 
 ---
 
@@ -27,6 +27,10 @@ This assessment is as of October 2026.
 **dbt.** Views become models in a git repository, with folder and naming conventions, generated documentation and a lineage graph, deployed to Trino through the dbt-trino adapter. It addresses all three obstacles with one adopted tool. The cost is a build tool and a Python toolchain beside the engine, conventions shaped for transformation pipelines rather than for views as an application's contract, and a deployment run between a changed definition and a replaced view. The views still need a connector to live in.
 
 **Data catalogs (DataHub, OpenMetadata).** A catalog platform ingests Trino's metadata, parses view definitions into a lineage graph, and shows it in a web interface. It makes any hierarchy visible, at the cost of deploying and operating the platform, and leaves the practice and storage as they were.
+
+### How teams meet the obstacles
+
+A team meets the three obstacles in an order nobody controls, depending on whether it starts from the idea, an inherited hierarchy, or a prototype with nowhere to keep its views.
 
 ### What the engine provides
 

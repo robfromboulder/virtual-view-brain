@@ -1,6 +1,6 @@
 # ViewMapper Agent: Scoping Statement
 
-> V7, 2026-10-26.
+> V7, 2026-10-27.
 
 This document defines the problem that the agent addresses, separately from design decisions and implementation details, as an objective and unbiased resource. It states the analytical half of the problem ViewMapper's scoping statement defines.
 
@@ -14,7 +14,7 @@ Extraction is the part that looks easy and is not. A view's dependencies are the
 
 Answering questions about the graph is a second problem. "Show me the schema" is not answerable for a schema of any size; what a person needs is a judgment about whether the thing is small enough to see whole, and if not, a short list of places worth starting from and a way to pull back a piece around one of them. Those are graph-analysis questions, and they have to be answered before any rendering decision can be made.
 
-ViewMapper's design gives this module the analytical half and puts conversation in another, and that split is given here. The analysis has to stand alone, without a conversation wrapped around it, which is what makes it verifiable and usable by callers other than a conversational one.
+ViewMapper's design gives this module the analytical half, puts conversation in another, and has a model decide which analysis each question needs; those choices are given here. The analysis has to stand alone, without a conversation wrapped around it, which is what makes it verifiable and usable by callers other than a conversational one.
 
 ---
 

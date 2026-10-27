@@ -1,6 +1,6 @@
 # ViewZoo: Scoping Statement
 
-> V7, 2026-10-26.
+> V7, 2026-10-27.
 
 This document defines the problem that ViewZoo addresses, separately from design decisions and implementation details, as an objective and unbiased resource. It states one part of the problem the ecosystem's scoping statement defines: the part where view definitions need somewhere to live.
 
@@ -20,15 +20,15 @@ One of the ecosystem's design choices is given here: this obstacle has its own p
 
 ## 2. State of the Problem
 
-### What Trino requires of a view store
-
-Views live in catalogs, and a catalog is a connector. Any connector holding views must implement the metadata operations Trino calls to create, replace, drop, list and read them, and must persist what Trino hands it faithfully enough that the view comes back unchanged. The connector interface is where this is decided; there is no view storage outside it.
-
 ### What is available to store views in
 
 The connectors that can hold views durably are the ones built for data, Hive and Iceberg among them. As of Trino 484, the Iceberg connector holds views in a REST catalog under the Iceberg view specification; Nessie and Snowflake catalogs hold none, and the documentation leaves view support in the other catalog types unstated. Every Iceberg catalog needs object storage or a shared file system mounted on every node, plus a catalog service: a Hive metastore, Glue, a REST server, or a JDBC catalog whose tables live in a database such as PostgreSQL. The memory connector holds views but loses them on restart. The PostgreSQL connector cannot create Trino views at all, and a native Postgres view is written in Postgres SQL, reads only Postgres tables, and follows Postgres permissions. A team already running those has a place to put views at no extra cost. A team not running them faces a deployment whose purpose is to hold text.
 
 The gap is visible enough that at least one engineering team wrote and maintains a custom in-house module for exactly this, rather than adopt what was available.
+
+### What Trino requires of a view store
+
+Views live in catalogs, and a catalog is a connector. Any connector holding views must implement the metadata operations Trino calls to create, replace, drop, list and read them, and must persist what Trino hands it faithfully enough that the view comes back unchanged. The connector interface is where this is decided; there is no view storage outside it.
 
 ### What the two workflows actually need
 
