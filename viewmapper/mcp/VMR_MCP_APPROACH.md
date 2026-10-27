@@ -1,6 +1,6 @@
 # ViewMapper MCP Server: Technical Approach
 
-> V4, 2026-10-13.
+> V5, 2026-10-26.
 
 This document describes the proposed approach for addressing the problems defined in `VMR_MCP_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -41,6 +41,8 @@ Error handling wraps all of this, converting a failed launch, a non-zero exit, o
 **One shared conversation history.** The protocol exposed no session identity when this was built, so the session key is a constant. The consequence is that two chats exploring different schemas share context. This is a known defect held rather than fixed, because the failure is rare — users explore one schema at a time — and because the fix belongs in the protocol.
 
 **A fresh process per question.** Keeping a process warm would remove three to five seconds per question and would introduce lifecycle to manage, state to leak between questions, and a failure mode where the long-lived process is wedged. For a tool answering a handful of questions per exploration, the startup cost is the cheaper problem.
+
+**What this design does not cover.** Claude Desktop is the only client tested and validated, though the protocol is general. Conversation state does not survive the process, and the server serves one conversation at a time.
 
 ---
 
