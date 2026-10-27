@@ -1,6 +1,6 @@
 # Virtual View: Technical Approach
 
-> V5, 2026-10-13.
+> V6, 2026-10-27.
 
 This document describes the proposed approach for addressing the problems defined in `VV_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -10,7 +10,7 @@ This document describes the proposed approach for addressing the problems define
 
 One obstacle, one project. The manifesto removes the unwritten practice, ViewMapper removes the invisibility of a built hierarchy, and ViewZoo removes the storage tax. Each is adopted on its own and is useful with none of the others installed, because a team meets the three obstacles in an order nobody controls and the goal is that clearing one is enough to keep going. A single combined product would invert that: it would demand all three commitments at the moment a team wants one, which is the kind of cost the pattern exists to avoid.
 
-Trino is the only supported platform, though the pattern itself ports to any engine with SQL views. Committing to one engine is what makes the claims testable — every example runs, and every behavior asserted about view replacement can be checked. Compatibility with Starburst Enterprise and Galaxy is acknowledged where it comes up, and never as a support claim; all three repositories carry that disclaimer.
+Trino is the only supported platform, though the pattern itself ports to any engine with SQL views. Committing to one engine is what makes the claims testable — every example runs, and every behavior asserted about view replacement can be checked. Compatibility with Starburst Enterprise and Galaxy is acknowledged where it comes up, and never as a support claim.
 
 None of this is a product. Everything is free and unaccompanied by a service, and the licensing splits along the same line: CC0 for the manifesto, which puts the pattern in the public domain to be quoted and adapted without attribution mechanics, and Apache 2 for the two code projects. That suits an audience of SQL-native practitioners evaluating an architectural pattern rather than buying a platform.
 
@@ -32,7 +32,7 @@ ViewMapper's examples use `viewzoo.*` schemas. That is convenient sample data, n
 
 **No coupling between the tools.** ViewMapper could read stored definitions directly from whatever holds them, and instead goes through Trino's metadata. Universality is worth more than the shortcut: a mapper that understood ViewZoo's storage would be a mapper that only works on hierarchies ViewZoo stores, which contradicts adopting either tool alone.
 
-**One release convention for both code projects.** Each keeps a branch per supported Trino version, with `main` effectively unused. A new branch is cut unchanged from the previous one and never merged back, the upgrade lands on it by reviewed PR before other work builds on it, and contributions target a version branch. Fixes are carried forward by hand. A release is tagged with the Trino version plus a letter, as in `483a`, never `latest` and never with a `v` prefix, which would read like a version branch's name. This replaces an earlier split in which ViewMapper, free of ViewZoo's plugin-interface constraint, moved `main` forward and tagged releases `v479a`. ViewMapper adopted version branches with its 483 upgrade (ViewMapper PR #10), so a contributor now learns one model across the ecosystem; each project's reason for needing a stable branch per version is its own. Published `v`-prefixed tags stay as they are. The projects are on the same Trino version today; nothing in the design requires them to stay in step, and work targeting either one names the Trino version it assumes.
+**One release convention for both code projects.** Each keeps a branch per supported Trino version, with `main` effectively unused. A new branch is cut unchanged from the previous one and never merged back, the upgrade lands on it by reviewed PR before other work builds on it, and contributions target a version branch. Fixes are carried forward by hand. A release is tagged with the Trino version plus a letter, as in `483a`, never `latest` and never with a `v` prefix, which would read like a version branch's name. One convention means a contributor learns one model across the ecosystem; each project's reason for needing a stable branch per version is its own. Published `v`-prefixed tags stay as they are. Nothing in the design requires the projects to stay on the same Trino version, and work targeting either one names the Trino version it assumes.
 
 ---
 
@@ -40,4 +40,4 @@ ViewMapper's examples use `viewzoo.*` schemas. That is convenient sample data, n
 
 - **Manifesto** — prose that states the pattern, its principles, the use cases where it pays, and the cases where it does not.
 - **ViewMapper** — an agent that extracts view-to-view dependencies from Trino and produces navigable diagrams of the resulting graph.
-- **ViewZoo** — a Trino connector that stores view definitions on the filesystem or in Postgres, with no metastore and no object storage.
+- **ViewZoo** — a Trino connector that stores view definitions with no metastore and no object storage.

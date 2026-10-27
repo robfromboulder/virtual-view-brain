@@ -1,6 +1,6 @@
 # ViewMapper Agent: Scoping Statement
 
-> V6, 2026-08-10.
+> V7, 2026-10-27.
 
 This document defines the problem that the agent addresses, separately from design decisions and implementation details, as an objective and unbiased resource. It states the analytical half of the problem ViewMapper's scoping statement defines.
 
@@ -14,7 +14,7 @@ Extraction is the part that looks easy and is not. A view's dependencies are the
 
 Answering questions about the graph is a second problem. "Show me the schema" is not answerable for a schema of any size; what a person needs is a judgment about whether the thing is small enough to see whole, and if not, a short list of places worth starting from and a way to pull back a piece around one of them. Those are graph-analysis questions, and they have to be answered before any rendering decision can be made.
 
-The analysis also has to stand alone, without a conversation wrapped around it. That is what makes it verifiable, and what keeps it usable by callers other than a conversational one.
+ViewMapper's design gives this module the analytical half, puts conversation in another, and has a model decide which analysis each question needs; those choices are given here. The analysis has to stand alone, without a conversation wrapped around it, which is what makes it verifiable and usable by callers other than a conversational one.
 
 ---
 
@@ -70,8 +70,6 @@ The person asking usually cannot name a catalog or schema when they start, so an
 
 ## 5. Open Questions
 
-- Whether parsing coverage has gaps that only appear on real-world SQL. `exclude_columns` is one known variation with nothing exercising it, and it is unlikely to be the only one.
-- Whether betweenness centrality is the right notion of "worth starting from" for view hierarchies specifically, or a reasonable default borrowed from general graph analysis.
-- Whether cycles should be reported as findings rather than merely tolerated, given that they usually indicate a design problem in the hierarchy.
-- Whether an interactive rendering — a notebook, or something else a reader can manipulate — would serve exploration better than a static picture.
-- Whether one schema is the right unit of analysis. A view may read from another catalog, and analysis scoped to a single catalog and schema shows that reference as a name with nothing behind it, on connections that reach every catalog the server exposes. Nothing establishes how often hierarchies cross that boundary, or what a reader loses when they do.
+- What makes a view worth starting from in a view hierarchy, as opposed to what general graph analysis calls important.
+- Whether a person exploring a hierarchy needs its cycles pointed out, given that they usually indicate a design problem in the hierarchy.
+- How often hierarchies cross catalog boundaries, with a view reading from another catalog, and what a reader loses when the picture stops at one.

@@ -1,6 +1,6 @@
 # ViewZoo: Technical Approach
 
-> V8, 2026-10-20.
+> V9, 2026-10-27.
 
 This document describes the proposed approach for addressing the problems defined in `VZOO_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -8,9 +8,9 @@ This document describes the proposed approach for addressing the problems define
 
 ## 1. Strategic Approach
 
-Be a connector that stores views, and be unremarkable about it. Everything a user does here is ordinary Trino SQL against ordinary Trino views, and the only unusual thing about the catalog is where the definitions ended up. That is the whole product claim: adopting this should be a configuration file, not a technique.
+Be a connector that stores views, and be unremarkable about it. Everything a user does here is ordinary Trino SQL against ordinary Trino views, and the only unusual thing about the catalog is where the definitions ended up. That is the whole product claim: adopting this should be a configuration file, not a technique. A team certain to run an Iceberg catalog for its tables anyway is recommended to keep its views there instead; this connector serves teams without one, and teams that want views as files.
 
-The two workflows are served by two storage backends rather than by one compromise, and neither backend is tied to an environment. Files suit view definitions handled as code, because a JSON file per view is something a person can read, a repository can hold, and a pull request can review. A database suits view definitions handled as shared data, because it survives containers being replaced, is reachable from every node, and is already in the backup schedule. An earlier framing cast files as the development backend and the database as the production backend; it was dropped because a production user syncs filesystem views from git (#10, #14), and because views load only at startup, so coordinators sharing a database don't stay in step without a restart. Neither is a degraded version of the other, and the choice is a configuration property.
+The two workflows are served by two storage backends rather than by one compromise, and neither backend is tied to an environment. Files suit view definitions handled as code, because a JSON file per view is something a person can read, a repository can hold, and a pull request can review. A database suits view definitions handled as shared data, because it survives containers being replaced, is reachable from every node, and is already in the backup schedule. Views load only at startup, so coordinators sharing a database don't stay in step without a restart. Neither is a degraded version of the other, and the choice is a configuration property.
 
 ---
 
@@ -30,7 +30,7 @@ Underneath it sits one storage interface with two implementations, selected at s
 
 **The store holds what it is given and judges none of it.** Whatever Trino hands over is persisted and returned unchanged, including the view's security mode, which is carried rather than checked. This is the current answer to whether a view store is storage or governance, and it is the reason a request to enforce a security mode is a change of position rather than a feature: enforcing anything means the store starts having opinions about the views it holds, and every such opinion is a way for a stored view and a Trino view to stop being the same thing.
 
-**Everything is cached in memory, loaded once at startup, and never watched.** This makes reads immediate and the implementation small, and it assumes storage changes only through this connector. The assumption is wrong in one real workflow — definitions synchronized into a directory from git — and the resulting need for a restart is the most substantive open request from users. Any change here trades the current guarantee that memory and storage agree.
+**Everything is cached in memory, loaded once at startup, and never watched.** This makes reads immediate and the implementation small, and it assumes storage changes only through this connector. The assumption is wrong in one real workflow — definitions synchronized into a directory from git — and the resulting need for a restart leaves that workflow's need for changes made outside the engine unmet. Any change here trades the current guarantee that memory and storage agree. Whether holding every view in memory has a ceiling worth documenting is open, since nothing has measured how many views one store holds.
 
 **View operations are synchronized.** Metadata methods are serialized rather than made concurrent. For a workload of occasional DDL against a small in-memory map, correctness is worth more than the throughput given up, and it removes an entire class of bug from a connector whose failure mode would be losing view definitions.
 

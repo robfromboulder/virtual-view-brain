@@ -1,6 +1,6 @@
 # ViewMapper: Technical Approach
 
-> V5, 2026-10-13.
+> V6, 2026-10-26.
 
 This document describes the proposed approach for addressing the problems defined in `VMR_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -41,6 +41,12 @@ That interface is what keeps the split honest. The agent can be driven from a te
 **Releases follow the ecosystem's release convention, and an older version branch is frozen.** Users paste a tag into a Claude Desktop config file and keep it for months, so the source behind that tag has to stay findable and never change. A frozen branch also leaves its release's defects in place, including `479a`'s retired default model: the remedy for a user on an old release is moving to the current one, not a patch. Local builds use the bare version and never leave the machine.
 
 **Contributions go through Claude Code, design first.** The workflow is to discuss the change, record the design decision, then implement, test and update the documentation in the same session. The intent is that the reasoning behind a change is captured while it is still in someone's head rather than reconstructed later.
+
+**Open: whether accuracy holds at scale.** Nothing has tested the accuracy claims against a real thousand-view schema, or shown what happens to guided exploration at that size.
+
+**Open: authentication.** Nothing has established that the connection works against a Trino server with authentication enabled.
+
+**Open: interactive rendering.** Whether an interactive rendering, such as a notebook or something else a reader can manipulate, would serve exploration better than a static diagram.
 
 ---
 

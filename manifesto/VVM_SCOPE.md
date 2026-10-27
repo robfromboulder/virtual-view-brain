@@ -1,6 +1,6 @@
 # Virtual View Manifesto: Scoping Statement
 
-> V5, 2026-08-02.
+> V6, 2026-10-26.
 
 This document defines the problem the manifesto addresses, separately from design decisions and implementation details, as an objective and unbiased resource. It states one part of the problem the ecosystem's scoping statement defines: the part where the practice is unwritten.
 
@@ -11,6 +11,8 @@ This document defines the problem the manifesto addresses, separately from desig
 Nobody has written down how to use views as architecture. The mechanics are documented by every engine, and the conventions that make a hierarchy survive contact with a real system are documented by none: how to organize views so they abstract rather than mirror storage, how many versions a view should expect to have, who owns a layer, what breaks a hierarchy and how quietly. A practitioner willing to try the pattern has to derive all of it, and the derivation costs more than most teams will spend on a hunch.
 
 The reader arrives skeptical, and reasonably so. They already have ORMs, microservices and data access layers, all of which decouple applications from storage, and all of which are better documented than this. Any account of the pattern that does not deal with those alternatives honestly reads as advocacy and gets dismissed. So the problem is not only to state the pattern but to make it survive a hostile first reading, which means being candid about where the pattern does not pay and about the sharp edges it cannot file down.
+
+Two of the ecosystem's design choices are given here: each obstacle has its own project, and this one answers with a written account of the practice.
 
 ---
 
@@ -34,7 +36,7 @@ A reader may consult the text directly or put an agent between themselves and it
 
 ### What the practice lacks besides prose
 
-The failure modes are silent ones. A replaced view with a changed column type breaks its dependents at query time rather than at replacement time, and no engine warns anyone. Ownership of a layer is a convention with no enforcement behind it. Prose is the only place these can be addressed, because there is no mechanism to appeal to.
+The failure modes are silent ones. A replaced view with a changed column type breaks its dependents at query time rather than at replacement time, and no engine warns anyone. Ownership of a layer is a convention with no enforcement behind it. No engine warns of them, so a reader learns of them only if the account names them.
 
 ---
 
@@ -65,6 +67,5 @@ An agent asked a question about the pattern can answer it from the text, without
 
 ## 5. Open Questions
 
-- Whether serving agent readers well requires anything beyond writing precisely for human ones. The two demands look aligned and have not been tested against each other.
-- Whether a body of applied material — recipes rather than argument — belongs in this project at all. It would be a second product with a second audience, and the answer changes what completion means here.
+- What an agent reader needs from the text that a human reader does not. The two demands look aligned and have not been tested against each other.
 - Whether the reader who needs convincing and the reader who needs instructions are the same person. If they are not, serving both from one body of material may be working against itself.

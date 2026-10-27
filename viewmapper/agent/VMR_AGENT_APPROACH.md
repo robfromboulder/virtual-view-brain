@@ -1,6 +1,6 @@
 # ViewMapper Agent: Technical Approach
 
-> V3, 2026-08-02.
+> V4, 2026-10-26.
 
 This document describes the proposed approach for addressing the problems defined in `VMR_AGENT_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -43,6 +43,12 @@ A single Java process, invoked with a question and a connection, returning text.
 **Nothing is cached or precomputed between invocations.** Every question re-reads the schema, re-parses every definition, and recomputes whatever graph measures it needs. This follows from the module answering one invocation at a time, and it holds because the measured cost of doing so stays inside what a person will wait for at the sizes reached so far. It is the first decision that breaks if a schema is large enough that parsing and centrality no longer fit in that budget, and the remedy at that point is caching rather than a different design.
 
 **Discovery mirrors live and test sources exactly.** A bundled dataset presents as a catalog named `test` with the datasets as its schemas, so exploring test data and exploring a real server are the same conversation. A user does not need to know which they are on.
+
+**Open: parser coverage on real SQL.** `exclude_columns` is one known variation with nothing exercising it, and it is unlikely to be the only one.
+
+**Open: one schema as the unit of analysis.** Analysis scoped to a single catalog and schema shows a reference into another catalog as a name with nothing behind it, even on connections that reach every catalog the server exposes.
+
+**Open: betweenness centrality as the measure of where to start.** It is a default borrowed from general graph analysis, not one shown to fit view hierarchies.
 
 ---
 

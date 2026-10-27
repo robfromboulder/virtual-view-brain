@@ -1,6 +1,6 @@
 # ViewMapper MCP Server: Technical Approach
 
-> V4, 2026-10-13.
+> V5, 2026-10-27.
 
 This document describes the proposed approach for addressing the problems defined in `VMR_MCP_SCOPE.md`. It covers architectural approach, key design decisions, and what we build — but not implementation phases or delivery milestones, which are derived from this document separately.
 
@@ -32,15 +32,17 @@ Error handling wraps all of this, converting a failed launch, a non-zero exit, o
 
 ## 3. Key Design Decisions
 
-**Context is passed as prompt text, not as a structured argument.** The alternative was a context parameter on the analysis program plus a memory implementation inside it — cleaner separation, and a change to two modules instead of one. Prompt enhancement took about forty lines, needed no downstream change, kept older versions of the analysis program callable, and left the history visible to the model rather than hidden in a mechanism. The structured version remains the better architecture and stays available if the text approach shows its limits.
+**Context is passed as prompt text, not as a structured argument.** The alternative was a context parameter on the analysis program plus a memory implementation inside it — cleaner separation, and a change to two modules instead of one. Prompt enhancement is a small change confined to this module, needed no downstream change, kept older versions of the analysis program callable, and left the history visible to the model rather than hidden in a mechanism. The structured version remains the better architecture and stays available if the text approach shows its limits.
 
 **Three turns of history.** Enough for the exploration patterns actually observed — ask what exists, ask about one of them, drill in — while keeping prompts small enough to stay clear of token limits and cheap to send. Longer conversations lose their oldest turns rather than failing.
 
-**A long, configurable deadline.** The deadline is a backstop against a hung run, sized to the longest run the analysis program can legitimately make, and defaults to ten minutes with an environment variable to change it. It began as 60 seconds, set by what a person will wait for, and that was abandoned in ViewMapper PR #10 once a single answer could outlast it. When it expires, the run is killed and the message suggests a simpler question rather than retrying, since a retry would take just as long.
+**A long, configurable deadline.** The deadline is a backstop against a hung run, sized to the longest run the analysis program can legitimately make, and defaults to ten minutes with an environment variable to change it. It is not set by what a person will wait for, because a single legitimate answer can take longer. When it expires, the run is killed and the message suggests a simpler question rather than retrying, since a retry would take just as long.
 
 **One shared conversation history.** The protocol exposed no session identity when this was built, so the session key is a constant. The consequence is that two chats exploring different schemas share context. This is a known defect held rather than fixed, because the failure is rare — users explore one schema at a time — and because the fix belongs in the protocol.
 
 **A fresh process per question.** Keeping a process warm would remove three to five seconds per question and would introduce lifecycle to manage, state to leak between questions, and a failure mode where the long-lived process is wedged. For a tool answering a handful of questions per exploration, the startup cost is the cheaper problem.
+
+**What this design does not cover.** Claude Desktop is the only client tested and validated, though the protocol is general. Conversation state does not survive the process, and the server serves one conversation at a time.
 
 ---
 
